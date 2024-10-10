@@ -19,7 +19,8 @@ async def cmd_start(message: Message, command: CommandObject):
             return
 
         # Определение реферального ID
-        ref_id = get_refer_id_or_none(command_args=command.args, user_id=user_id)
+        ref_id = get_refer_id_or_none(
+            command_args=command.args, user_id=user_id)
         # Добавление нового пользователя
         await UserDAO.add(
             telegram_id=user_id,
@@ -36,5 +37,6 @@ async def cmd_start(message: Message, command: CommandObject):
         await message.answer(msg)
 
     except Exception as e:
-        logger.error(f"Ошибка при выполнении команды /start для пользователя {message.from_user.id}: {e}")
+        logger.error(
+            f"Ошибка при выполнении команды /start для пользователя {message.from_user.id}: {e}")
         await message.answer("Произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте снова позже.")
