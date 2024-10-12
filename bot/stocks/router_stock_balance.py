@@ -12,10 +12,20 @@ async def stock_balance(message: Message):
     all_balance_tasks = all_balance['tasks']
 
     for task in all_balance_tasks:
+        stock_balance = None
+        product_name = None
+
         for custom_field in task['customFieldData']:
+            # Проверка на id равное 12116
             if custom_field['field']['id'] == 12116:
-                stock_balance = custom_field['value']
-                await message.answer(f'{stock_balance}')
+                stock_balance = int(custom_field['value'])
+            # Проверка на id равное 5542 для получения названия продукта
+            elif custom_field['field']['id'] == 5542:
+                product_name = custom_field['value']['value']
+
+        # Если найдены оба значения, отправить сообщение
+        if stock_balance is not None and product_name is not None:
+            await message.answer(f'Продукт: {product_name} | Остаток: {stock_balance} шт.')
 
 
 @stock_router.inline_query()
