@@ -35,3 +35,53 @@
 2024-10-10 at 14:57:30 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
 2024-10-10 at 15:22:54 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
 2024-10-10 at 15:22:54 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2024-10-10 at 15:23:53 | INFO | Бот успешно запущен.
+2024-10-10 at 15:57:23 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2024-10-10 at 15:57:23 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2024-10-10 at 15:57:49 | INFO | Бот успешно запущен.
+2024-10-10 at 16:02:42 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2024-10-10 at 16:02:42 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2024-10-10 at 16:03:34 | INFO | Бот успешно запущен.
+2024-10-10 at 16:20:08 | INFO | Бот успешно запущен.
+2024-10-10 at 16:44:24 | INFO | Бот успешно запущен.
+2024-10-10 at 21:33:44 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2024-10-10 at 21:33:44 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2024-10-12 at 11:32:33 | INFO | Бот успешно запущен.
+2024-10-12 at 11:38:11 | INFO | Бот успешно запущен.
+2024-10-12 at 11:38:16 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2024-10-12 at 11:38:16 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2024-10-12 at 11:38:16 | ERROR | Ошибка при выполнении команды /start для пользователя 1775933471: 4 validation errors for SendMessage
+reply_markup.InlineKeyboardMarkup
+  Input should be a valid dictionary or instance of InlineKeyboardMarkup [type=model_type, input_value=<function back_keyboard at 0x000001F760714360>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.9/v/model_type
+reply_markup.ReplyKeyboardMarkup
+  Input should be a valid dictionary or instance of ReplyKeyboardMarkup [type=model_type, input_value=<function back_keyboard at 0x000001F760714360>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.9/v/model_type
+reply_markup.ReplyKeyboardRemove
+  Input should be a valid dictionary or instance of ReplyKeyboardRemove [type=model_type, input_value=<function back_keyboard at 0x000001F760714360>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.9/v/model_type
+reply_markup.ForceReply
+  Input should be a valid dictionary or instance of ForceReply [type=model_type, input_value=<function back_keyboard at 0x000001F760714360>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.9/v/model_type
+2024-10-12 at 11:56:18 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2024-10-12 at 11:56:18 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2024-10-12 at 11:56:18 | ERROR | Ошибка при выполнении команды /start для пользователя 1775933471: 4 validation errors for SendMessage
+reply_markup.InlineKeyboardMarkup
+  Input should be a valid dictionary or instance of InlineKeyboardMarkup [type=model_type, input_value=<function back_keyboard at 0x000001F760714360>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.9/v/model_type
+reply_markup.ReplyKeyboardMarkup
+  Input should be a valid dictionary or instance of ReplyKeyboardMarkup [type=model_type, input_value=<function back_keyboard at 0x000001F760714360>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.9/v/model_type
+reply_markup.ReplyKeyboardRemove
+  Input should be a valid dictionary or instance of ReplyKeyboardRemove [type=model_type, input_value=<function back_keyboard at 0x000001F760714360>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.9/v/model_type
+reply_markup.ForceReply
+  Input should be a valid dictionary or instance of ForceReply [type=model_type, input_value=<function back_keyboard at 0x000001F760714360>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.9/v/model_type
+2024-10-12 at 12:05:42 | INFO | Бот успешно запущен.
+2024-10-12 at 12:05:59 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2024-10-12 at 12:05:59 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2024-10-12 at 13:10:09 | INFO | Бот успешно запущен.
+2024-10-12 at 13:13:57 | INFO | Бот успешно запущен.
+2024-10-12 at 13:14:03 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2024-10-12 at 13:14:04 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}

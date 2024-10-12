@@ -1,45 +1,42 @@
-from aiogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.dispatcher.router import Router
-
+from aiogram import Router, F
+from aiogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent, Message
+from bot.planfix import planfix_stock_balance
 
 stock_router = Router()
 
 
+@stock_router.message(F.text == '📋 Просмотр остатков')
+async def stock_balance(message: Message):
+    all_balance = planfix_stock_balance()
+
+    await message.answer(f'{all_balance}')
+
+
 @stock_router.inline_query()
-async def inline_show_categories(inline_query: InlineQuery):
+async def inline_query_handler(inline_query: InlineQuery):
     query_text = inline_query.query.strip()
 
-    if query_text == "":  # Если запрос пустой, показываем категории
+    if query_text == "":
         results = [
             InlineQueryResultArticle(
-                id="category_1",
-                title="Категория 1",
+                id="1",
+                title="Stock Information",
                 input_message_content=InputTextMessageContent(
-                    message_text="Вы выбрали категорию 1"
+                    message_text="Запрос информации по товарам"
                 ),
-                description="Описание категории 1",
-                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(
-                        text="Посмотреть товары", callback_data="category_1")]
-                ])
+                description="Placeholder: информация по stock"
             )
         ]
-    else:  # Если запрос содержит текст, например, поиск товаров
+    else:
         results = [
             InlineQueryResultArticle(
-                id="product_1",
-                title="Товар 1",
+                id="2",
+                title=f"Результат для {query_text}",
                 input_message_content=InputTextMessageContent(
-                    message_text="Товар 1"
+                    message_text=f"Вы искали: {query_text}"
                 ),
-                description="Цена товара 1",
-                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(
-                        text="Купить товар", callback_data="product_1")]
-                ])
+                description=f"Результат поиска для '{query_text}'"
             )
         ]
 
-    # Отправляем результаты инлайн-запроса
     await inline_query.answer(results, cache_time=1)

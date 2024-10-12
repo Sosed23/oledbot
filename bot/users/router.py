@@ -4,6 +4,7 @@ from aiogram.types import Message
 from aiogram.dispatcher.router import Router
 from bot.users.dao import UserDAO
 from bot.users.utils import get_refer_id_or_none
+from bot.users.keyboards import markup_kb
 
 user_router = Router()
 
@@ -15,7 +16,8 @@ async def cmd_start(message: Message, command: CommandObject):
         user_info = await UserDAO.find_one_or_none(telegram_id=user_id)
 
         if user_info:
-            await message.answer(f"👋 Привет, {message.from_user.full_name}! Выберите необходимое действие")
+            await message.answer(f"👋 Привет, {message.from_user.full_name}! Выберите необходимое действие",
+                                 reply_markup=markup_kb.back_keyboard())
             return
 
         # Определение реферального ID
