@@ -9,7 +9,13 @@ stock_router = Router()
 async def stock_balance(message: Message):
     all_balance = planfix_stock_balance()
 
-    await message.answer(f'{all_balance}')
+    all_balance_tasks = all_balance['tasks']
+
+    for task in all_balance_tasks:
+        for custom_field in task['customFieldData']:
+            if custom_field['field']['id'] == 12116:
+                stock_balance = custom_field['value']
+                await message.answer(f'{stock_balance}')
 
 
 @stock_router.inline_query()
