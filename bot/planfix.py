@@ -12,7 +12,7 @@ url = f"{pf_url_rest}/task/list"
 
 payload = {
     "offset": 0,
-    "pageSize": 2,
+    "pageSize": 100,
     "filterId": "104380",
     # "filters": [
     #     {
@@ -30,17 +30,32 @@ headers = {
 }
 
 
-def planfix_stock_balance():
+async def planfix_stock_balance(query=None):
     response = requests.post(url, json=payload, headers=headers)
     data = response.json()
 
-    # print(len(data['tasks']))
-    # print(data)
+    all_balance_tasks = data['tasks']
+    result = []
 
-    return data
+    for task in all_balance_tasks:
+        stock_balance = None
+        product_name = None
 
+        for custom_field in task['customFieldData']:
+            # Проверка на id равное 12116
+            if custom_field['field']['id'] == 12116:
+                stock_balance = int(custom_field['value'])
+            # Проверка на id равное 5542 для получения названия продукта
+            elif custom_field['field']['id'] == 5542:
+                product_name = custom_field['value']['value']
 
-planfix_stock_balance()
+        # Если найдены оба значения и текст запроса в имени продукта (если задан)
+        if stock_balance is not None and product_name is not None:
+            if query is None or query.lower() in product_name.lower():
+                result.append((product_name, stock_balance))
+
+    return result
+
 
 ####################### VERSION 1 ####################################
 
