@@ -1,12 +1,9 @@
+import asyncio
 import requests
 import sys
 from bot.config import pf_token, pf_url_rest
 
-
 sys.stdout.reconfigure(encoding='utf-8')
-
-
-####################### VERSION 2 ####################################
 
 url = f"{pf_url_rest}/task/list"
 
@@ -14,14 +11,7 @@ payload = {
     "offset": 0,
     "pageSize": 100,
     "filterId": "104380",
-    # "filters": [
-    #     {
-    #         "type": 51,
-    #         "operator": "equal",
-    #         "value": 105
-    #     }
-    # ],
-    "fields": "id,12116,5542"
+    "fields": "id,12116,5542,6640,6282,12140"
 }
 
 headers = {
@@ -36,25 +26,49 @@ async def planfix_stock_balance(query=None):
 
     all_balance_tasks = data['tasks']
     result = []
+    unique_devices = set()  # Создаем множество для уникальных значений device
+    unique_brands = set()
 
     for task in all_balance_tasks:
+        id_product = task['id']
         stock_balance = None
         product_name = None
+        device = None
+        brand = None
+        price = None
 
         for custom_field in task['customFieldData']:
-            # Проверка на id равное 12116
             if custom_field['field']['id'] == 12116:
                 stock_balance = int(custom_field['value'])
-            # Проверка на id равное 5542 для получения названия продукта
             elif custom_field['field']['id'] == 5542:
                 product_name = custom_field['value']['value']
+            elif custom_field['field']['id'] == 6640:
+                device = custom_field['value']['value']
+            elif custom_field['field']['id'] == 6282:
+                brand = custom_field['value']['value']
+            elif custom_field['field']['id'] == 12140:
+                price_value = custom_field['value']
+                if isinstance(price_value, str) and price_value.isdigit():
+                    price = int(price_value)
 
-        # Если найдены оба значения и текст запроса в имени продукта (если задан)
         if stock_balance is not None and product_name is not None:
             if query is None or query.lower() in product_name.lower():
-                result.append((product_name, stock_balance))
+                result.append((id_product, product_name,
+                              stock_balance, price, device, brand))
 
-    return result
+                if device:  # Если device не пустое, добавляем его в множество
+                    unique_devices.add(device)
+
+                if brand:
+                    unique_brands.add(brand)
+
+    return print(result, unique_devices, unique_brands)
+
+
+async def main():
+    await planfix_stock_balance()
+
+asyncio.run(main())
 
 
 ####################### VERSION 1 ####################################

@@ -6,12 +6,20 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
 from bot.planfix import planfix_stock_balance
+from bot.users.keyboards import inline_kb as kb
 
 
 stock_router = Router()
 
 # Количество результатов на одной странице
 RESULTS_PER_PAGE = 50
+
+
+################ PRODUCT CATALOG #######################
+
+@stock_router.message(F.text == '📋 Каталог товара')
+async def stockbalance(message: Message):
+    await message.answer('Отобразить товар', reply_markup=kb.device_brand_keyboard())
 
 
 @stock_router.message(F.text == '📋 Просмотр остатков')
@@ -21,6 +29,8 @@ async def stockbalance(message: Message):
     for product_name, stock_balance in all_stock:
         await message.answer(f'{product_name} | Остаток: {stock_balance} шт.')
 
+
+################ INLINE SEARCH PRODUCT #######################
 
 @stock_router.inline_query()
 async def inline_query_handler(inline_query: InlineQuery):
