@@ -9,7 +9,7 @@ url = f"{pf_url_rest}/task/list"
 
 payload = {
     "offset": 0,
-    "pageSize": 100,
+    "pageSize": 50,
     "filterId": "104380",
     "fields": "id,12116,5542,6640,6282,12140"
 }
@@ -62,11 +62,12 @@ async def planfix_stock_balance(query=None):
                 if brand:
                     unique_brands.add(brand)
 
-    return print(result, unique_devices, unique_brands)
+    return result
 
 
 async def main():
-    await planfix_stock_balance()
+    data = await planfix_stock_balance()
+    print(data)
 
 asyncio.run(main())
 

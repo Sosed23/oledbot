@@ -1,6 +1,6 @@
-from aiogram import Router, F
+from aiogram import Router, F, types
 from aiogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent, Message
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
@@ -19,15 +19,40 @@ RESULTS_PER_PAGE = 50
 
 @stock_router.message(F.text == '📋 Каталог товара')
 async def stockbalance(message: Message):
-    await message.answer('Отобразить товар', reply_markup=kb.device_brand_keyboard())
+    await message.answer('Необходимо выбрать группировку товара', reply_markup=kb.device_brand_keyboard())
+    await message.answer(' ')
 
 
-@stock_router.message(F.text == '📋 Просмотр остатков')
-async def stockbalance(message: Message):
-    all_stock = await planfix_stock_balance()
+@stock_router.callback_query(F.data.startswith('device_select'))
+async def handle_device_select(callback_query: CallbackQuery):
+    await callback_query.message.answer('Пожалуйста, выберите тип устройства:', reply_markup=kb.device_keyboard())
+    await callback_query.answer(' ')
 
-    for product_name, stock_balance in all_stock:
-        await message.answer(f'{product_name} | Остаток: {stock_balance} шт.')
+
+@stock_router.callback_query(F.data.startswith('device_'))
+async def handle_device_choice(callback_query: types.CallbackQuery):
+    # Извлекаем часть после 'device_'
+    choice = callback_query.data.split('device_')[1]
+
+    product_data = await planfix_stock_balance()
+
+    filtered_data = [item for item in product_data if item[4] == choice]
+
+    if filtered_data:
+        message = f"Товары для {choice}:\n"
+        for item in filtered_data:
+            message += f"✔️ {item[1]} | Остаток: {item[2]} шт. | Цена: {item[3]} руб.\n"
+        await callback_query.message.answer(message)
+    else:
+        await callback_query.message.answer(f"Товары для {choice} не найдены.")
+
+    await callback_query.answer(' ')
+
+
+@stock_router.callback_query(F.data.startswith('brand_select'))
+async def handle_brand_select(callback_query: CallbackQuery):
+    await callback_query.message.answer('Пожалуйста, выберите бренд:', reply_markup=kb.brand_keyboard())
+    await callback_query.answer(' ')  # Закрываем уведомление
 
 
 ################ INLINE SEARCH PRODUCT #######################
