@@ -6,6 +6,7 @@ from bot.config import bot, admins, dp
 from bot.users.router import user_router
 from bot.stocks.router_stock_balance import stock_router
 from bot.stocks.router_cart import cart_router
+from bot.stocks.router_search import search_router
 
 
 # Функция, которая настроит командное меню (дефолтное для всех пользователей)
@@ -40,6 +41,7 @@ async def main():
     dp.include_router(user_router)
     dp.include_router(stock_router)
     dp.include_router(cart_router)
+    dp.include_router(search_router)
 
     # регистрация функций
     dp.startup.register(start_bot)
