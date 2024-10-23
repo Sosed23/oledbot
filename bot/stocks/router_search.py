@@ -37,13 +37,13 @@ async def inline_query_handler(inline_query: InlineQuery):
     results = [
         InlineQueryResultArticle(
             id=str(offset + index),
-            title=f"{product_name} - {stock_balance}",
+            title=f"{product_name}",
             input_message_content=InputTextMessageContent(
-                message_text=f"{product_name}: {stock_balance} шт."
+                message_text=f"{product_name} Доступно на складе: {stock_balance} шт."
             ),
-            description=f"Доступно на складе: {stock_balance} шт."
+            description=f"Доступно на складе: {stock_balance} шт.\nСтоимость: {price} руб."
         )
-        for index, (_, product_name, stock_balance, _, _, _) in enumerate(page_products)
+        for index, (_, product_name, stock_balance, price, _, _) in enumerate(page_products)
     ]
 
     # Определяем, есть ли следующая страница
@@ -108,7 +108,7 @@ async def inline_query_handler(inline_query: InlineQuery):
 
 
 # Этот хэндлер срабатывает, когда пользователь выбирает товар из инлайн-запроса
-@search_router.message(F.text.contains("шт.") & F.text.contains(":"))
+@search_router.message(F.text.contains("шт.") & F.text.contains("Доступно на складе:"))
 async def process_selected_product(message: Message, state: FSMContext):
     # Извлекаем данные о товаре из сообщения
     try:

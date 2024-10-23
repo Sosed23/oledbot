@@ -1,16 +1,18 @@
+from bot.users.models import User
+from bot.stocks.models_cart import Cart
+from bot.stocks.models_order import Order, OrderItem, OrderStatusHistory
+from bot.database import Base, database_url
+from alembic import context
+from sqlalchemy.ext.asyncio import async_engine_from_config
+from sqlalchemy.engine import Connection
+from sqlalchemy import pool
+from logging.config import fileConfig
+import asyncio
 import sys
 from os.path import dirname, abspath
 
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
-import asyncio
-from logging.config import fileConfig
-from sqlalchemy import pool
-from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import async_engine_from_config
-from alembic import context
-from bot.database import Base, database_url
-from bot.users.models import User
 
 config = context.config
 config.set_main_option("sqlalchemy.url", database_url)

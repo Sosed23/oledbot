@@ -12,6 +12,7 @@ class Cart(Base):
     product_id: Mapped[Optional[int]] = mapped_column(Integer)
     product_name: Mapped[Optional[str]] = mapped_column(String)
     quantity: Mapped[int] = mapped_column(Integer)
+    price: Mapped[int] = mapped_column(Integer)
     user: Mapped['User'] = relationship(back_populates='cart')
 
 

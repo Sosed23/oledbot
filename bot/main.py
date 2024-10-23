@@ -4,7 +4,7 @@ from loguru import logger
 
 from bot.config import bot, admins, dp
 from bot.users.router import user_router
-from bot.stocks.router_stock_balance import stock_router
+from bot.stocks.router_product import product_router
 from bot.stocks.router_cart import cart_router
 from bot.stocks.router_search import search_router
 
@@ -39,7 +39,7 @@ async def stop_bot():
 async def main():
     # регистрация роутеров
     dp.include_router(user_router)
-    dp.include_router(stock_router)
+    dp.include_router(product_router)
     dp.include_router(cart_router)
     dp.include_router(search_router)
 
