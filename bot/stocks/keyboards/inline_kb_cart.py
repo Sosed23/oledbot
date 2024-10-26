@@ -22,3 +22,11 @@ def product_keyboard(product_id: int) -> InlineKeyboardMarkup:
         text="✖️", callback_data=f"cart-product-delete_{product_id}")
     kb.adjust(3)
     return kb.as_markup()
+
+
+def cart_order_keyboard() -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    kb.button(text="Оформить заказ", callback_data="place_order")
+    kb.button(text="Очистить корзину", callback_data="clear_cart")
+    kb.adjust(2)
+    return kb.as_markup()

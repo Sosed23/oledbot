@@ -35,7 +35,7 @@ async def send_product_cart(message: Message):
             )
 
         cart_text = f"Описание товаров в корзине:\nОбщее кол-во товаров: {total_quantity} шт."
-        await message.answer(f"{cart_text}")
+        await message.answer(f"{cart_text}", reply_markup=kb.cart_order_keyboard())
     else:
         await message.answer("Корзина пуста.")
 
