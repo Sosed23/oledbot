@@ -124,7 +124,9 @@ async def handle_pagination(callback_query: types.CallbackQuery):
 @product_router.callback_query(F.data.startswith('product-cart_'))
 async def add_product_cart(callback_query: types.CallbackQuery):
 
-    product_id = callback_query.data.split('_')[1]
+    product_id = int(callback_query.data.split('_')[1])
+    model_name = callback_query.data.split('_')[2]
+    operation = callback_query.data.split('_')[3]
     telegram_id = callback_query.from_user.id
 
     product_cart = await CartDAO.find_one_or_none(product_id=product_id, telegram_id=telegram_id)
@@ -132,17 +134,16 @@ async def add_product_cart(callback_query: types.CallbackQuery):
     if not product_cart:
 
         product_data = await planfix_stock_balance()
-        product_name = next((item[1] for item in product_data if item[0] == int(
-            product_id)), "Неизвестный товар")
+        product_name = next((item[1] for item in product_data if item[0] == product_id), "Неизвестный товар")
 
         await CartDAO.add(
             telegram_id=telegram_id,
             product_id=product_id,
-            product_name=product_name,
+            product_name=model_name,
             quantity=1,
             price=1000
         )
-        await callback_query.answer(f'Новый товар {product_name} добавлен в корзину.')
+        await callback_query.answer(f'Новый товар {model_name} добавлен в корзину.')
     else:
         prod_cart_id = product_cart.id
         prod_cart_name = product_cart.product_name

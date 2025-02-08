@@ -43,14 +43,53 @@ async def send_product_cart(message: Message):
 @cart_router.callback_query(F.data.startswith('cart-product-delete'))
 async def delete_product_cart(callback_query: types.CallbackQuery):
     product_id = callback_query.data.split('_')[1]
-    prod_cart_id = callback_query.data.split('_')[2]
+    prod_cart_id = int(callback_query.data.split('_')[2])
     await callback_query.answer(f'product_id: {product_id}; prod_cart_id: {prod_cart_id}')
     await callback_query.message.delete()
     await CartDAO.delete(id=prod_cart_id)
 
 
 @cart_router.callback_query(F.data.startswith('cart-product_[+]'))
-async def plus_product_cart(callback_query: types.CallbackQuery):
-    prod_cart_id = callback_query.data.split('_')[2]
-    quantity = callback_query.data.split('_')[3]
-    await CartDAO.update(filter_by={'id': prod_cart_id}, quantity=int(quantity) + 1)
+async def plus_product_cart(callback_query: CallbackQuery):
+    telegram_id = callback_query.from_user.id
+    prod_cart_id = int(callback_query.data.split('_')[2])
+    product_id = callback_query.data.split('_')[1]
+
+    product = await CartDAO.find_one_or_none(id=prod_cart_id, telegram_id=telegram_id)
+    if not product:
+        await callback_query.answer("Товар не найден!", show_alert=True)
+        return
+
+    new_quantity = product.quantity + 1
+    await CartDAO.update(filter_by={'id': prod_cart_id, 'telegram_id': telegram_id}, quantity=new_quantity)
+
+    await callback_query.message.edit_text(
+        f"{product.product_name} | Кол-во: {new_quantity} шт.",
+        reply_markup=kb.cart_product_keyboard(
+            product_id=product_id, prod_cart_id=product.id, quantity=new_quantity
+        )
+    )
+    await callback_query.answer("Количество увеличено ✅")
+
+
+@cart_router.callback_query(F.data.startswith('cart-product_[-]'))
+async def minus_product_cart(callback_query: CallbackQuery):
+    telegram_id = callback_query.from_user.id
+    prod_cart_id = int(callback_query.data.split('_')[2])
+    product_id = callback_query.data.split('_')[1]
+
+    product = await CartDAO.find_one_or_none(id=prod_cart_id, telegram_id=telegram_id)
+    if not product or product.quantity <= 1:
+        await callback_query.answer("Нельзя уменьшить ниже 1!", show_alert=True)
+        return
+
+    new_quantity = product.quantity - 1
+    await CartDAO.update(filter_by={'id': prod_cart_id, 'telegram_id': telegram_id}, quantity=new_quantity)
+
+    await callback_query.message.edit_text(
+        f"{product.product_name} | Кол-во: {new_quantity} шт.",
+        reply_markup=kb.cart_product_keyboard(
+            product_id=product_id, prod_cart_id=product.id, quantity=new_quantity
+        )
+    )
+    await callback_query.answer("Количество уменьшено ✅")

@@ -20,11 +20,15 @@ class OrderStatus(str, Enum):
 
 class Order(Base):
     """Основная модель заказа"""
+    __tablename__ = "orders"
 
-    telegram_id: Mapped[int] = mapped_column(ForeignKey(
-        'users.telegram_id', ondelete='CASCADE'), nullable=False)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    telegram_id: Mapped[int] = mapped_column(
+        ForeignKey('users.telegram_id', ondelete='CASCADE'), nullable=False
+    )
     status: Mapped[OrderStatus] = mapped_column(
-        SQLEnum(OrderStatus), default=OrderStatus.PENDING)
+        SQLEnum(OrderStatus), default=OrderStatus.PENDING
+    )
     total_amount: Mapped[int] = mapped_column(Integer, default=0)
 
     # Relationships
@@ -41,12 +45,14 @@ class OrderItem(Base):
     """Модель для отдельных товаров в заказе"""
     __tablename__ = 'order_items'
 
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     order_id: Mapped[int] = mapped_column(
-        ForeignKey('orders.id', ondelete='CASCADE'))
-    product_id: Mapped[int] = mapped_column(Integer)
-    product_name: Mapped[str] = mapped_column(String)
-    quantity: Mapped[int] = mapped_column(Integer)
-    price: Mapped[int] = mapped_column(Integer)
+        ForeignKey('orders.id', ondelete='CASCADE'), nullable=False
+    )
+    product_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    product_name: Mapped[str] = mapped_column(String, nullable=False)
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False)
+    price: Mapped[int] = mapped_column(Integer, nullable=False)
 
     # Relationship
     order: Mapped['Order'] = relationship(back_populates='items')
@@ -56,17 +62,21 @@ class OrderStatusHistory(Base):
     """Модель для хранения истории изменений статуса заказа"""
     __tablename__ = 'order_status_history'
 
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     order_id: Mapped[int] = mapped_column(
-        ForeignKey('orders.id', ondelete='CASCADE'))
-    status: Mapped[OrderStatus] = mapped_column(SQLEnum(OrderStatus))
+        ForeignKey('orders.id', ondelete='CASCADE'), nullable=False
+    )
+    status: Mapped[OrderStatus] = mapped_column(SQLEnum(OrderStatus), nullable=False)
     timestamp: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow)
+        DateTime, default=datetime.utcnow, nullable=False
+    )
     comment: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
     # Relationship
     order: Mapped['Order'] = relationship(back_populates='status_history')
 
 
-# Добавляем связь с User моделью
-User.orders = relationship('Order', back_populates='user',
-                           cascade='all, delete-orphan')
+# Добавляем связь с моделью User
+User.orders = relationship(
+    'Order', back_populates='user', cascade='all, delete-orphan'
+)

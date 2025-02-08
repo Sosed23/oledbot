@@ -5,22 +5,25 @@ from bot.config import pf_token, pf_url_rest
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-url = f"{pf_url_rest}/task/list"
 
-payload = {
-    "offset": 0,
-    "pageSize": 50,
-    "filterId": "104380",
-    "fields": "id,12116,5542,6640,6282,12140"
-}
-
-headers = {
-    "Content-Type": "application/json",
-    "Authorization": f"Bearer {pf_token}"
-}
-
+####################### STOCK BALANCE ####################################
 
 async def planfix_stock_balance(query=None):
+
+    url = f"{pf_url_rest}/task/list"
+
+    payload = {
+        "offset": 0,
+        "pageSize": 50,
+        "filterId": "104384",
+        "fields": "id,12116,5542,6640,6282,12140"
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
     response = requests.post(url, json=payload, headers=headers)
     data = response.json()
 
@@ -31,7 +34,7 @@ async def planfix_stock_balance(query=None):
 
     for task in all_balance_tasks:
         id_product = task['id']
-        stock_balance = None
+        stock_balance = 1
         product_name = None
         device = None
         brand = None
@@ -65,139 +68,105 @@ async def planfix_stock_balance(query=None):
     return result
 
 
+####################### STOCK BALANCE (MODELS) ####################################
+
+async def planfix_stock_balance_models(search_query=None):
+
+    url = f"{pf_url_rest}/task/list"
+
+    payload = {
+        "offset": 0,
+        "pageSize": 100,
+        "filterId": "49864",
+        "fields": "id,5556,5542,6640,6282,12140"
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    all_models = data['tasks']
+    result = []
+    for task in all_models:
+        for custom_field in task['customFieldData']:
+            if custom_field['field']['name'] == 'Модель':
+                model_id = custom_field['value']['id']
+                model_name = custom_field['value']['value']
+
+                # Если указан поисковый запрос, фильтруем результаты
+                if search_query and search_query.lower() not in model_name.lower():
+                    continue
+
+                result.append((model_id, model_name))
+
+    return result
+
+
+####################### STOCK BALANCE (FILTER) ####################################
+
+async def planfix_stock_balance_filter(model_id: str, operation: str):
+
+    url = f"{pf_url_rest}/task/list"
+
+    payload = {
+        "offset": 0,
+        "pageSize": 50,
+        "filterId": "104384",
+        "filters": [
+            {
+                "type": 107,
+                "field": 12142,
+                "operator": "equal",
+                "value": operation
+            },
+            {
+                "type": 107,
+                "field": 5556,
+                "operator": "equal",
+                "value": model_id
+            }
+        ],
+        "fields": "id,5556,12142,6640,6282,6274,5666,12110,5534,5532,5512"
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+####################### CONTACT ####################################
+
+
+async def planfix_contact(query=None):
+
+    url = f"{pf_url_rest}/contact/list"
+
+    payload = {
+        "offset": 0,
+        "pageSize": 50,
+        "fields": "id,12116,5542,6640,6282,12140"
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+
 async def main():
-    data = await planfix_stock_balance()
+    data = await planfix_stock_balance_models()
     print(data)
 
 asyncio.run(main())
-
-
-####################### VERSION 1 ####################################
-
-# sys.stdout.reconfigure(encoding='utf-8')
-
-# # URL из изображения
-# url = f"{pf_url_rest}/task/list"
-
-
-# headers = {
-#     "Content-Type": "application/json",
-#     "Authorization": f"Bearer {pf_token}"
-# }
-
-
-# # Функция для получения задач с определённым offset
-# def fetch_tasks(offset):
-#     payload = {
-#         "offset": offset,
-#         "pageSize": 100,
-#         "filterId": "104380",
-#         "filters": [
-#             {
-#                 "type": 51,
-#                 "operator": "equal",
-#                 "value": 105
-#             }
-#         ],
-#         "fields": "id,name,12116,5542"
-#     }
-#     response = requests.post(url, json=payload, headers=headers)
-#     if response.status_code == 200:
-#         return response.json()
-#     else:
-#         print(f"Ошибка при запросе: {response.status_code}")
-#         return None
-
-
-# # Перебор страниц с задачами
-# offset = 0
-# all_tasks = []
-
-# while True:
-#     data = fetch_tasks(offset)
-
-#     if not data or not data.get('tasks'):
-#         break  # Если данных нет, заканчиваем цикл
-
-#     # # Фильтрация задач, где поле с id=12116 имеет значение больше 0
-#     # tasks_with_value_gt_zero = [
-#     #     task for task in data['tasks']
-#     #     if any(
-#     #         field['field']['id'] == 12116 and field['value'] > 0
-#     #         for field in task['customFieldData']
-#     #     )
-#     # ]
-
-#     all_tasks.extend(data['tasks'])
-
-#     # Если количество задач меньше pageSize, это последняя страница
-#     if len(data['tasks']) < 100:
-#         break
-
-#     # Увеличиваем offset для следующего запроса
-#     offset += 100
-
-# # print(all_tasks.__len__())
-# print(len(all_tasks))
-
-# # Вывод отфильтрованных задач
-# for task in all_tasks:
-#     print(task)
-
-
-####################### VERSION 3 ####################################
-
-
-# # Функция для получения задач с определённым offset
-
-# def fetch_tasks(offset):
-#     payload = {
-#         "offset": offset,
-#         "pageSize": 100,
-#         "filterId": "44896",
-#         "filters": [
-#             {
-#                 "type": 51,
-#                 "operator": "equal",
-#                 "value": 105
-#             }
-#         ],
-#         "fields": "id,name,12116"
-#     }
-#     response = requests.post(url, json=payload, headers=headers)
-#     if response.status_code == 200:
-#         return response.json()
-#     else:
-#         print(f"Ошибка при запросе: {response.status_code}")
-#         return None
-
-
-# # Перебор страниц с задачами
-# offset = 0
-# all_tasks = []
-
-# while True:
-#     data = fetch_tasks(offset)
-
-#     if not data or not data.get('tasks'):
-#         break  # Если данных нет, заканчиваем цикл
-
-#     tasks_with_value_gt_zero = [
-#         task for task in data['tasks']
-#         if any(field['value'] > 0 for field in task['customFieldData'])
-#     ]
-
-#     all_tasks.extend(tasks_with_value_gt_zero)
-
-#     # Если количество задач меньше pageSize, это последняя страница
-#     if len(data['tasks']) < 100:
-#         break
-
-#     # Увеличиваем offset для следующего запроса
-#     offset += 100
-
-# print(all_tasks.__len__())
-
-# # Вывод отфильтрованных задач
-# for task in all_tasks:
-#     print(task)

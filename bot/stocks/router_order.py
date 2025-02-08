@@ -17,6 +17,40 @@ from bot.database import async_session_maker
 order_router = Router()
 
 
+@order_router.message(F.text == '🗂 Мои заказы')
+async def send_orders(message: Message):
+    telegram_id = message.from_user.id
+
+    # Используем DAO для получения заказов с предзагрузкой товаров
+    my_orders = await OrderDAO.find_all(telegram_id=telegram_id)
+
+    if not my_orders:
+        await message.answer("У вас нет заказов.")
+        return
+
+    # Формируем сообщение для каждого заказа
+    for order in my_orders:
+        order_status = order.status.value
+        order_total_amount = order.total_amount
+        order_items = order.items
+
+        # Список товаров в заказе
+        items_text = "\n".join([
+            f"- {item.product_name} (x{item.quantity}): {item.price} руб."
+            for item in order_items
+        ])
+
+        # Формируем текст сообщения
+        message_text = (
+            f"Заказ #{order.id}\n"
+            f"Статус: {order_status}\n"
+            f"Общая сумма: {order_total_amount} руб.\n"
+            f"Товары:\n{items_text}"
+        )
+
+        await message.answer(message_text)
+
+
 @order_router.callback_query(F.data.startswith('place_order'))
 async def create_order_from_cart(callback_query: CallbackQuery):
     telegram_id = callback_query.from_user.id

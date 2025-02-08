@@ -45,3 +45,23 @@ def product_keyboard(product_id: int) -> InlineKeyboardMarkup:
     )
     kb.adjust(1)
     return kb.as_markup()
+
+
+def search_keyboard() -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    kb.button(text="Цена переклейки", callback_data="search_re-gluing")
+    kb.button(text="Продать битик", callback_data="search_crash-display")
+    kb.button(text="Готовая продукция", callback_data="search_production")
+    kb.button(text="Запчасти", callback_data="search_spare-parts")
+    kb.adjust(2, 2)
+    return kb.as_markup()
+
+
+def product_keyboard(product_id: int, model_name: str, operation: str) -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    kb.button(
+        text="В корзину",
+        callback_data=f"product-cart_{product_id}_{model_name}_{operation}"
+    )
+    kb.adjust(1)
+    return kb.as_markup()
