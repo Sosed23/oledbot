@@ -2576,3 +2576,4 @@ FROM carts
 WHERE carts.product_id = $1::INTEGER AND carts.telegram_id = $2::BIGINT]
 [parameters: (82, 1775933471)]
 (Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-02-11 at 23:47:30 | INFO | Бот успешно запущен.
