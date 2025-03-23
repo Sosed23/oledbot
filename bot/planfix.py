@@ -1,6 +1,7 @@
 import asyncio
 import requests
 import sys
+import aiohttp
 from bot.config import pf_token, pf_url_rest
 
 sys.stdout.reconfigure(encoding='utf-8')
@@ -68,42 +69,41 @@ async def planfix_stock_balance(query=None):
     return result
 
 
-####################### STOCK BALANCE (MODELS) ####################################
+# ####################### STOCK BALANCE (MODELS) ####################################
 
-async def planfix_stock_balance_models(search_query=None):
+# async def planfix_stock_balance_models(search_query=None, offset=0, limit=RESULTS_PER_PAGE):
+#     url = f"{pf_url_rest}/task/list"
 
-    url = f"{pf_url_rest}/task/list"
+#     payload = {
+#         "offset": offset,
+#         "pageSize": limit,
+#         "filterId": "49864",
+#         "fields": "id,5556,5542,6640,6282,12140"
+#     }
 
-    payload = {
-        "offset": 0,
-        "pageSize": 100,
-        "filterId": "49864",
-        "fields": "id,5556,5542,6640,6282,12140"
-    }
+#     headers = {
+#         "Content-Type": "application/json",
+#         "Authorization": f"Bearer {pf_token}"
+#     }
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {pf_token}"
-    }
+#     response = requests.post(url, json=payload, headers=headers)
+#     data = response.json()
 
-    response = requests.post(url, json=payload, headers=headers)
-    data = response.json()
+#     all_models = data.get('tasks', [])
+#     result = []
 
-    all_models = data['tasks']
-    result = []
-    for task in all_models:
-        for custom_field in task['customFieldData']:
-            if custom_field['field']['name'] == 'Модель':
-                model_id = custom_field['value']['id']
-                model_name = custom_field['value']['value']
+#     for task in all_models:
+#         for custom_field in task.get('customFieldData', []):
+#             if custom_field['field']['name'] == 'Модель':
+#                 model_id = custom_field['value']['id']
+#                 model_name = custom_field['value']['value']
 
-                # Если указан поисковый запрос, фильтруем результаты
-                if search_query and search_query.lower() not in model_name.lower():
-                    continue
+#                 if search_query and search_query.lower() not in model_name.lower():
+#                     continue
 
-                result.append((model_id, model_name))
+#                 result.append((model_id, model_name))
 
-    return result
+#     return result
 
 
 ####################### STOCK BALANCE (FILTER) ####################################
@@ -143,6 +143,39 @@ async def planfix_stock_balance_filter(model_id: str, operation: str):
 
     return data
 
+
+####################### ALL PRODUCTION (FILTER) ####################################
+
+async def planfix_all_production_filter(model_id: int):
+
+    url = f"{pf_url_rest}/task/list"
+
+    payload = {
+        "offset": 0,
+        "pageSize": 10,
+        "filterId": "104400",
+        "filters": [
+            {
+                "type": 107,
+                "field": 5556,
+                "operator": "equal",
+                "value": model_id
+            }
+        ],
+        "fields": "id,5556,12126,5498"
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+
 ####################### CONTACT ####################################
 
 
@@ -165,8 +198,29 @@ async def planfix_contact(query=None):
     data = response.json()
 
 
-async def main():
-    data = await planfix_stock_balance_models()
-    print(data)
+# async def main():
+#     data = await planfix_stock_balance_models()
+#     print(data)
 
-asyncio.run(main())
+# asyncio.run(main())
+
+
+####################### AI AGENT IN N8N (OLEDBOT) ####################################
+
+async def ai_agent_n8n(query=None):
+
+    url = "https://103.90.73.246/webhook/2b6c4e73-dbc4-4bef-a310-dfac0eb0cb44"
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    data = {
+        "text": "самсунг с25"
+    }
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, json=data, headers=headers) as response:
+            response_data = await response.json()
+
+    return response_data

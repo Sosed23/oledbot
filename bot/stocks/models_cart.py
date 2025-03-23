@@ -20,3 +20,12 @@ class Cart(Base):
 
     # Односторонняя связь: Cart знает о User, но User не знает о Cart
     user: Mapped['User'] = relationship("User")
+
+
+class Model(Base):
+    __tablename__ = 'models'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    model_name: Mapped[Optional[str]] = mapped_column(String)  # Поле для model_name
+    model_engineer: Mapped[Optional[str]] = mapped_column(String)  # Поле для model_engineer
+    model_id: Mapped[Optional[str]] = mapped_column(String)  # Поле для model_id

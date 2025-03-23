@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     BOT_TOKEN: str
     PLANFIX_TOKEN: str
     PLANFIX_URL_REST: str
+    N8N_AIAGENT_WEBHOOK: str
     ADMIN_IDS: List[int]
     FORMAT_LOG: str = "{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}"
     LOG_ROTATION: str = "10 MB"
@@ -48,3 +49,4 @@ logger.add(log_file_path, format=settings.FORMAT_LOG,
 database_url = settings.DB_URL
 pf_token = settings.PLANFIX_TOKEN
 pf_url_rest = settings.PLANFIX_URL_REST
+n8n_aiagent_webhook = settings.N8N_AIAGENT_WEBHOOK

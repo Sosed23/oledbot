@@ -8,6 +8,7 @@ from bot.stocks.router_product import product_router
 from bot.stocks.router_cart import cart_router
 from bot.stocks.router_search import search_router
 from bot.stocks.router_order import order_router
+from bot.stocks.router_aiagent import aiagent_router
 
 
 # Функция, которая настроит командное меню (дефолтное для всех пользователей)
@@ -44,6 +45,7 @@ async def main():
     dp.include_router(cart_router)
     dp.include_router(search_router)
     dp.include_router(order_router)
+    dp.include_router(aiagent_router)
 
     # регистрация функций
     dp.startup.register(start_bot)

@@ -30,3 +30,23 @@ def cart_order_keyboard() -> InlineKeyboardMarkup:
     kb.button(text="Очистить корзину", callback_data="clear_cart")
     kb.adjust(2)
     return kb.as_markup()
+
+
+def aiagent_cart_keyboard(model_id: int, model_name: str, operation: str, task_id: int) -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    kb.button(
+        text="В корзину",
+        callback_data=f"aiagent-cart_{model_id}_{model_name}_{operation}"
+    )
+    kb.adjust(1)
+    return kb.as_markup()
+
+
+def search_aiagent_keyboard() -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    kb.button(text="Цена переклейки", callback_data="search_aiagent_re-gluing")
+    kb.button(text="Продать битик", callback_data="search_aiagent_crash-display")
+    kb.button(text="Готовая продукция", callback_data="search_aiagent_production")
+    kb.button(text="Запчасти", callback_data="search_aiagent_spare-parts")
+    kb.adjust(2, 2)
+    return kb.as_markup()

@@ -1,0 +1,197 @@
+{
+    "result": "success",
+    "tasks": [
+        {
+            "id": 241170,
+            "customFieldData": [
+                {
+                    "field": {
+                        "id": 5556,
+                        "name": "Модель",
+                        "names": {},
+                        "type": 9,
+                        "objectType": 0,
+                        "directoryId": 1404
+                    },
+                    "value": {
+                        "id": 92,
+                        "value": "Samsung S21 Ultra"
+                    },
+                    "stringValue": "92"
+                },
+                {
+                    "field": {
+                        "id": 5498,
+                        "name": "Комментарии",
+                        "names": {},
+                        "type": 2,
+                        "objectType": 0,
+                        "groupId": 154
+                    },
+                    "value": "",
+                    "stringValue": ""
+                },
+                {
+                    "field": {
+                        "id": 12126,
+                        "name": "Price",
+                        "names": {
+                            "ru": "Price"
+                        },
+                        "type": 1,
+                        "objectType": 0,
+                        "groupId": 154,
+                        "delimiter": ",",
+                        "numberOfDecimalPlaces": 2
+                    },
+                    "value": 16000.0,
+                    "stringValue": "16000"
+                }
+            ]
+        },
+        {
+            "id": 252920,
+            "customFieldData": [
+                {
+                    "field": {
+                        "id": 5556,
+                        "name": "Модель",
+                        "names": {},
+                        "type": 9,
+                        "objectType": 0,
+                        "directoryId": 1404
+                    },
+                    "value": {
+                        "id": 92,
+                        "value": "Samsung S21 Ultra"
+                    },
+                    "stringValue": "92"
+                },
+                {
+                    "field": {
+                        "id": 5498,
+                        "name": "Комментарии",
+                        "names": {},
+                        "type": 2,
+                        "objectType": 0,
+                        "groupId": 154
+                    },
+                    "value": "",
+                    "stringValue": ""
+                },
+                {
+                    "field": {
+                        "id": 12126,
+                        "name": "Price",
+                        "names": {
+                            "ru": "Price"
+                        },
+                        "type": 1,
+                        "objectType": 0,
+                        "groupId": 154,
+                        "delimiter": ",",
+                        "numberOfDecimalPlaces": 2
+                    },
+                    "value": 16000.0,
+                    "stringValue": "16000"
+                }
+            ]
+        },
+        {
+            "id": 254451,
+            "customFieldData": [
+                {
+                    "field": {
+                        "id": 5556,
+                        "name": "Модель",
+                        "names": {},
+                        "type": 9,
+                        "objectType": 0,
+                        "directoryId": 1404
+                    },
+                    "value": {
+                        "id": 92,
+                        "value": "Samsung S21 Ultra"
+                    },
+                    "stringValue": "92"
+                },
+                {
+                    "field": {
+                        "id": 5498,
+                        "name": "Комментарии",
+                        "names": {},
+                        "type": 2,
+                        "objectType": 0,
+                        "groupId": 154
+                    },
+                    "value": "",
+                    "stringValue": ""
+                },
+                {
+                    "field": {
+                        "id": 12126,
+                        "name": "Price",
+                        "names": {
+                            "ru": "Price"
+                        },
+                        "type": 1,
+                        "objectType": 0,
+                        "groupId": 154,
+                        "delimiter": ",",
+                        "numberOfDecimalPlaces": 2
+                    },
+                    "value": 16000.0,
+                    "stringValue": "16000"
+                }
+            ]
+        },
+        {
+            "id": 254464,
+            "customFieldData": [
+                {
+                    "field": {
+                        "id": 5556,
+                        "name": "Модель",
+                        "names": {},
+                        "type": 9,
+                        "objectType": 0,
+                        "directoryId": 1404
+                    },
+                    "value": {
+                        "id": 92,
+                        "value": "Samsung S21 Ultra"
+                    },
+                    "stringValue": "92"
+                },
+                {
+                    "field": {
+                        "id": 5498,
+                        "name": "Комментарии",
+                        "names": {},
+                        "type": 2,
+                        "objectType": 0,
+                        "groupId": 154
+                    },
+                    "value": "",
+                    "stringValue": ""
+                },
+                {
+                    "field": {
+                        "id": 12126,
+                        "name": "Price",
+                        "names": {
+                            "ru": "Price"
+                        },
+                        "type": 1,
+                        "objectType": 0,
+                        "groupId": 154,
+                        "delimiter": ",",
+                        "numberOfDecimalPlaces": 2
+                    },
+                    "value": 16000.0,
+                    "stringValue": "16000"
+                }
+            ]
+        }
+    ]
+}

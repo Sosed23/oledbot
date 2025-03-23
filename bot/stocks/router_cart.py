@@ -93,3 +93,5 @@ async def minus_product_cart(callback_query: CallbackQuery):
         )
     )
     await callback_query.answer("Количество уменьшено ✅")
+
+
