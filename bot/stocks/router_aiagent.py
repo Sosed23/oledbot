@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
 from bot.ai_agent import ai_agent_n8n
-from bot.planfix import planfix_stock_balance_filter, planfix_all_production_filter, planfix_stock_balance
+from bot.planfix import planfix_stock_balance_filter, planfix_all_production_filter
 from bot.users.keyboards import inline_kb as kb
 from bot.stocks.keyboards import inline_kb_cart as in_kb
 from bot.stocks.dao import CartDAO
@@ -184,10 +184,10 @@ async def handle_aiagent_production(callback: CallbackQuery, state: FSMContext):
                 description = field.get("value", "Описание отсутствует")
         
         message_text = (
-            f"# <b>{task_id}</b>\n"
-            f"📌 <b>{model}</b>\n"
-            f"💰 Цена: {price} руб.\n"
-            f"ℹ️ {description}"
+            f"📌 Артикул: <b>{task_id}</b>\n"
+            f"ℹ️ Модель: <b>{model}</b>\n"
+            f"💰 Цена: <b>{price} руб.</b>\n"
+            f"📝 Описание: {description}"
         )
         
         await callback.message.answer(message_text, reply_markup=in_kb.aiagent_cart_keyboard(
@@ -238,32 +238,20 @@ async def add_aiagent_cart(callback_query: types.CallbackQuery):
     model_id = int(callback_query.data.split('_')[1])
     model_name = callback_query.data.split('_')[2]
     operation = callback_query.data.split('_')[3]
+    task_id = callback_query.data.split('_')[4]
     telegram_id = callback_query.from_user.id
 
-    product_cart = await CartDAO.find_one_or_none(product_id=model_id, telegram_id=telegram_id)
-
-    if not product_cart:
-
-        product_data = await planfix_stock_balance()
-        product_name = next((item[1] for item in product_data if item[0] == model_id), "Неизвестный товар")
-
-        await CartDAO.add(
-            telegram_id=telegram_id,
-            product_id=model_id,
-            product_name=model_name,
-            operation=operation,
-            quantity=1,
-            price=1000
-        )
-        await callback_query.answer(f'Новый товар {model_name} добавлен в корзину.')
-    else:
-        prod_cart_id = product_cart.id
-        prod_cart_name = product_cart.product_name
-        prod_cart_quantity = int(product_cart.quantity)
-        await CartDAO.update(filter_by={'id': prod_cart_id}, quantity=prod_cart_quantity + 1)
-        await callback_query.answer(f'Количество товара {prod_cart_name} обновлено: {prod_cart_quantity + 1} шт.')
-    await callback_query.answer()
-
+    await CartDAO.add(
+        telegram_id=telegram_id,
+        product_id=model_id,
+        product_name=model_name,
+        task_id=int(task_id),
+        operation=operation,
+        quantity=1,
+        price=1000
+    )
+    await callback_query.answer(f'Новый товар {model_name} добавлен в корзину.')
+    await callback_query.message.delete()
 
 
 ####################### ЗАПЧАСТИ ###############################

@@ -144,7 +144,7 @@ async def planfix_stock_balance_filter(model_id: str, operation: str):
     return data
 
 
-####################### ALL PRODUCTION (FILTER) ####################################
+####################### ALL PRODUCTION (PLANFIX) ####################################
 
 async def planfix_all_production_filter(model_id: int):
 
@@ -205,22 +205,22 @@ async def planfix_contact(query=None):
 # asyncio.run(main())
 
 
-####################### AI AGENT IN N8N (OLEDBOT) ####################################
+####################### PRODUCTION TASK ID (PLANFIX) ####################################
 
-async def ai_agent_n8n(query=None):
+async def planfix_production_task_id(task_id: int):
 
-    url = "https://103.90.73.246/webhook/2b6c4e73-dbc4-4bef-a310-dfac0eb0cb44"
+    url = f"{pf_url_rest}/task/{task_id}"
+
+    payload = {
+        "fields": "id,5556,12126,5498"
+    }
 
     headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
     }
 
-    data = {
-        "text": "самсунг с25"
-    }
+    response = requests.get(url, json=payload, headers=headers)
+    data = response.json()
 
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, json=data, headers=headers) as response:
-            response_data = await response.json()
-
-    return response_data
+    return data
