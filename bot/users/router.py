@@ -20,23 +20,15 @@ async def cmd_start(message: Message, command: CommandObject):
                                  reply_markup=markup_kb.back_keyboard())
             return
 
-        # Определение реферального ID
-        ref_id = get_refer_id_or_none(
-            command_args=command.args, user_id=user_id)
         # Добавление нового пользователя
         await UserDAO.add(
             telegram_id=user_id,
             username=message.from_user.username,
             first_name=message.from_user.first_name,
-            last_name=message.from_user.last_name,
-            referral_id=ref_id
+            last_name=message.from_user.last_name
         )
 
-        # Формирование сообщения
-        ref_message = f" Вы успешно закреплены за пользователем с ID {ref_id}" if ref_id else ""
-        msg = f"🎉 <b>Благодарим за регистрацию!{ref_message}</b>."
-
-        await message.answer(msg)
+        await message.answer()
 
     except Exception as e:
         logger.error(

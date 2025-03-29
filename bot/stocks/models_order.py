@@ -1,7 +1,7 @@
 from enum import Enum
 from datetime import datetime
 from typing import List, Optional
-from sqlalchemy import BigInteger, ForeignKey, String, Integer, DateTime, Enum as SQLEnum
+from sqlalchemy import BigInteger, ForeignKey, String, Integer, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from bot.database import Base
 from bot.users.models import User
@@ -26,8 +26,8 @@ class Order(Base):
     telegram_id: Mapped[int] = mapped_column(
         ForeignKey('users.telegram_id', ondelete='CASCADE'), nullable=False
     )
-    status: Mapped[OrderStatus] = mapped_column(
-        SQLEnum(OrderStatus), default=OrderStatus.PENDING
+    status: Mapped[str] = mapped_column(
+        String, default=OrderStatus.PENDING.value  # Используем String вместо SQLEnum
     )
     total_amount: Mapped[int] = mapped_column(Integer, default=0)
 
@@ -66,7 +66,7 @@ class OrderStatusHistory(Base):
     order_id: Mapped[int] = mapped_column(
         ForeignKey('orders.id', ondelete='CASCADE'), nullable=False
     )
-    status: Mapped[OrderStatus] = mapped_column(SQLEnum(OrderStatus), nullable=False)
+    status: Mapped[str] = mapped_column(String, nullable=False)  # Используем String вместо SQLEnum
     timestamp: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.utcnow, nullable=False
     )

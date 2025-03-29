@@ -197,3 +197,11 @@ async def minus_product_cart(callback_query: CallbackQuery):
     await callback_query.answer("Количество уменьшено ✅")
 
 
+############################# ОЧИСТИТЬ КОРЗИНУ #################################
+
+
+@cart_router.callback_query(F.data.startswith('clear_cart'))
+async def clear_cart(callback_query: CallbackQuery):
+    telegram_id = callback_query.from_user.id
+    await CartDAO.delete(telegram_id=telegram_id, delete_all=True)
+    await callback_query.answer('Корзина очищена.')

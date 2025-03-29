@@ -34,7 +34,7 @@ inline_button = InlineKeyboardMarkup(
 )
 
 
-@search_router.message(F.text == '🔍 Поиск товара')
+@search_router.message(F.text == '🔍 Поиск модели')
 async def send_search_button(message: Message):
     await message.answer("Нажмите на кнопку для поиска модели:", reply_markup=inline_button)
     await message.delete()

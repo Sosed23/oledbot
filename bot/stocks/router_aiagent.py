@@ -11,6 +11,7 @@ from bot.users.keyboards import inline_kb as kb
 from bot.stocks.keyboards import inline_kb_cart as in_kb
 from bot.stocks.dao import CartDAO
 import json
+from loguru import logger
 
 
 aiagent_router = Router()
@@ -234,24 +235,28 @@ def extract_balance_from_data(data_production):
 
 @aiagent_router.callback_query(F.data.startswith('aiagent-cart_'))
 async def add_aiagent_cart(callback_query: types.CallbackQuery):
+    try:
+        model_id = int(callback_query.data.split('_')[1])
+        model_name = callback_query.data.split('_')[2]
+        operation = callback_query.data.split('_')[3]
+        task_id = callback_query.data.split('_')[4]
+        telegram_id = callback_query.from_user.id
 
-    model_id = int(callback_query.data.split('_')[1])
-    model_name = callback_query.data.split('_')[2]
-    operation = callback_query.data.split('_')[3]
-    task_id = callback_query.data.split('_')[4]
-    telegram_id = callback_query.from_user.id
+        await CartDAO.add(
+            telegram_id=telegram_id,
+            product_id=model_id,
+            product_name=model_name,
+            task_id=int(task_id),
+            operation=operation,
+            quantity=1,
+            price=1000
+        )
+        await callback_query.answer(f'Новый товар {model_name} добавлен в корзину.')
+        await callback_query.message.delete()
 
-    await CartDAO.add(
-        telegram_id=telegram_id,
-        product_id=model_id,
-        product_name=model_name,
-        task_id=int(task_id),
-        operation=operation,
-        quantity=1,
-        price=1000
-    )
-    await callback_query.answer(f'Новый товар {model_name} добавлен в корзину.')
-    await callback_query.message.delete()
+    except Exception as e:
+        logger.error(f"Ошибка при добавлении товара в корзину для telegram_id={telegram_id}: {e}")
+        await callback_query.answer("Произошла ошибка при добавлении товара в корзину. Попробуйте снова.")
 
 
 ####################### ЗАПЧАСТИ ###############################
