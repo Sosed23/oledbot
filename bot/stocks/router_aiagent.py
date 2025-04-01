@@ -7,6 +7,7 @@ from aiogram.fsm.state import StatesGroup, State
 
 from bot.ai_agent import ai_agent_n8n
 from bot.planfix import planfix_stock_balance_filter, planfix_all_production_filter
+from bot.planfix import planfix_production_task_id
 from bot.users.keyboards import inline_kb as kb
 from bot.stocks.keyboards import inline_kb_cart as in_kb
 from bot.stocks.dao import CartDAO
@@ -242,6 +243,15 @@ async def add_aiagent_cart(callback_query: types.CallbackQuery):
         task_id = callback_query.data.split('_')[4]
         telegram_id = callback_query.from_user.id
 
+        data_product = await planfix_production_task_id(task_id=task_id)
+        custom_fields = data_product.get("task", {}).get("customFieldData", [])
+
+        price = 0
+        for field in custom_fields:
+            field_id = field.get("field", {}).get("id")
+            if field_id == 12126:  
+                price = field.get("value") or 0
+
         await CartDAO.add(
             telegram_id=telegram_id,
             product_id=model_id,
@@ -249,7 +259,7 @@ async def add_aiagent_cart(callback_query: types.CallbackQuery):
             task_id=int(task_id),
             operation=operation,
             quantity=1,
-            price=1000
+            price=price
         )
         await callback_query.answer(f'Новый товар {model_name} добавлен в корзину.')
         await callback_query.message.delete()

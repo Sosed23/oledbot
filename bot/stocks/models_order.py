@@ -8,14 +8,14 @@ from bot.users.models import User
 
 
 class OrderStatus(str, Enum):
-    PENDING = "pending"  # Создан, ожидает обработки
-    PROCESSING = "processing"  # В обработке
-    CONFIRMED = "confirmed"  # Подтвержден
-    PAID = "paid"  # Оплачен
-    SHIPPING = "shipping"  # В доставке
-    COMPLETED = "completed"  # Выполнен
-    CANCELLED = "cancelled"  # Отменен
-    REFUNDED = "refunded"  # Возвращен
+    PENDING = "Новый"  # Создан, ожидает обработки
+    PROCESSING = "В обработке "  # В обработке
+    CONFIRMED = "Подтвержден"  # Подтвержден
+    PAID = "На оплате"  # Оплачен
+    # SHIPPING = "shipping"  # В доставке
+    COMPLETED = "Выполнен"  # Выполнен
+    CANCELLED = "Отменен"  # Отменен
+    REFUNDED = "Возвращен"  # Возвращен
 
 
 class Order(Base):
@@ -53,9 +53,11 @@ class OrderItem(Base):
     product_name: Mapped[str] = mapped_column(String, nullable=False)
     quantity: Mapped[int] = mapped_column(Integer, nullable=False)
     price: Mapped[int] = mapped_column(Integer, nullable=False)
+    operation: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
     # Relationship
     order: Mapped['Order'] = relationship(back_populates='items')
+
 
 
 class OrderStatusHistory(Base):

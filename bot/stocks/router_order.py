@@ -28,39 +28,50 @@ async def send_orders(message: Message):
     telegram_id = message.from_user.id
 
     try:
-        # Используем DAO для получения заказов с предзагрузкой товаров и истории статусов
         my_orders = await OrderDAO.find_all(telegram_id=telegram_id)
-
+ 
         if not my_orders:
             await message.answer("У вас нет заказов.")
             return
 
         logger.info(f"Получено {len(my_orders)} заказов для telegram_id={telegram_id}")
 
-        # Формируем сообщение для каждого заказа
+        operation_names = {
+            1: "Переклейка дисплея",
+            2: "Переклейка задней крышки",
+            3: "Продать битик",
+            4: "Купить дисплей (восстановленный)",
+            5: "Купить дисплей (запчасть)"
+        }
+
         for order in my_orders:
-            # Проверяем status_history
-            if order.status_history and len(order.status_history) > 0:
-                # Сортируем по timestamp, чтобы получить последний статус
-                last_status = sorted(order.status_history, key=lambda x: x.timestamp, reverse=True)[0].status
+            status_history = await OrderStatusHistoryDAO.find_all(order_id=order.id)
+            if status_history:
+                last_status = sorted(status_history, key=lambda x: x.timestamp, reverse=True)[0].status
             else:
-                last_status = "Неизвестно"  # Если история статусов пуста
+                last_status = "Неизвестно"
 
             order_total_amount = order.total_amount
             order_items = order.items
 
-            # Формируем список товаров
+            grouped_items = {}
+            for item in order_items:
+                operation_id = int(item.operation) if isinstance(item.operation, (int, str)) and str(item.operation).isdigit() else item.operation
+                operation_name = operation_names.get(operation_id, f"Операция {operation_id}")
+                if operation_name not in grouped_items:
+                    grouped_items[operation_name] = []
+                grouped_items[operation_name].append(f"   🔹 {item.product_name} 💰 Цена: {item.price} руб.")
+
             items_text = "\n".join([
-                f"- {item.product_name} (x{item.quantity}): {item.price} руб."
-                for item in order_items
+                f"📌 <b>{operation}:</b>\n" + "\n".join(items)
+                for operation, items in grouped_items.items()
             ]) if order_items else "Товары отсутствуют."
 
-            # Формируем текст сообщения
             message_text = (
-                f"Заказ #{order.id}\n"
-                f"Статус: {last_status}\n"
-                f"Общая сумма: {order_total_amount} руб.\n"
-                f"Товары:\n{items_text}"
+                f"🏷️ Заказ #{order.id}\n"
+                f"ℹ️ Статус: {last_status}\n"
+                f"💵 Общая сумма: {order_total_amount} руб.\n"
+                f"📝 Состав заказа:\n{items_text}"
             )
 
             await message.answer(message_text)

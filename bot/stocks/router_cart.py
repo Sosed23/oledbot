@@ -45,6 +45,8 @@ async def send_product_cart(message: Message):
             total_price += price * quantity  # Учитываем количество товара
             formatted_price = f"{price:,.0f}".replace(',', ' ')
 
+            await CartDAO.update(filter_by={"id": prod_cart_id}, price=price)
+
             message_text = (
                 f"🔹 <b>{idx + 1}. Готовая продукция:</b>\n"
                 f"📌 Артикул: <b>{task_id}</b>\n"
@@ -61,9 +63,9 @@ async def send_product_cart(message: Message):
 
         formatted_total_price = f"{total_price:,.0f}".replace(',', ' ')
         cart_text = (
-            f"Описание товаров в корзине:\n"
-            f"Общее кол-во товаров: {total_quantity} шт.\n"
-            f"Общая сумма заказа: {formatted_total_price} руб."
+            f"📝 Описание товаров в корзине:\n"
+            f"🔢 Общее кол-во товаров: {total_quantity} шт.\n"
+            f"💵 Общая сумма заказа: {formatted_total_price} руб."
         )
         total_message = await message.answer(cart_text, reply_markup=kb.cart_order_keyboard())
         messages_to_delete.append(total_message.message_id)
@@ -139,7 +141,7 @@ async def delete_product_aiagent_cart(callback_query: types.CallbackQuery):
         await callback_query.message.answer("Корзина пуста.")
         
 
-###############################################################################
+######################### УПРАВЛЕНИЕ КНОПКАМИ КОРЗИНЫ (OLD))###################################
 
 
 @cart_router.callback_query(F.data.startswith('cart-product-delete'))
