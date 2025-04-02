@@ -7,7 +7,7 @@ from aiogram.fsm.state import StatesGroup, State
 
 from bot.ai_agent import ai_agent_n8n
 from bot.planfix import planfix_stock_balance_filter, planfix_all_production_filter
-from bot.planfix import planfix_production_task_id
+from bot.planfix import planfix_production_task_id, planfix_create_order
 from bot.users.keyboards import inline_kb as kb
 from bot.stocks.keyboards import inline_kb_cart as in_kb
 from bot.stocks.dao import CartDAO
@@ -18,7 +18,7 @@ from loguru import logger
 aiagent_router = Router()
 
 
-################ AI AGENT #######################
+##################### AI AGENT #######################
 
 class SearchModelState(StatesGroup):
     waiting_for_model = State()
@@ -333,3 +333,12 @@ def extract_balance_from_data(data_spare_parts):
         # Логируем ошибки, если они возникают
         print(f"Ошибка при извлечении цены: {e}")
     return None
+
+
+##################### TEST ###########################
+
+@aiagent_router.message(F.text == 'Тест')
+async def test(message: Message):
+    description = "Тестирование бота"
+    data_order = await planfix_create_order(description=description)
+    await message.answer(f"{data_order}")

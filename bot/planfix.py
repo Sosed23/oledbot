@@ -224,3 +224,49 @@ async def planfix_production_task_id(task_id: int):
     data = response.json()
 
     return data
+
+
+####################### CREATE NEW ORDER (PLANFIX) ####################################
+
+async def planfix_create_order(description: str):
+
+    url = f"{pf_url_rest}/task/"
+
+    payload = {
+        "template": {
+            "id": 46
+        },
+        "name": "Новый заказ OLEDBot",
+        "description": f"{description}",
+        "status": {
+                "id": 2
+            },
+        "customFieldData": [
+            {
+            "field": {
+                "id": 5478 #Метки 
+            },
+            "value": [
+                {
+                "id": 2 #Заказ
+                },
+                {
+                "id": 61 #Демо
+                },
+                {
+                "id": 110 #OLEDBot
+                }
+            ]
+            }
+        ]
+        }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data

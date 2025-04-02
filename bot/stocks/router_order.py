@@ -165,7 +165,9 @@ async def process_phone_confirmation(callback_query: types.CallbackQuery, state:
                     product_id=cart_item.product_id,
                     product_name=cart_item.product_name,
                     quantity=cart_item.quantity,
-                    price=cart_item.price
+                    price=cart_item.price,
+                    task_id=cart_item.task_id,
+                    operation=cart_item.operation
                 )
                 total_amount += cart_item.price * cart_item.quantity
 
@@ -285,7 +287,9 @@ async def process_manual_phone_input(message: types.Message, state: FSMContext):
                 product_id=cart_item.product_id,
                 product_name=cart_item.product_name,
                 quantity=cart_item.quantity,
-                price=cart_item.price
+                price=cart_item.price,
+                task_id=cart_item.task_id,
+                operation=cart_item.operation
             )
             total_amount += cart_item.price * cart_item.quantity
 

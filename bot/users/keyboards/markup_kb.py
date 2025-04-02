@@ -9,5 +9,6 @@ def back_keyboard() -> ReplyKeyboardMarkup:
     kb.button(text="🔍 Поиск модели")
     kb.button(text="🛒 Корзина")
     kb.button(text="🗂 Мои заказы")
-    kb.adjust(2)
+    kb.button(text="Тест")
+    kb.adjust(2, 3)
     return kb.as_markup(resize_keyboard=True)
