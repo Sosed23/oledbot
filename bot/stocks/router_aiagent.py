@@ -7,10 +7,10 @@ from aiogram.fsm.state import StatesGroup, State
 
 from bot.ai_agent import ai_agent_n8n
 from bot.planfix import planfix_stock_balance_filter, planfix_all_production_filter
-from bot.planfix import planfix_production_task_id, planfix_create_order
+from bot.planfix import planfix_production_task_id, planfix_create_order, planfix_create_prodaction
 from bot.users.keyboards import inline_kb as kb
 from bot.stocks.keyboards import inline_kb_cart as in_kb
-from bot.stocks.dao import CartDAO
+from bot.stocks.dao import CartDAO, OrderDAO
 import json
 from loguru import logger
 
@@ -157,6 +157,7 @@ def extract_price_from_data(data):
 
 ####################### ГОТОВАЯ ПРОДУКЦИЯ ###############################
 
+
 @aiagent_router.callback_query(F.data == "search_aiagent_production")
 async def handle_aiagent_production(callback: CallbackQuery, state: FSMContext):
     state_data = await state.get_data()
@@ -271,6 +272,7 @@ async def add_aiagent_cart(callback_query: types.CallbackQuery):
 
 ####################### ЗАПЧАСТИ ###############################
 
+
 @aiagent_router.callback_query(F.data == "search_aiagent_spare-parts")
 async def handle_spare_parts(callback: CallbackQuery, state: FSMContext):
     # Получаем сохраненные данные о состоянии
@@ -335,10 +337,24 @@ def extract_balance_from_data(data_spare_parts):
     return None
 
 
-##################### TEST ###########################
+# ##################### TEST ###########################
 
-@aiagent_router.message(F.text == 'Тест')
-async def test(message: Message):
-    description = "Тестирование бота"
-    data_order = await planfix_create_order(description=description)
-    await message.answer(f"{data_order}")
+
+# @aiagent_router.message(F.text == 'Тест')
+# async def test(message: Message):
+#     description = "Тестирование бота"
+#     data_order = await planfix_create_order(description=description)
+#     order_pf_id = data_order['id']
+#     await message.answer(f"{data_order} {order_pf_id}")
+
+#     order_id = 32
+    
+#     await OrderDAO.update(
+#         {"id": order_id},
+#         order_pf_id=order_pf_id
+#     )
+
+#     prodaction_id = 38533
+
+#     data_prodaction = await planfix_create_prodaction(order_pf_id=order_pf_id, prodaction_id=prodaction_id)
+#     await message.answer(f"{data_prodaction}")

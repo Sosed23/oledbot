@@ -31,6 +31,8 @@ class Order(Base):
     )
     total_amount: Mapped[int] = mapped_column(Integer, default=0)
 
+    order_pf_id: Mapped[int] = mapped_column(Integer, nullable=True)
+
     # Relationships
     user: Mapped['User'] = relationship(back_populates='orders')
     items: Mapped[List['OrderItem']] = relationship(
@@ -54,7 +56,8 @@ class OrderItem(Base):
     quantity: Mapped[int] = mapped_column(Integer, nullable=False)
     price: Mapped[int] = mapped_column(Integer, nullable=False)
     operation: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    task_id: Mapped[int] = mapped_column(Integer, nullable=True)  # Добавлено поле task_id
+    task_id: Mapped[int] = mapped_column(Integer, nullable=True)
+    item_pf_id: Mapped[int] = mapped_column(Integer, nullable=True)
 
     # Relationship
     order: Mapped['Order'] = relationship(back_populates='items')

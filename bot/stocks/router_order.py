@@ -7,7 +7,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
-from bot.planfix import planfix_stock_balance
+from bot.planfix import planfix_stock_balance, planfix_create_order, planfix_create_prodaction
 from bot.users.keyboards import inline_kb as kb
 from bot.stocks.keyboards import inline_kb_cart as in_kb
 from bot.users.keyboards import markup_kb
@@ -18,7 +18,7 @@ import re
 from loguru import logger
 from sqlalchemy import inspect
 from bot.database import async_session_maker
-
+from bot.operations import OPERATION_NAMES
 
 order_router = Router()
 
@@ -36,14 +36,6 @@ async def send_orders(message: Message):
 
         logger.info(f"Получено {len(my_orders)} заказов для telegram_id={telegram_id}")
 
-        operation_names = {
-            1: "Переклейка дисплея",
-            2: "Переклейка задней крышки",
-            3: "Продать битик",
-            4: "Купить дисплей (восстановленный)",
-            5: "Купить дисплей (запчасть)"
-        }
-
         for order in my_orders:
             status_history = await OrderStatusHistoryDAO.find_all(order_id=order.id)
             if status_history:
@@ -57,7 +49,7 @@ async def send_orders(message: Message):
             grouped_items = {}
             for item in order_items:
                 operation_id = int(item.operation) if isinstance(item.operation, (int, str)) and str(item.operation).isdigit() else item.operation
-                operation_name = operation_names.get(operation_id, f"Операция {operation_id}")
+                operation_name = OPERATION_NAMES.get(operation_id, f"Операция {operation_id}")
                 if operation_name not in grouped_items:
                     grouped_items[operation_name] = []
                 grouped_items[operation_name].append(f"   🔹 {item.product_name} 💰 Цена: {item.price} руб.")
@@ -83,10 +75,139 @@ async def send_orders(message: Message):
 
 ############################# ОФОРМИТЬ ЗАКАЗ (NEW) #################################
 
+
 # Определяем состояния FSM
 class OrderStates(StatesGroup):
     waiting_for_phone = State()  # Состояние ожидания номера телефона
     confirm_phone = State()      # Состояние подтверждения номера телефона
+
+# Вспомогательная функция для создания заказа и синхронизации с Планфиксом
+async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str, message_obj, state: FSMContext):
+    try:
+        # Получаем items корзины
+        cart_items = await CartDAO.find_all(telegram_id=telegram_id)
+        if not cart_items:
+            await message_obj.answer(
+                "Ваша корзина пуста!",
+                reply_markup=markup_kb.back_keyboard()
+            )
+            await state.clear()
+            return
+
+        # Создаем заказ и получаем только его id
+        order_id = await OrderDAO.add(
+            telegram_id=telegram_id,
+            total_amount=0
+        )
+
+        # Добавляем items заказа
+        total_amount = 0
+        for cart_item in cart_items:
+            await OrderItemDAO.add(
+                order_id=order_id,
+                product_id=cart_item.product_id,
+                product_name=cart_item.product_name,
+                quantity=cart_item.quantity,
+                price=cart_item.price,
+                task_id=cart_item.task_id,
+                operation=cart_item.operation
+            )
+            total_amount += cart_item.price * cart_item.quantity
+
+        # Обновляем общую сумму заказа
+        await OrderDAO.update(
+            {"id": order_id},
+            total_amount=total_amount
+        )
+
+        # Добавляем начальный статус
+        status_record = await OrderStatusHistoryDAO.add(
+            order_id=order_id,
+            status=OrderStatus.PENDING.value,
+            comment="Order created"
+        )
+        status = status_record["status"]
+
+        # Получаем данные о заказе и его элементах
+        order = await OrderDAO.find_one_or_none(id=order_id)
+        order_items = await OrderItemDAO.find_all(order_id=order_id)
+
+        # Очищаем корзину
+        await CartDAO.delete(telegram_id=telegram_id, delete_all=True)
+        logger.info("Корзина очищена")
+
+        # Группируем элементы заказа по операциям
+        grouped_items = {}
+        for item in order_items:
+            operation_id = int(item.operation) if isinstance(item.operation, (int, str)) and str(item.operation).isdigit() else item.operation
+            operation_name = OPERATION_NAMES.get(operation_id, f"Операция {operation_id}")
+            if operation_name not in grouped_items:
+                grouped_items[operation_name] = []
+            grouped_items[operation_name].append(f"   🔹 {item.product_name} 💰 Цена: {item.price} руб.")
+
+        # Формируем текст элементов заказа
+        items_text = "\n".join([
+            f"📌 <b>{operation}:</b>\n" + "\n".join(items)
+            for operation, items in grouped_items.items()
+        ]) if order_items else "Товары отсутствуют."
+
+        # Формируем description для Планфикса
+        description = (
+            f"🏷️ Заказ #{order_id}\n"
+            f"ℹ️ Статус: {status}\n"
+            f"💵 Общая сумма: {total_amount} руб.\n"
+            f"📝 Состав заказа:\n{items_text}\n"
+            f"📞 Номер телефона: {phone_number}"
+        )
+
+        # Формируем сообщение для пользователя
+        message_text = (
+            f"Заказ #{order_id} успешно создан!\n"
+            f"Сумма заказа: {total_amount} руб.\n"
+            f"Номер телефона: {phone_number}\n"
+            f"Статус: {status}"
+        )
+        logger.info(f"Отправка сообщения пользователю: {message_text}")
+        await message_obj.answer(
+            message_text,
+            reply_markup=markup_kb.back_keyboard()
+        )
+        logger.info("Сообщение успешно отправлено пользователю")
+
+        # Интеграция с Планфиксом
+        logger.info("Начало интеграции с Планфиксом")
+
+        data_order = await planfix_create_order(description=description, order_id=order_id)
+        order_pf_id = data_order['id']
+        logger.info(f"Создан заказ в Планфиксе: {order_pf_id}")
+        await message_obj.answer(f"Заказ в Планфиксе создан: {order_pf_id}")
+
+        await OrderDAO.update(
+            {"id": order_id},
+            order_pf_id=order_pf_id
+        )
+        logger.info(f"Заказ #{order_id} обновлён с order_pf_id={order_pf_id}")
+
+        for cart_item in cart_items:
+            prodaction_id = cart_item.task_id
+            price = cart_item.price
+            data_prodaction = await planfix_create_prodaction(order_pf_id=order_pf_id, prodaction_id=prodaction_id, price=price)
+            logger.info(f"Продукция добавлена в Планфикс: {data_prodaction}")
+            await message_obj.answer(f"Продукция добавлена в Планфикс: {data_prodaction}")
+
+    except Exception as e:
+        logger.error(f"Ошибка при создании заказа или интеграции с Планфиксом для telegram_id={telegram_id}: {e}")
+        await message_obj.answer(
+            "Произошла ошибка при создании заказа или синхронизации с Планфиксом. Пожалуйста, попробуйте снова.",
+            reply_markup=markup_kb.back_keyboard()
+        )
+        await state.clear()
+        return
+
+    # Сбрасываем состояние после успешной обработки
+    logger.info("Сброс состояния FSM")
+    await state.clear()
+
 
 # Обработчик нажатия на "Оформить заказ"
 @order_router.callback_query(F.data.startswith('place_order'))
@@ -107,117 +228,48 @@ async def request_phone_before_order(callback_query: types.CallbackQuery, state:
     if user_info and user_info.phone_number:
         # Если номер телефона есть, спрашиваем пользователя, подтверждает ли он его использование
         phone_number = user_info.phone_number
-        await state.update_data(phone_number=phone_number)  # Сохраняем номер в FSMContext
+        await state.update_data(phone_number=phone_number)
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [
-            InlineKeyboardButton(text="Да", callback_data="confirm_phone_yes"),
-            InlineKeyboardButton(text="Нет", callback_data="confirm_phone_no")
-        ]  # Обе кнопки в одном списке — значит, в одном ряду
-    ])
+            [
+                InlineKeyboardButton(text="Да", callback_data="confirm_phone_yes"),
+                InlineKeyboardButton(text="Нет", callback_data="confirm_phone_no")
+            ]
+        ])
         await callback_query.message.answer(
             f"Мы нашли ваш номер телефона: {phone_number}. Использовать его для оформления заказа?",
             reply_markup=keyboard
         )
+        logger.info(f"Установлено состояние OrderStates.confirm_phone для telegram_id={telegram_id}")
         await state.set_state(OrderStates.confirm_phone)
     else:
         # Если номера телефона нет, просим ввести его вручную
         await callback_query.message.answer(
             "Для оформления заказа нам нужен ваш номер телефона. Пожалуйста, введите его в формате +7XXXXXXXXXX или 8XXXXXXXXXX:"
         )
+        logger.info(f"Установлено состояние OrderStates.waiting_for_phone для telegram_id={telegram_id}")
         await state.set_state(OrderStates.waiting_for_phone)
 
-    await callback_query.answer()  # Подтверждаем обработку callback
+    await callback_query.answer()
 
 # Обработчик подтверждения номера телефона
 @order_router.callback_query(F.data.startswith('confirm_phone'), OrderStates.confirm_phone)
 async def process_phone_confirmation(callback_query: types.CallbackQuery, state: FSMContext):
+    logger.info(f"Вызван process_phone_confirmation для callback_data={callback_query.data}")
     confirmation = callback_query.data.split('_')[-1]  # "yes" или "no"
 
     if confirmation == "yes":
         # Если пользователь подтвердил номер, продолжаем оформление заказа
         data = await state.get_data()
         phone_number = data.get("phone_number")
-
         telegram_id = callback_query.from_user.id
 
-        try:
-            # Получаем items корзины
-            cart_items = await CartDAO.find_all(telegram_id=telegram_id)
-            if not cart_items:
-                await callback_query.message.answer(
-                    "Ваша корзина пуста!",
-                    reply_markup=markup_kb.back_keyboard()
-                )
-                await state.clear()
-                return
-
-            # Создаем заказ и получаем только его id
-            order_id = await OrderDAO.add(
-                telegram_id=telegram_id,
-                total_amount=0  # Изначально 0, обновим позже
-            )
-
-            # Добавляем items заказа
-            total_amount = 0
-            for cart_item in cart_items:
-                await OrderItemDAO.add(
-                    order_id=order_id,
-                    product_id=cart_item.product_id,
-                    product_name=cart_item.product_name,
-                    quantity=cart_item.quantity,
-                    price=cart_item.price,
-                    task_id=cart_item.task_id,
-                    operation=cart_item.operation
-                )
-                total_amount += cart_item.price * cart_item.quantity
-
-            # Обновляем общую сумму заказа
-            await OrderDAO.update(
-                {"id": order_id},
-                total_amount=total_amount
-            )
-
-            # Добавляем начальный статус и получаем только статус
-            status_record = await OrderStatusHistoryDAO.add(
-                order_id=order_id,
-                status=OrderStatus.PENDING.value,
-                comment="Order created"
-            )
-            status = status_record["status"]  # Извлекаем статус из возвращённого словаря
-
-            # Очищаем корзину
-            await CartDAO.delete(telegram_id=telegram_id, delete_all=True)
-
-            # Формируем сообщение о создании заказа
-            message_text = (
-                f"Заказ #{order_id} успешно создан!\n"
-                f"Сумма заказа: {total_amount} руб.\n"
-                f"Номер телефона: {phone_number}\n"
-                f"Статус: {status}"
-            )
-            # Возвращаем основное меню
-            await callback_query.message.answer(
-                message_text,
-                reply_markup=markup_kb.back_keyboard()
-            )
-
-            # # Подтверждаем пользователю успешное оформление
-            # await callback_query.message.answer(
-            #     f"Спасибо! Ваш номер телефона: {phone_number} привязан к заказу #{order_id}.",
-            #     reply_markup=markup_kb.back_keyboard()
-            # )
-
-            # Сбрасываем состояние после успешной обработки
-            await state.clear()
-
-        except Exception as e:
-            logger.error(f"Ошибка при создании заказа для telegram_id={telegram_id}: {e}")
-            await callback_query.message.answer(
-                "Произошла ошибка при создании заказа. Пожалуйста, попробуйте снова.",
-                reply_markup=markup_kb.back_keyboard()
-            )
-            await state.clear()
-            return
+        # Вызываем общую функцию для создания заказа и интеграции с Планфиксом
+        await create_order_and_sync_with_planfix(
+            telegram_id=telegram_id,
+            phone_number=phone_number,
+            message_obj=callback_query.message,
+            state=state
+        )
 
     elif confirmation == "no":
         # Если пользователь отказался от номера, просим ввести новый
@@ -248,13 +300,11 @@ async def process_manual_phone_input(message: types.Message, state: FSMContext):
         user_info = await UserDAO.find_one_or_none(telegram_id=telegram_id)
 
         if user_info:
-            # Если пользователь существует, обновляем его номер телефона
             await UserDAO.update(
                 {"telegram_id": telegram_id},
                 phone_number=phone_number
             )
         else:
-            # Если пользователя нет, создаём нового с номером телефона
             await UserDAO.add(
                 telegram_id=telegram_id,
                 username=message.from_user.username,
@@ -263,83 +313,21 @@ async def process_manual_phone_input(message: types.Message, state: FSMContext):
                 phone_number=phone_number
             )
 
-        # Получаем items корзины
-        cart_items = await CartDAO.find_all(telegram_id=telegram_id)
-        if not cart_items:
-            await message.answer(
-                "Ваша корзина пуста!",
-                reply_markup=markup_kb.back_keyboard()
-            )
-            await state.clear()
-            return
-
-        # Создаем заказ и получаем только его id
-        order_id = await OrderDAO.add(
+        # Вызываем общую функцию для создания заказа и интеграции с Планфиксом
+        await create_order_and_sync_with_planfix(
             telegram_id=telegram_id,
-            total_amount=0  # Изначально 0, обновим позже
+            phone_number=phone_number,
+            message_obj=message,
+            state=state
         )
-
-        # Добавляем items заказа
-        total_amount = 0
-        for cart_item in cart_items:
-            await OrderItemDAO.add(
-                order_id=order_id,
-                product_id=cart_item.product_id,
-                product_name=cart_item.product_name,
-                quantity=cart_item.quantity,
-                price=cart_item.price,
-                task_id=cart_item.task_id,
-                operation=cart_item.operation
-            )
-            total_amount += cart_item.price * cart_item.quantity
-
-        # Обновляем общую сумму заказа
-        await OrderDAO.update(
-            {"id": order_id},
-            total_amount=total_amount
-        )
-
-        # Добавляем начальный статус и получаем только статус
-        status_record = await OrderStatusHistoryDAO.add(
-            order_id=order_id,
-            status=OrderStatus.PENDING.value,
-            comment="Order created"
-        )
-        status = status_record["status"]  # Извлекаем статус из возвращённого словаря
-
-        # Очищаем корзину
-        await CartDAO.delete(telegram_id=telegram_id, delete_all=True)
-
-        # Формируем сообщение о создании заказа
-        message_text = (
-            f"Заказ #{order_id} успешно создан!\n"
-            f"Сумма заказа: {total_amount} руб.\n"
-            f"Номер телефона: {phone_number}\n"
-            f"Статус: {status}"
-        )
-        # Возвращаем основное меню
-        await message.answer(
-            message_text,
-            reply_markup=markup_kb.back_keyboard()
-        )
-
-        # # Подтверждаем пользователю успешное оформление
-        # await message.answer(
-        #     f"Спасибо! Ваш номер телефона: {phone_number} привязан к заказу #{order_id}.",
-        #     reply_markup=markup_kb.back_keyboard()
-        # )
-
-        # Сбрасываем состояние после успешной обработки
-        await state.clear()
 
     except Exception as e:
-        logger.error(f"Ошибка при создании заказа для telegram_id={telegram_id}: {e}")
+        logger.error(f"Ошибка при обработке номера телефона для telegram_id={telegram_id}: {e}")
         await message.answer(
-            "Произошла ошибка при создании заказа. Пожалуйста, попробуйте снова.",
+            "Произошла ошибка при обработке номера телефона. Пожалуйста, попробуйте снова.",
             reply_markup=markup_kb.back_keyboard()
         )
         await state.clear()
-        return
 
 
 ############################# ОФОРМИТЬ ЗАКАЗ (OLD) #################################

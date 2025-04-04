@@ -15,7 +15,7 @@ async def planfix_stock_balance(query=None):
 
     payload = {
         "offset": 0,
-        "pageSize": 50,
+        "pageSize": 100,
         "filterId": "104384",
         "fields": "id,12116,5542,6640,6282,12140"
     }
@@ -114,7 +114,7 @@ async def planfix_stock_balance_filter(model_id: str, operation: str):
 
     payload = {
         "offset": 0,
-        "pageSize": 50,
+        "pageSize": 100,
         "filterId": "104384",
         "filters": [
             {
@@ -152,12 +152,12 @@ async def planfix_all_production_filter(model_id: int):
 
     payload = {
         "offset": 0,
-        "pageSize": 10,
+        "pageSize": 100,
         "filterId": "104400",
         "filters": [
             {
                 "type": 107,
-                "field": 5556,
+                "field": 5556, # Модель
                 "operator": "equal",
                 "value": model_id
             }
@@ -185,7 +185,7 @@ async def planfix_contact(query=None):
 
     payload = {
         "offset": 0,
-        "pageSize": 50,
+        "pageSize": 100,
         "fields": "id,12116,5542,6640,6282,12140"
     }
 
@@ -228,7 +228,7 @@ async def planfix_production_task_id(task_id: int):
 
 ####################### CREATE NEW ORDER (PLANFIX) ####################################
 
-async def planfix_create_order(description: str):
+async def planfix_create_order(description: str, order_id: int):
 
     url = f"{pf_url_rest}/task/"
 
@@ -236,7 +236,7 @@ async def planfix_create_order(description: str):
         "template": {
             "id": 46
         },
-        "name": "Новый заказ OLEDBot",
+        # "name": "Новый заказ OLEDBot",
         "description": f"{description}",
         "status": {
                 "id": 2
@@ -244,19 +244,70 @@ async def planfix_create_order(description: str):
         "customFieldData": [
             {
             "field": {
-                "id": 5478 #Метки 
+                "id": 5478 # Метки 
             },
             "value": [
                 {
-                "id": 2 #Заказ
+                "id": 2 # Заказ
                 },
                 {
-                "id": 61 #Демо
+                "id": 110 # OLEDBot
                 },
                 {
-                "id": 110 #OLEDBot
+                "id": 83 # Добавить QR код
                 }
             ]
+            },
+            {
+            "field": {
+                "id": 12124 # Курс USD - RUB (id заказа postgres)
+            },
+            "value": order_id
+            }
+        ]
+        }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+
+####################### CREATE NEW PRODACTION (PLANFIX) ####################################
+
+async def planfix_create_prodaction(order_pf_id: int, prodaction_id: int, price: int):
+
+    url = f"{pf_url_rest}/task/{order_pf_id}"
+
+    payload = {
+        "template": {
+            "id": 113 # Заказ: Новый заказ
+        },
+        "customFieldData": [
+            {
+            "field": {
+                "id": 5624 # Новая готовая продукция
+            },
+            "value": {
+                "id": prodaction_id
+            }
+            },
+            {
+            "field": {
+                "id": 5484 # СОХРАНИТЬ
+            },
+            "value": "true"
+            },
+            {
+            "field": {
+                "id": 5594 # Цена индив, RUB
+            },
+            "value": price
             }
         ]
         }
