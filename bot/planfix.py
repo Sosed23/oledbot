@@ -280,7 +280,7 @@ async def planfix_create_order(description: str, order_id: int):
 
 ####################### CREATE NEW PRODACTION (PLANFIX) ####################################
 
-async def planfix_create_prodaction(order_pf_id: int, prodaction_id: int, price: int):
+async def planfix_create_prodaction(order_pf_id: int, prodaction_pf_id: int, price: int, prodaction_id: int):
 
     url = f"{pf_url_rest}/task/{order_pf_id}"
 
@@ -294,7 +294,7 @@ async def planfix_create_prodaction(order_pf_id: int, prodaction_id: int, price:
                 "id": 5624 # Новая готовая продукция
             },
             "value": {
-                "id": prodaction_id
+                "id": prodaction_pf_id
             }
             },
             {
@@ -308,7 +308,62 @@ async def planfix_create_prodaction(order_pf_id: int, prodaction_id: int, price:
                 "id": 5594 # Цена индив, RUB
             },
             "value": price
+            },
+            {
+            "field": {
+                "id": 12114 # Бронирование для проброски поля prodaction_id
+            },
+            "value": prodaction_id
             }
+        ]
+        }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+
+
+####################### CREATE CONTACT (PLANFIX) ####################################
+
+async def planfix_create_contact(telegram_id: int, username: str, first_name: str, last_name: str):
+
+    url = f"{pf_url_rest}/contact/"
+
+    payload = {
+        "template": {
+            "id": 3071 # Шаблон контакта (OLEDBot)
+        },
+        "name": first_name,
+        "lastname": last_name,
+        "Telegram": telegram_id,
+        "customFieldData": [
+            {
+            "field": {
+                "id": 12144 # Username
+            },
+            "value": {
+                "id": username
+            }
+            },
+            {
+            "field": {
+                "id": 131 # Telegram
+            },
+            "value": telegram_id
+            },
+            # {
+            # "field": {
+            #     "id": 12114 # Бронирование для проброски поля prodaction_id
+            # },
+            # "value": prodaction_id
+            # }
         ]
         }
 

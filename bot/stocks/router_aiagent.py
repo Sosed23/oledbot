@@ -14,9 +14,7 @@ from bot.stocks.dao import CartDAO, OrderDAO
 import json
 from loguru import logger
 
-
 aiagent_router = Router()
-
 
 ##################### AI AGENT #######################
 
@@ -25,8 +23,9 @@ class SearchModelState(StatesGroup):
 
 @aiagent_router.message(F.text == '✨ Поиск с ИИ')
 async def search_aiagent(message: Message, state: FSMContext):
-    await message.answer('Вас приветствует ✨ Ассистент OLED ✨.\nУкажите интересующую вас модель бренда Samsung или Apple.')
+    result = await message.answer('Вас приветствует ✨ Ассистент OLED ✨.\nУкажите интересующую вас модель бренда Samsung или Apple.')
     await state.set_state(SearchModelState.waiting_for_model)
+    return result
 
 @aiagent_router.message(SearchModelState.waiting_for_model)
 async def receive_model(message: Message, state: FSMContext):
@@ -55,14 +54,17 @@ async def receive_model(message: Message, state: FSMContext):
         model_name = parsed_data['model_name']
         model_id = parsed_data['model_id']
         
-        await message.answer(f'Вы выбрали модель: {model_name} и {json_string} 📱', reply_markup=in_kb.search_aiagent_keyboard())
+        result = await message.answer(
+            f'Вы выбрали модель: {model_name} и {json_string} 📱',
+            reply_markup=in_kb.search_aiagent_keyboard()
+        )
         await state.update_data(model_name=model_name, model_id=model_id)
+        return result
     else:
-        await message.answer("Данная модель отсутствует в каталоге.\nПожалуйста, введите другую модель.")
-
+        result = await message.answer("Данная модель отсутствует в каталоге.\nПожалуйста, введите другую модель.")
+        return result
 
 ####################### ЦЕНА ПЕРЕКЛЕЙКИ ###############################
-
 
 @aiagent_router.callback_query(F.data == "search_aiagent_re-gluing")
 async def handle_re_gluing(callback: CallbackQuery, state: FSMContext):
@@ -84,14 +86,14 @@ async def handle_re_gluing(callback: CallbackQuery, state: FSMContext):
         prices_text = f"**{model_name}  Цена не найдена.**"
 
     # Отправляем сообщение
-    await callback.message.answer(
-        f"Вы выбрали опцию 'Цена переклейки' для модели:\n{prices_text}", parse_mode="Markdown"
+    result = await callback.message.answer(
+        f"Вы выбрали опцию 'Цена переклейки' для модели:\n{prices_text}",
+        parse_mode="Markdown"
     )
     await callback.answer()
-
+    return result
 
 def extract_price_from_data(data_re_gluing):
-
     try:
         # Получаем список задач
         tasks = data_re_gluing.get("tasks", [])
@@ -107,9 +109,7 @@ def extract_price_from_data(data_re_gluing):
         print(f"Ошибка при извлечении цены: {e}")
     return None
 
-
 ####################### ПРОДАТЬ БИТИК ###############################
-
 
 @aiagent_router.callback_query(F.data == "search_aiagent_crash-display")
 async def handle_crash_display(callback: CallbackQuery, state: FSMContext):
@@ -134,9 +134,9 @@ async def handle_crash_display(callback: CallbackQuery, state: FSMContext):
         message += f"Цена битика с поврежденной подсветкой/тачом: {price_minus} RUB\n"
 
     # Отправляем сообщение
-    await callback.message.answer(message)
+    result = await callback.message.answer(message)
     await callback.answer()
-
+    return result
 
 def extract_price_from_data(data):
     try:
@@ -154,9 +154,7 @@ def extract_price_from_data(data):
         print(f"Ошибка при извлечении цены: {e}")
     return None
 
-
 ####################### ГОТОВАЯ ПРОДУКЦИЯ ###############################
-
 
 @aiagent_router.callback_query(F.data == "search_aiagent_production")
 async def handle_aiagent_production(callback: CallbackQuery, state: FSMContext):
@@ -168,9 +166,11 @@ async def handle_aiagent_production(callback: CallbackQuery, state: FSMContext):
     data_production = await planfix_all_production_filter(model_id=model_id)
     
     if not data_production or "tasks" not in data_production:
-        await callback.message.answer("Нет данных о продукции.")
-        return
+        result = await callback.message.answer("Нет данных о продукции.")
+        await callback.answer()
+        return result
     
+    messages = []  # Список для хранения всех отправленных сообщений
     for task in data_production["tasks"]:
         task_id = task["id"]
         model = "Неизвестно"
@@ -193,14 +193,19 @@ async def handle_aiagent_production(callback: CallbackQuery, state: FSMContext):
             f"📝 Описание: {description}"
         )
         
-        await callback.message.answer(message_text, reply_markup=in_kb.aiagent_cart_keyboard(
-            model_id=model_id, model_name=model_name, operation=operation, task_id=task_id), parse_mode="HTML")
+        result = await callback.message.answer(
+            message_text,
+            reply_markup=in_kb.aiagent_cart_keyboard(
+                model_id=model_id, model_name=model_name, operation=operation, task_id=task_id
+            ),
+            parse_mode="HTML"
+        )
+        messages.append(result)  # Добавляем каждое сообщение в список
     
     await callback.answer()
-
+    return messages  # Возвращаем список всех отправленных сообщений
 
 def extract_price_from_data(data_production):
-
     try:
         # Получаем список задач
         tasks = data_production.get("tasks", [])
@@ -216,9 +221,7 @@ def extract_price_from_data(data_production):
         print(f"Ошибка при извлечении цены: {e}")
     return None
 
-
 def extract_balance_from_data(data_production):
-
     try:
         # Получаем список задач
         tasks = data_production.get("tasks", [])
@@ -233,7 +236,6 @@ def extract_balance_from_data(data_production):
         # Логируем ошибки, если они возникают
         print(f"Ошибка при извлечении цены: {e}")
     return None
-
 
 @aiagent_router.callback_query(F.data.startswith('aiagent-cart_'))
 async def add_aiagent_cart(callback_query: types.CallbackQuery):
@@ -262,16 +264,22 @@ async def add_aiagent_cart(callback_query: types.CallbackQuery):
             quantity=1,
             price=price
         )
-        await callback_query.answer(f'Новый товар {model_name} добавлен в корзину.')
+        # Заменяем callback_query.answer на сообщение, чтобы его можно было переслать
+        result = await callback_query.message.answer(
+            f"📝 Новый дисплей (восстановленный) добавлен в корзину:\n"
+            f"📌 Артикул: <b>{task_id}</b>\n"
+            f"ℹ️ Модель: <b>{model_name}</b>\n"
+            f"💰 Цена: <b>{price} руб.</b>\n"
+        )
         await callback_query.message.delete()
+        return result
 
     except Exception as e:
         logger.error(f"Ошибка при добавлении товара в корзину для telegram_id={telegram_id}: {e}")
-        await callback_query.answer("Произошла ошибка при добавлении товара в корзину. Попробуйте снова.")
-
+        result = await callback_query.message.answer("Произошла ошибка при добавлении товара в корзину. Попробуйте снова.")
+        return result
 
 ####################### ЗАПЧАСТИ ###############################
-
 
 @aiagent_router.callback_query(F.data == "search_aiagent_spare-parts")
 async def handle_spare_parts(callback: CallbackQuery, state: FSMContext):
@@ -294,15 +302,14 @@ async def handle_spare_parts(callback: CallbackQuery, state: FSMContext):
         prices_balance = f"{model_name}  Цена не найдена."
 
     # Отправляем сообщение
-    await callback.message.answer(
+    result = await callback.message.answer(
         f"Вы выбрали опцию 'Запчасти'.\nМодели: {model_name}\n"
         f"{prices_balance}"
     )
     await callback.answer()
-
+    return result
 
 def extract_price_from_data(data_spare_parts):
-
     try:
         # Получаем список задач
         tasks = data_spare_parts.get("tasks", [])
@@ -318,9 +325,7 @@ def extract_price_from_data(data_spare_parts):
         print(f"Ошибка при извлечении цены: {e}")
     return None
 
-
 def extract_balance_from_data(data_spare_parts):
-
     try:
         # Получаем список задач
         tasks = data_spare_parts.get("tasks", [])
@@ -336,16 +341,14 @@ def extract_balance_from_data(data_spare_parts):
         print(f"Ошибка при извлечении цены: {e}")
     return None
 
-
-# ##################### TEST ###########################
-
+####################### TEST ###########################
 
 # @aiagent_router.message(F.text == 'Тест')
 # async def test(message: Message):
 #     description = "Тестирование бота"
 #     data_order = await planfix_create_order(description=description)
 #     order_pf_id = data_order['id']
-#     await message.answer(f"{data_order} {order_pf_id}")
+#     result1 = await message.answer(f"{data_order} {order_pf_id}")
 
 #     order_id = 32
     
@@ -357,4 +360,5 @@ def extract_balance_from_data(data_spare_parts):
 #     prodaction_id = 38533
 
 #     data_prodaction = await planfix_create_prodaction(order_pf_id=order_pf_id, prodaction_id=prodaction_id)
-#     await message.answer(f"{data_prodaction}")
+#     result2 = await message.answer(f"{data_prodaction}")
+#     return result2  # Возвращаем последнее отправленное сообщение

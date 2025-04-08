@@ -100,10 +100,11 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
             total_amount=0
         )
 
-        # Добавляем items заказа
+        # Добавляем items заказа и сохраняем их идентификаторы
         total_amount = 0
+        order_item_ids = []  # Список для хранения id добавленных OrderItem
         for cart_item in cart_items:
-            await OrderItemDAO.add(
+            order_item_id = await OrderItemDAO.add(
                 order_id=order_id,
                 product_id=cart_item.product_id,
                 product_name=cart_item.product_name,
@@ -112,6 +113,7 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                 task_id=cart_item.task_id,
                 operation=cart_item.operation
             )
+            order_item_ids.append(order_item_id)  # Сохраняем уникальный id элемента
             total_amount += cart_item.price * cart_item.quantity
 
         # Обновляем общую сумму заказа
@@ -160,12 +162,13 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
             f"📞 Номер телефона: {phone_number}"
         )
 
-        # Формируем сообщение для пользователя
+        # Формируем сообщение для пользователя с составом заказа
         message_text = (
-            f"Заказ #{order_id} успешно создан!\n"
-            f"Сумма заказа: {total_amount} руб.\n"
-            f"Номер телефона: {phone_number}\n"
-            f"Статус: {status}"
+            f"🏷️ Заказ #{order_id} успешно создан!\n"
+            f"ℹ️ Статус: {status}\n"
+            f"💵 Сумма заказа: {total_amount} руб.\n"
+            f"📞 Номер телефона: {phone_number}\n"
+            f"📝 Состав заказа:\n{items_text}"
         )
         logger.info(f"Отправка сообщения пользователю: {message_text}")
         await message_obj.answer(
@@ -188,10 +191,17 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
         )
         logger.info(f"Заказ #{order_id} обновлён с order_pf_id={order_pf_id}")
 
-        for cart_item in cart_items:
-            prodaction_id = cart_item.task_id
+        # Добавляем продукцию в Планфикс с уникальным prodaction_id
+        for idx, cart_item in enumerate(cart_items):
+            prodaction_pf_id = cart_item.task_id
+            prodaction_id = order_item_ids[idx]  # Уникальный id из OrderItem
             price = cart_item.price
-            data_prodaction = await planfix_create_prodaction(order_pf_id=order_pf_id, prodaction_id=prodaction_id, price=price)
+            data_prodaction = await planfix_create_prodaction(
+                order_pf_id=order_pf_id,
+                prodaction_pf_id=prodaction_pf_id,
+                price=price,
+                prodaction_id=prodaction_id
+            )
             logger.info(f"Продукция добавлена в Планфикс: {data_prodaction}")
             await message_obj.answer(f"Продукция добавлена в Планфикс: {data_prodaction}")
 

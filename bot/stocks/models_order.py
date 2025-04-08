@@ -9,7 +9,7 @@ from bot.users.models import User
 
 class OrderStatus(str, Enum):
     PENDING = "Новый"  # Создан, ожидает обработки
-    PROCESSING = "В обработке "  # В обработке
+    # PROCESSING = "В обработке "  # В обработке
     CONFIRMED = "Подтвержден"  # Подтвержден
     PAID = "На оплате"  # Оплачен
     # SHIPPING = "shipping"  # В доставке
