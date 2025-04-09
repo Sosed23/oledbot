@@ -13,3 +13,5 @@ class User(Base):
     last_name: Mapped[Optional[str]] = mapped_column(String)
     referral_id: Mapped[Optional[int]] = mapped_column(Integer)
     phone_number: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    contact_pf_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    chat_pf_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)

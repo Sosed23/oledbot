@@ -342,29 +342,105 @@ async def planfix_create_contact(telegram_id: int, username: str, first_name: st
         },
         "name": first_name,
         "lastname": last_name,
-        "Telegram": telegram_id,
+        "midname": telegram_id,
         "customFieldData": [
             {
             "field": {
                 "id": 12144 # Username
             },
-            "value": {
-                "id": username
-            }
+            "value": username
             },
             {
             "field": {
-                "id": 131 # Telegram
+                "id": 12146 # Telegram_id
             },
             "value": telegram_id
-            },
-            # {
-            # "field": {
-            #     "id": 12114 # Бронирование для проброски поля prodaction_id
-            # },
-            # "value": prodaction_id
-            # }
+            }
         ]
+        }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+
+####################### CREATE CHAT (PLANFIX) ####################################
+
+
+async def planfix_create_chat(contact_pf_id: int):
+
+    url = f"{pf_url_rest}/task/"
+
+    payload = {
+        "template": {
+            "id": 43 # Коммуникация с контрагентами
+        },
+          "counterparty": {
+            "id": contact_pf_id
+        },
+        # "customFieldData": [
+        #     {
+        #     "field": {
+        #         "id": 5624 # Новая готовая продукция
+        #     },
+        #     "value": prodaction_pf_id
+        #     }
+        # ]
+        }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+
+####################### ADD INCOMING COMMENT TO CHAT (PLANFIX) ####################################
+
+
+async def add_incoming_comment_to_chat(chat_pf_id: int, comment: str, contact_pf_id: int):
+
+    url = f"{pf_url_rest}/task/{chat_pf_id}/comments"
+
+    payload = {
+        "description": comment,
+          "owner": {
+            "id": f"contact:{contact_pf_id}"
+        }
+        }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+
+####################### ADD OUTGOING COMMENT TO CHAT (PLANFIX) ####################################
+
+async def add_outgoing_comment_to_chat(chat_pf_id: int, comment: str):
+
+    url = f"{pf_url_rest}/task/{chat_pf_id}/comments"
+
+    payload = {
+        "description": comment,
+          "owner": {
+            "id": "contact:3077"
+        }
         }
 
     headers = {

@@ -4,7 +4,7 @@ from aiogram.types import Message
 from aiogram.dispatcher.router import Router
 from bot.users.dao import UserDAO
 from bot.users.keyboards import markup_kb
-from bot.planfix import planfix_create_contact
+from bot.planfix import planfix_create_contact, planfix_create_chat
 
 user_router = Router()
 
@@ -37,15 +37,30 @@ async def cmd_start(message: Message, command: CommandObject):
             last_name=message.from_user.last_name or ""
         )
 
-        contact_id = data_contact['id']
+        contact_pf_id = data_contact['id']
 
-        if not contact_id:
+        if not data_contact:
             logger.error(f"Не удалось создать контакт в Planfix для пользователя {user_id}")
             await message.answer("Произошла ошибка при регистрации в Planfix. Пожалуйста, попробуйте снова позже.")
             return
 
+        await UserDAO.update(
+            {"telegram_id": user_id},
+            contact_pf_id=contact_pf_id
+        )
+
+        
+        data_chat = await planfix_create_chat(contact_pf_id=contact_pf_id)
+
+        chat_pf_id = data_chat['id']
+
+        await UserDAO.update(
+            {"telegram_id": user_id},
+            chat_pf_id=chat_pf_id
+        )
+
         result = await message.answer(
-            f"👋 Привет, {message.from_user.full_name}! Вы успешно зарегистрированы. Выберите необходимое действие {data_contact}",
+            f"👋 Привет, {message.from_user.full_name}! Вы успешно зарегистрированы. Выберите необходимое действие.",
             reply_markup=markup_kb.back_keyboard()
         )
         return result
