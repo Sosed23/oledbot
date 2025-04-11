@@ -1,7 +1,6 @@
 from aiogram import Router, F, types
 from aiogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent, Message
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
@@ -13,6 +12,9 @@ from bot.stocks.keyboards import inline_kb_cart as in_kb
 from bot.stocks.dao import CartDAO, OrderDAO
 import json
 from loguru import logger
+
+from bot.stocks.handlers_production import handle_production_common, add_to_cart
+from bot.utils.planfix_utils import extract_price_from_data, extract_balance_from_data
 
 aiagent_router = Router()
 
@@ -93,22 +95,6 @@ async def handle_re_gluing(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     return result
 
-def extract_price_from_data(data_re_gluing):
-    try:
-        # Получаем список задач
-        tasks = data_re_gluing.get("tasks", [])
-        for task in tasks:
-            # Проверяем каждое поле customFieldData
-            for field_data in task.get("customFieldData", []):
-                field_name = field_data.get("field", {}).get("name", "")
-                if field_name == "Цена, RUB":
-                    # Возвращаем первое найденное значение цены
-                    return field_data.get("stringValue") or str(field_data.get("value", ""))
-    except Exception as e:
-        # Логируем ошибки, если они возникают
-        print(f"Ошибка при извлечении цены: {e}")
-    return None
-
 ####################### ПРОДАТЬ БИТИК ###############################
 
 @aiagent_router.callback_query(F.data == "search_aiagent_crash-display")
@@ -138,146 +124,17 @@ async def handle_crash_display(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     return result
 
-def extract_price_from_data(data):
-    try:
-        # Получаем список задач
-        tasks = data.get("tasks", [])
-        for task in tasks:
-            # Проверяем каждое поле customFieldData
-            for field_data in task.get("customFieldData", []):
-                field_name = field_data.get("field", {}).get("name", "")
-                if field_name == "Цена, RUB":
-                    # Возвращаем первое найденное значение цены
-                    return field_data.get("stringValue") or str(field_data.get("value", ""))
-    except Exception as e:
-        # Логируем ошибки, если они возникают
-        print(f"Ошибка при извлечении цены: {e}")
-    return None
-
 ####################### ГОТОВАЯ ПРОДУКЦИЯ ###############################
 
 @aiagent_router.callback_query(F.data == "search_aiagent_production")
 async def handle_aiagent_production(callback: CallbackQuery, state: FSMContext):
-    state_data = await state.get_data()
-    model_name = state_data.get('model_name', 'не указан')
-    model_id = state_data.get('model_id', 'не указан')
-    operation = "4"
-    
-    data_production = await planfix_all_production_filter(model_id=model_id)
-    
-    if not data_production or "tasks" not in data_production:
-        result = await callback.message.answer("Нет данных о продукции.")
-        await callback.answer()
-        return result
-    
-    messages = []  # Список для хранения всех отправленных сообщений
-    for task in data_production["tasks"]:
-        task_id = task["id"]
-        model = "Неизвестно"
-        price = "Не указана"
-        description = "Описание отсутствует"
-        
-        for field in task.get("customFieldData", []):
-            field_name = field["field"].get("name", "")
-            if field_name == "Модель":
-                model = field["value"].get("value", "Неизвестно")
-            elif field_name == "Price":
-                price = field.get("value", "Не указана")
-            elif field_name == "Комментарии":
-                description = field.get("value", "Описание отсутствует")
-        
-        message_text = (
-            f"📌 Артикул: <b>{task_id}</b>\n"
-            f"ℹ️ Модель: <b>{model}</b>\n"
-            f"💰 Цена: <b>{price} руб.</b>\n"
-            f"📝 Описание: {description}"
-        )
-        
-        result = await callback.message.answer(
-            message_text,
-            reply_markup=in_kb.aiagent_cart_keyboard(
-                model_id=model_id, model_name=model_name, operation=operation, task_id=task_id
-            ),
-            parse_mode="HTML"
-        )
-        messages.append(result)  # Добавляем каждое сообщение в список
-    
-    await callback.answer()
-    return messages  # Возвращаем список всех отправленных сообщений
+    return await handle_production_common(callback, state, operation="4")
 
-def extract_price_from_data(data_production):
-    try:
-        # Получаем список задач
-        tasks = data_production.get("tasks", [])
-        for task in tasks:
-            # Проверяем каждое поле customFieldData
-            for field_data in task.get("customFieldData", []):
-                field_name = field_data.get("field", {}).get("name", "")
-                if field_name == "Цена, RUB":
-                    # Возвращаем первое найденное значение цены
-                    return field_data.get("stringValue") or str(field_data.get("value", ""))
-    except Exception as e:
-        # Логируем ошибки, если они возникают
-        print(f"Ошибка при извлечении цены: {e}")
-    return None
-
-def extract_balance_from_data(data_production):
-    try:
-        # Получаем список задач
-        tasks = data_production.get("tasks", [])
-        for task in tasks:
-            # Проверяем каждое поле customFieldData
-            for field_data in task.get("customFieldData", []):
-                field_name = field_data.get("field", {}).get("name", "")
-                if field_name == "Приход":
-                    # Возвращаем первое найденное значение цены
-                    return field_data.get("stringValue") or str(field_data.get("value", ""))
-    except Exception as e:
-        # Логируем ошибки, если они возникают
-        print(f"Ошибка при извлечении цены: {e}")
-    return None
+####################### ДОБАВЛЕНИЕ В КОРЗИНУ ###############################
 
 @aiagent_router.callback_query(F.data.startswith('aiagent-cart_'))
 async def add_aiagent_cart(callback_query: types.CallbackQuery):
-    try:
-        model_id = int(callback_query.data.split('_')[1])
-        model_name = callback_query.data.split('_')[2]
-        operation = callback_query.data.split('_')[3]
-        task_id = callback_query.data.split('_')[4]
-        telegram_id = callback_query.from_user.id
-
-        data_product = await planfix_production_task_id(task_id=task_id)
-        custom_fields = data_product.get("task", {}).get("customFieldData", [])
-
-        price = 0
-        for field in custom_fields:
-            field_id = field.get("field", {}).get("id")
-            if field_id == 12126:  
-                price = field.get("value") or 0
-
-        await CartDAO.add(
-            telegram_id=telegram_id,
-            product_id=model_id,
-            product_name=model_name,
-            task_id=int(task_id),
-            operation=operation,
-            quantity=1,
-            price=price
-        )
-        # Заменяем callback_query.answer на сообщение, чтобы его можно было переслать
-        result = await callback_query.message.answer(
-            f"📝 Новый дисплей (восстановленный) добавлен в корзину:\n"
-            f"📌 Артикул: <b>{task_id}</b>\n"
-            f"ℹ️ Модель: <b>{model_name}</b>\n"
-            f"💰 Цена: <b>{price} руб.</b>\n"
-        )
-        await callback_query.message.delete()
-        return result
-
-    except Exception as e:
-        logger.error(f"Ошибка при добавлении товара в корзину для telegram_id={telegram_id}: {e}")
-        result = await callback_query.message.answer("Произошла ошибка при добавлении товара в корзину. Попробуйте снова.")
-        return result
+    return await add_to_cart(callback_query, prefix='aiagent-cart')
 
 ####################### ЗАПЧАСТИ ###############################
 
@@ -308,36 +165,3 @@ async def handle_spare_parts(callback: CallbackQuery, state: FSMContext):
     )
     await callback.answer()
     return result
-
-def extract_price_from_data(data_spare_parts):
-    try:
-        # Получаем список задач
-        tasks = data_spare_parts.get("tasks", [])
-        for task in tasks:
-            # Проверяем каждое поле customFieldData
-            for field_data in task.get("customFieldData", []):
-                field_name = field_data.get("field", {}).get("name", "")
-                if field_name == "Цена, RUB":
-                    # Возвращаем первое найденное значение цены
-                    return field_data.get("stringValue") or str(field_data.get("value", ""))
-    except Exception as e:
-        # Логируем ошибки, если они возникают
-        print(f"Ошибка при извлечении цены: {e}")
-    return None
-
-def extract_balance_from_data(data_spare_parts):
-    try:
-        # Получаем список задач
-        tasks = data_spare_parts.get("tasks", [])
-        for task in tasks:
-            # Проверяем каждое поле customFieldData
-            for field_data in task.get("customFieldData", []):
-                field_name = field_data.get("field", {}).get("name", "")
-                if field_name == "Приход":
-                    # Возвращаем первое найденное значение цены
-                    return field_data.get("stringValue") or str(field_data.get("value", ""))
-    except Exception as e:
-        # Логируем ошибки, если они возникают
-        print(f"Ошибка при извлечении цены: {e}")
-    return None
-

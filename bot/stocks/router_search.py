@@ -5,13 +5,17 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from loguru import logger
 
-from bot.planfix import planfix_stock_balance_filter, planfix_all_production_filter
+from bot.planfix import planfix_stock_balance_filter
 from bot.users.keyboards import inline_kb as kb
 from bot.stocks.dao import CartDAO, ModelDAO
 from bot.utils.cache import get_cached_search_results, cache_search_results
 import requests
 
 from bot.config import pf_token, pf_url_rest
+
+# Импорты из utils
+from bot.stocks.handlers_production import handle_production_common, add_to_cart
+from bot.utils.planfix_utils import extract_price_from_data, extract_balance_from_data
 
 search_router = Router()
 
@@ -146,22 +150,6 @@ async def handle_re_gluing(callback: CallbackQuery, state: FSMContext):
     )
     await callback.answer()
 
-def extract_price_from_data(data_re_gluing):
-    try:
-        # Получаем список задач
-        tasks = data_re_gluing.get("tasks", [])
-        for task in tasks:
-            # Проверяем каждое поле customFieldData
-            for field_data in task.get("customFieldData", []):
-                field_name = field_data.get("field", {}).get("name", "")
-                if field_name == "Цена, RUB":
-                    # Возвращаем первое найденное значение цены
-                    return field_data.get("stringValue") or str(field_data.get("value", ""))
-    except Exception as e:
-        # Логируем ошибки, если они возникают
-        logger.error(f"Ошибка при извлечении цены: {e}")
-    return None
-
 ####################### ПРОДАТЬ БИТИК ###############################
 
 @search_router.callback_query(F.data == "search_crash-display")
@@ -190,31 +178,17 @@ async def handle_crash_display(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer(message)
     await callback.answer()
 
-def extract_price_from_data(data):
-    try:
-        # Получаем список задач
-        tasks = data.get("tasks", [])
-        for task in tasks:
-            # Проверяем каждое поле customFieldData
-            for field_data in task.get("customFieldData", []):
-                field_name = field_data.get("field", {}).get("name", "")
-                if field_name == "Цена, RUB":
-                    # Возвращаем первое найденное значение цены
-                    return field_data.get("stringValue") or str(field_data.get("value", ""))
-    except Exception as e:
-        # Логируем ошибки, если они возникают
-        logger.error(f"Ошибка при извлечении цены: {e}")
-    return None
-
 ####################### ГОТОВАЯ ПРОДУКЦИЯ ###############################
 
 @search_router.callback_query(F.data == "search_production")
 async def handle_production(callback: CallbackQuery, state: FSMContext):
-    state_data = await state.get_data()
-    model_name = state_data.get('model_name', 'не указан')
-    model_id = state_data.get('model_id', 'не указан')
-    operation = "4"
-    
+    return await handle_production_common(callback, state, operation="4")
+
+####################### ДОБАВЛЕНИЕ В КОРЗИНУ ###############################
+
+@search_router.callback_query(F.data.startswith('search-cart_'))
+async def add_search_cart(callback_query: types.CallbackQuery):
+    return await add_to_cart(callback_query, prefix='search-cart')
 
 ####################### ЗАПЧАСТИ ###############################
 
@@ -244,35 +218,3 @@ async def handle_spare_parts(callback: CallbackQuery, state: FSMContext):
         f"{prices_balance}"
     )
     await callback.answer()
-
-def extract_price_from_data(data_spare_parts):
-    try:
-        # Получаем список задач
-        tasks = data_spare_parts.get("tasks", [])
-        for task in tasks:
-            # Проверяем каждое поле customFieldData
-            for field_data in task.get("customFieldData", []):
-                field_name = field_data.get("field", {}).get("name", "")
-                if field_name == "Цена, RUB":
-                    # Возвращаем первое найденное значение цены
-                    return field_data.get("stringValue") or str(field_data.get("value", ""))
-    except Exception as e:
-        # Логируем ошибки, если они возникают
-        logger.error(f"Ошибка при извлечении цены: {e}")
-    return None
-
-def extract_balance_from_data(data_spare_parts):
-    try:
-        # Получаем список задач
-        tasks = data_spare_parts.get("tasks", [])
-        for task in tasks:
-            # Проверяем каждое поле customFieldData
-            for field_data in task.get("customFieldData", []):
-                field_name = field_data.get("field", {}).get("name", "")
-                if field_name == "Приход":
-                    # Возвращаем первое найденное значение цены
-                    return field_data.get("stringValue") or str(field_data.get("value", ""))
-    except Exception as e:
-        # Логируем ошибки, если они возникают
-        logger.error(f"Ошибка при извлечении цены: {e}")
-    return None
