@@ -1,22 +1,21 @@
 from aiogram import Router, F, types
 from aiogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent, Message
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, FSInputFile
-
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
+from loguru import logger
 
 from bot.planfix import planfix_stock_balance_filter, planfix_all_production_filter
 from bot.users.keyboards import inline_kb as kb
-from bot.stocks.dao import CartDAO
+from bot.stocks.dao import CartDAO, ModelDAO
+from bot.utils.cache import get_cached_search_results, cache_search_results
 import requests
 
 from bot.config import pf_token, pf_url_rest
 
 search_router = Router()
 
-
 RESULTS_PER_PAGE = 50
-
 
 ################ INLINE SEARCH PRODUCT #######################
 
@@ -33,12 +32,10 @@ inline_button = InlineKeyboardMarkup(
     ]
 )
 
-
 @search_router.message(F.text == '🔍 Поиск модели')
 async def send_search_button(message: Message):
     await message.answer("Нажмите на кнопку для поиска модели:", reply_markup=inline_button)
     await message.delete()
-
 
 ###################################################################
 
@@ -47,111 +44,82 @@ async def inline_query_handler(inline_query: InlineQuery, state: FSMContext):
     query_text = inline_query.query.strip()
     offset = int(inline_query.offset) if inline_query.offset else 0
 
-    # Если поиск пустой — загружаем постранично
+    # Поиск через ModelDAO
     if query_text == "":
-        models = await planfix_stock_balance_models(offset=offset, limit=RESULTS_PER_PAGE)
+        # Подгрузка всех моделей постранично
+        models = await ModelDAO.search_models(query="", offset=offset, limit=RESULTS_PER_PAGE)
+        logger.info(f"ModelDAO (пустой запрос): Найдено моделей: {len(models)}")
     else:
-        # Если пользователь ищет модель — загружаем все модели без оффсета
-        models = await planfix_stock_balance_models(search_query=query_text)
+        # Полнотекстовый поиск с кэшированием
+        models = await get_cached_search_results(query_text)
+        if models is None:
+            models = await ModelDAO.search_models(query=query_text, offset=offset, limit=RESULTS_PER_PAGE)
+            if models:
+                await cache_search_results(query_text, models)
+        logger.info(f"ModelDAO (поиск): Найдено моделей: {len(models)}")
 
-    print(f"🔍 Найдено моделей: {len(models)}")  # Логируем количество найденных моделей
-    for m in models[:5]:  # Логируем первые 5 моделей для проверки
-        print(m)
+    if not models:
+        await inline_query.answer(
+            [], cache_time=1, switch_pm_text="Ничего не найдено", switch_pm_parameter="start"
+        )
+        return
 
-    results = []
-    for index, (model_id, model_name) in enumerate(models):
-        if not model_name:  # Проверяем, есть ли название
-            print(f"⚠️ Пропущена модель с ID {model_id} из-за пустого названия!")
-            continue
-
-        results.append(
-            InlineQueryResultArticle(
-                id=str(offset + index),
-                title=model_name,  # Telegram требует, чтобы title был НЕ пустым
-                input_message_content=InputTextMessageContent(
-                    message_text=f"Выберете нужную услугу для модели: {model_name}"
-                )
+    # Формат для ModelDAO (model_id_int, model_name, model_engineer, model_id)
+    results = [
+        InlineQueryResultArticle(
+            id=str(offset + index),
+            title=model_name or model_id or "Без названия",
+            description=f"Инженер: {model_engineer or 'не указан'} | ID: {model_id or 'не указан'}",
+            input_message_content=InputTextMessageContent(
+                message_text=f"Модель: {model_name or 'не указана'}\n"
+                             f"Инженер: {model_engineer or 'не указан'}\n"
+                             f"ID: {model_id or 'не указан'}"
             )
         )
-        # Сохраняем model_id в состояние FSM
-        await state.update_data({model_name: model_id})
+        for index, (model_id_int, model_name, model_engineer, model_id) in enumerate(models)
+    ]
 
-    # Если поиск пустой, поддерживаем пагинацию
-    next_offset = str(offset + RESULTS_PER_PAGE) if query_text == "" and len(models) == RESULTS_PER_PAGE else ""
+    # Сохраняем model_id в состояние FSM
+    for _, model_name, _, model_id in models:
+        if model_id:  # Сохраняем только если model_id не None
+            await state.update_data({model_name or model_id: model_id})
 
-    if not results:
-        await inline_query.answer([], cache_time=1, switch_pm_text="Ничего не найдено", switch_pm_parameter="start")
-        return
+    # Поддерживаем пагинацию
+    next_offset = str(offset + RESULTS_PER_PAGE) if len(models) == RESULTS_PER_PAGE else ""
 
     await inline_query.answer(results, cache_time=1, next_offset=next_offset)
 
-
-
-####################### STOCK BALANCE (MODELS) ####################################
-
-async def planfix_stock_balance_models(search_query=None, offset=0, limit=RESULTS_PER_PAGE):
-    url = f"{pf_url_rest}/task/list"
-
-    payload = {
-        "offset": offset,
-        "pageSize": limit,
-        "filterId": "49864",
-        "fields": "id,5556,5542,6640,6282,12140"
-    }
-
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {pf_token}"
-    }
-
-    response = requests.post(url, json=payload, headers=headers)
-    data = response.json()
-
-    all_models = data.get('tasks', [])
-    result = []
-
-    for task in all_models:
-        for custom_field in task.get('customFieldData', []):
-            if custom_field['field']['name'] == 'Модель':
-                model_id = custom_field['value']['id']
-                model_name = custom_field['value']['value']
-
-                if search_query and search_query.lower() not in model_name.lower():
-                    continue
-
-                result.append((model_id, model_name))
-
-    return result
-
-
-
-
-@search_router.message(F.text.contains("Выберете нужную услугу для модели:"))
+@search_router.message(F.text.contains("Модель:") & F.text.contains("Инженер:") & F.text.contains("ID:"))
 async def process_selected_product(message: Message, state: FSMContext):
-    # Извлекаем model_name из сообщения
-    model_name = message.text.split(": ")[1].strip()
+    # Извлекаем model_name, model_engineer и model_id из сообщения
+    try:
+        lines = message.text.split("\n")
+        model_name = lines[0].split(": ")[1].strip()
+        model_engineer = lines[1].split(": ")[1].strip()
+        model_id = lines[2].split(": ")[1].strip()
 
-    # Извлекаем model_id из состояния FSM
-    state_data = await state.get_data()
-    model_id = state_data.get(model_name)
+        # Проверяем, что значения не "не указана"
+        model_name = None if model_name == "не указана" else model_name
+        model_engineer = None if model_engineer == "не указан" else model_engineer
+        model_id = None if model_id == "не указан" else model_id
 
-    if model_id is None:
-        await message.answer("Не удалось найти ID для выбранной модели.")
-        return
+        if not model_id:
+            await message.answer("Не удалось найти ID для выбранной модели.")
+            return
 
-    await message.answer(
-        f"Выберете нужную опцию для модели: {model_name}",
-        reply_markup=kb.search_keyboard()
-    )
+        await message.answer(
+            f"Выберете нужную опцию для модели: {model_name or model_id}",
+            reply_markup=kb.search_keyboard()
+        )
 
-    await message.delete()
+        await message.delete()
 
-    # Сохраняем model_name и model_id в состояние FSM для дальнейшего использования
-    await state.update_data(model_name=model_name, model_id=model_id)
-
+        # Сохраняем model_name и model_id в состояние FSM для дальнейшего использования
+        await state.update_data(model_name=model_name, model_id=model_id)
+    except IndexError:
+        await message.answer("Не удалось обработать выбранную модель. Пожалуйста, попробуйте снова.")
 
 ####################### ЦЕНА ПЕРЕКЛЕЙКИ ###############################
-
 
 @search_router.callback_query(F.data == "search_re-gluing")
 async def handle_re_gluing(callback: CallbackQuery, state: FSMContext):
@@ -178,9 +146,7 @@ async def handle_re_gluing(callback: CallbackQuery, state: FSMContext):
     )
     await callback.answer()
 
-
 def extract_price_from_data(data_re_gluing):
-
     try:
         # Получаем список задач
         tasks = data_re_gluing.get("tasks", [])
@@ -193,12 +159,10 @@ def extract_price_from_data(data_re_gluing):
                     return field_data.get("stringValue") or str(field_data.get("value", ""))
     except Exception as e:
         # Логируем ошибки, если они возникают
-        print(f"Ошибка при извлечении цены: {e}")
+        logger.error(f"Ошибка при извлечении цены: {e}")
     return None
 
-
 ####################### ПРОДАТЬ БИТИК ###############################
-
 
 @search_router.callback_query(F.data == "search_crash-display")
 async def handle_crash_display(callback: CallbackQuery, state: FSMContext):
@@ -226,7 +190,6 @@ async def handle_crash_display(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer(message)
     await callback.answer()
 
-
 def extract_price_from_data(data):
     try:
         # Получаем список задач
@@ -240,12 +203,10 @@ def extract_price_from_data(data):
                     return field_data.get("stringValue") or str(field_data.get("value", ""))
     except Exception as e:
         # Логируем ошибки, если они возникают
-        print(f"Ошибка при извлечении цены: {e}")
+        logger.error(f"Ошибка при извлечении цены: {e}")
     return None
 
-
 ####################### ГОТОВАЯ ПРОДУКЦИЯ ###############################
-
 
 @search_router.callback_query(F.data == "search_production")
 async def handle_production(callback: CallbackQuery, state: FSMContext):
@@ -254,83 +215,8 @@ async def handle_production(callback: CallbackQuery, state: FSMContext):
     model_id = state_data.get('model_id', 'не указан')
     operation = "4"
     
-    data_production = await planfix_all_production_filter(model_id=model_id)
-    
-    if not data_production or "tasks" not in data_production:
-        await callback.message.answer("Нет данных о продукции.")
-        return
-    
-    for task in data_production["tasks"]:
-        production_id = task["id"]
-        model = "Неизвестно"
-        price = "Не указана"
-        description = "Описание отсутствует"
-        
-        for field in task.get("customFieldData", []):
-            field_name = field["field"].get("name", "")
-            if field_name == "Модель":
-                model = field["value"].get("value", "Неизвестно")
-            elif field_name == "Price":
-                price = field.get("value", "Не указана")
-            elif field_name == "Комментарии":
-                description = field.get("value", "Описание отсутствует")
-        
-        keyboard = InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="🛒 В корзину", callback_data=f"add_to_cart:{production_id}")]
-            ]
-        )
-        
-        message_text = (
-            f"📌 <b>{model}</b>\n"
-            f"💰 Цена: {price} руб.\n"
-            f"ℹ️ {description}"
-        )
-        
-        await callback.message.answer(message_text, reply_markup=keyboard, parse_mode="HTML")
-    
-    await callback.answer()
-
-
-
-def extract_price_from_data(data_production):
-
-    try:
-        # Получаем список задач
-        tasks = data_production.get("tasks", [])
-        for task in tasks:
-            # Проверяем каждое поле customFieldData
-            for field_data in task.get("customFieldData", []):
-                field_name = field_data.get("field", {}).get("name", "")
-                if field_name == "Цена, RUB":
-                    # Возвращаем первое найденное значение цены
-                    return field_data.get("stringValue") or str(field_data.get("value", ""))
-    except Exception as e:
-        # Логируем ошибки, если они возникают
-        print(f"Ошибка при извлечении цены: {e}")
-    return None
-
-
-def extract_balance_from_data(data_production):
-
-    try:
-        # Получаем список задач
-        tasks = data_production.get("tasks", [])
-        for task in tasks:
-            # Проверяем каждое поле customFieldData
-            for field_data in task.get("customFieldData", []):
-                field_name = field_data.get("field", {}).get("name", "")
-                if field_name == "Приход":
-                    # Возвращаем первое найденное значение цены
-                    return field_data.get("stringValue") or str(field_data.get("value", ""))
-    except Exception as e:
-        # Логируем ошибки, если они возникают
-        print(f"Ошибка при извлечении цены: {e}")
-    return None
-
 
 ####################### ЗАПЧАСТИ ###############################
-
 
 @search_router.callback_query(F.data == "search_spare-parts")
 async def handle_spare_parts(callback: CallbackQuery, state: FSMContext):
@@ -339,7 +225,7 @@ async def handle_spare_parts(callback: CallbackQuery, state: FSMContext):
     model_name = state_data.get('model_name', 'не указан')
     model_id = state_data.get('model_id', 'не указан')
 
-    # Запрашиваем данные о переклейке
+    # Запрашиваем данные о запчастях
     data_spare_parts = await planfix_stock_balance_filter(model_id=model_id, operation="5")
 
     # Извлекаем единственную цену
@@ -359,9 +245,7 @@ async def handle_spare_parts(callback: CallbackQuery, state: FSMContext):
     )
     await callback.answer()
 
-
 def extract_price_from_data(data_spare_parts):
-
     try:
         # Получаем список задач
         tasks = data_spare_parts.get("tasks", [])
@@ -374,12 +258,10 @@ def extract_price_from_data(data_spare_parts):
                     return field_data.get("stringValue") or str(field_data.get("value", ""))
     except Exception as e:
         # Логируем ошибки, если они возникают
-        print(f"Ошибка при извлечении цены: {e}")
+        logger.error(f"Ошибка при извлечении цены: {e}")
     return None
 
-
 def extract_balance_from_data(data_spare_parts):
-
     try:
         # Получаем список задач
         tasks = data_spare_parts.get("tasks", [])
@@ -392,45 +274,5 @@ def extract_balance_from_data(data_spare_parts):
                     return field_data.get("stringValue") or str(field_data.get("value", ""))
     except Exception as e:
         # Логируем ошибки, если они возникают
-        print(f"Ошибка при извлечении цены: {e}")
+        logger.error(f"Ошибка при извлечении цены: {e}")
     return None
-
-
-############## ЗАМОРОЗКА ##################
-
-# # Этот хэндлер срабатывает, когда пользователь выбирает товар из инлайн-запроса
-# @search_router.message(F.text.contains("шт.") & F.text.contains("Доступно на складе:"))
-# async def process_selected_product(message: Message, state: FSMContext):
-#     # Извлекаем данные о товаре из сообщения
-#     try:
-#         product_info = message.text.split("\n")
-#         product_name = product_info[0].split(": ")[1].strip()
-#         product_id = "не указан"  # Убедитесь, что у вас есть информация о product_id
-
-#         # Переходим к следующему шагу с помощью FSM
-#         await message.answer(f"Вы выбрали {product_name}. Сколько единиц хотите заказать?")
-#         await state.set_state(OrderState.waiting_for_quantity)
-#         # Сохраняем ID товара в состоянии FSM для дальнейшего использования
-#         await state.update_data(product_id=product_id)
-#     except IndexError:
-#         await message.answer("Не удалось обработать выбранный товар. Пожалуйста, попробуйте снова.")
-
-
-# # Обработка ввода количества
-# @search_router.message(OrderState.waiting_for_quantity)
-# async def process_quantity(message: Message, state: FSMContext):
-#     user_data = await state.get_data()
-#     product_id = user_data['product_id']
-
-#     # Проверяем, что пользователь ввел корректное число
-#     if not message.text.isdigit():
-#         await message.answer("Пожалуйста, введите корректное количество.")
-#         return
-
-#     quantity = int(message.text)
-
-#     # Здесь можно выполнять действия с товаром, например, отправить заказ
-#     await message.answer(f"Заказ на {quantity} единиц товара с ID {product_id} принят!")
-
-#     # Сбрасываем состояние
-#     await state.clear()

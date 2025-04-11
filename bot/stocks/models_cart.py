@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import BigInteger, ForeignKey, String, Integer
-from typing import Optional
+from sqlalchemy.dialects.postgresql import TSVECTOR
+from typing import Optional, Any
 from bot.database import Base
 from bot.users.models import User  # Добавлен импорт модели User
 
@@ -30,3 +31,4 @@ class Model(Base):
     model_name: Mapped[Optional[str]] = mapped_column(String)  # Поле для model_name
     model_engineer: Mapped[Optional[str]] = mapped_column(String)  # Поле для model_engineer
     model_id: Mapped[Optional[str]] = mapped_column(String)  # Поле для model_id
+    search_vector: Mapped[Optional[Any]] = mapped_column(TSVECTOR, nullable=True)

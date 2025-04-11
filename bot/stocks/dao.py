@@ -1,8 +1,9 @@
+from typing import List, Tuple  # Добавляем List и Tuple
+from sqlalchemy.sql import func  # Добавляем func для SQLAlchemy
 from bot.dao.base import BaseDAO
-from bot.stocks.models_cart import Cart
+from bot.stocks.models_cart import Cart, Model
 from bot.stocks.models_order import Order, OrderItem, OrderStatusHistory, OrderStatus
 from bot.database import async_session_maker
-
 from sqlalchemy.future import select
 from sqlalchemy import update as sqlalchemy_update
 from sqlalchemy.orm import selectinload
@@ -66,4 +67,42 @@ class OrderStatusHistoryDAO(BaseDAO):
                 return records
             except SQLAlchemyError as e:
                 logger.error(f"Ошибка при поиске всех записей по фильтрам {filter_by}: {e}")
+                raise
+
+
+class ModelDAO(BaseDAO):
+    model = Model
+
+    @classmethod
+    async def search_models(cls, query: str = "", offset: int = 0, limit: int = 50) -> List[Tuple[int, str, str, str]]:
+        """
+        Полнотекстовый поиск моделей по model_name, model_engineer и model_id.
+        Если query пустой, возвращает все модели постранично.
+        """
+        logger.info(f"Полнотекстовый поиск моделей по запросу: '{query}', offset: {offset}, limit: {limit}")
+        async with async_session_maker() as session:
+            try:
+                if query:
+                    # Полнотекстовый поиск
+                    stmt = (
+                        select(Model.id, Model.model_name, Model.model_engineer, Model.model_id)
+                        .where(Model.search_vector.op("@@")(func.plainto_tsquery("english", query)))
+                        .order_by(func.ts_rank(Model.search_vector, func.plainto_tsquery("english", query)).desc())
+                        .offset(offset)
+                        .limit(limit)
+                    )
+                else:
+                    # Подгрузка всех моделей постранично
+                    stmt = (
+                        select(Model.id, Model.model_name, Model.model_engineer, Model.model_id)
+                        .order_by(Model.id)
+                        .offset(offset)
+                        .limit(limit)
+                    )
+                result = await session.execute(stmt)
+                records = result.all()
+                logger.info(f"Найдено {len(records)} моделей по запросу: '{query}'")
+                return [(r.id, r.model_name or "", r.model_engineer or "", r.model_id or "") for r in records]
+            except SQLAlchemyError as e:
+                logger.error(f"Ошибка при поиске моделей: {e}")
                 raise

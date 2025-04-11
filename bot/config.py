@@ -52,3 +52,4 @@ pf_token = settings.PLANFIX_TOKEN
 pf_url_rest = settings.PLANFIX_URL_REST
 n8n_aiagent_webhook = settings.N8N_AIAGENT_WEBHOOK
 target_chat_id = settings.TARGET_CHAT_ID
+db_host = settings.DB_HOST

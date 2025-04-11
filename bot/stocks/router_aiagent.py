@@ -341,24 +341,3 @@ def extract_balance_from_data(data_spare_parts):
         print(f"Ошибка при извлечении цены: {e}")
     return None
 
-####################### TEST ###########################
-
-# @aiagent_router.message(F.text == 'Тест')
-# async def test(message: Message):
-#     description = "Тестирование бота"
-#     data_order = await planfix_create_order(description=description)
-#     order_pf_id = data_order['id']
-#     result1 = await message.answer(f"{data_order} {order_pf_id}")
-
-#     order_id = 32
-    
-#     await OrderDAO.update(
-#         {"id": order_id},
-#         order_pf_id=order_pf_id
-#     )
-
-#     prodaction_id = 38533
-
-#     data_prodaction = await planfix_create_prodaction(order_pf_id=order_pf_id, prodaction_id=prodaction_id)
-#     result2 = await message.answer(f"{data_prodaction}")
-#     return result2  # Возвращаем последнее отправленное сообщение
