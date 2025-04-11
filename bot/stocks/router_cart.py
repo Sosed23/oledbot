@@ -11,7 +11,6 @@ from bot.stocks.dao import CartDAO
 
 cart_router = Router()
 
-
 @cart_router.message(F.text == '🛒 Корзина')
 async def send_product_cart(message: Message):
     telegram_id = message.from_user.id
@@ -20,6 +19,7 @@ async def send_product_cart(message: Message):
 
     total_quantity = sum(product.quantity for product in product_cart)
     total_price = 0
+    messages = []  # Список для хранения всех отправленных сообщений
 
     if product_cart:
         messages_to_delete = []  # Список для хранения ID сообщений, которые нужно удалить позже
@@ -59,6 +59,7 @@ async def send_product_cart(message: Message):
                 message_text,
                 reply_markup=kb.cart_aiagent_product_keyboard(product_id=product_id, prod_cart_id=prod_cart_id)
             )
+            messages.append(sent_message)  # Добавляем сообщение о товаре в список
             messages_to_delete.append(sent_message.message_id)
 
         formatted_total_price = f"{total_price:,.0f}".replace(',', ' ')
@@ -68,12 +69,15 @@ async def send_product_cart(message: Message):
             f"💵 Общая сумма заказа: {formatted_total_price} руб."
         )
         total_message = await message.answer(cart_text, reply_markup=kb.cart_order_keyboard())
+        messages.append(total_message)  # Добавляем итоговое сообщение в список
         messages_to_delete.append(total_message.message_id)
 
-        # Можно сохранить messages_to_delete в контексте, если нужно удалять сообщения позже
-    else:
-        await message.answer("Корзина пуста.")
+        # Возвращаем список всех сообщений
+        return messages
 
+    else:
+        result = await message.answer("Корзина пуста.")
+        return [result]
 
 @cart_router.callback_query(F.data.startswith('cart-aiagent-product-delete'))
 async def delete_product_aiagent_cart(callback_query: types.CallbackQuery):
@@ -92,6 +96,7 @@ async def delete_product_aiagent_cart(callback_query: types.CallbackQuery):
 
     total_quantity = sum(product.quantity for product in product_cart)
     total_price = 0
+    messages = []  # Список для хранения отправленных сообщений
 
     # Удаляем старые сообщения (если есть способ их отслеживать) или просто отправляем новые
     if product_cart:
@@ -125,10 +130,11 @@ async def delete_product_aiagent_cart(callback_query: types.CallbackQuery):
                 f"📝 Описание: {comment or 'нет описания'}"
             )
 
-            await callback_query.message.answer(
+            sent_message = await callback_query.message.answer(
                 message_text,
                 reply_markup=kb.cart_aiagent_product_keyboard(product_id=product_id, prod_cart_id=prod_cart_id)
             )
+            messages.append(sent_message)
 
         formatted_total_price = f"{total_price:,.0f}".replace(',', ' ')
         cart_text = (
@@ -136,74 +142,20 @@ async def delete_product_aiagent_cart(callback_query: types.CallbackQuery):
             f"Общее кол-во товаров: {total_quantity} шт.\n"
             f"Общая сумма заказа: {formatted_total_price} руб."
         )
-        await callback_query.message.answer(cart_text, reply_markup=kb.cart_order_keyboard())
+        total_message = await callback_query.message.answer(cart_text, reply_markup=kb.cart_order_keyboard())
+        messages.append(total_message)
+
+        # Возвращаем список сообщений
+        return messages
     else:
-        await callback_query.message.answer("Корзина пуста.")
-        
-
-######################### УПРАВЛЕНИЕ КНОПКАМИ КОРЗИНЫ (OLD))###################################
-
-
-# @cart_router.callback_query(F.data.startswith('cart-product-delete'))
-# async def delete_product_cart(callback_query: types.CallbackQuery):
-#     product_id = callback_query.data.split('_')[1]
-#     prod_cart_id = int(callback_query.data.split('_')[2])
-#     await callback_query.answer(f'product_id: {product_id}; prod_cart_id: {prod_cart_id}')
-#     await callback_query.message.delete()
-#     await CartDAO.delete(id=prod_cart_id)
-
-
-# @cart_router.callback_query(F.data.startswith('cart-product_[+]'))
-# async def plus_product_cart(callback_query: CallbackQuery):
-#     telegram_id = callback_query.from_user.id
-#     prod_cart_id = int(callback_query.data.split('_')[2])
-#     product_id = callback_query.data.split('_')[1]
-
-#     product = await CartDAO.find_one_or_none(id=prod_cart_id, telegram_id=telegram_id)
-#     if not product:
-#         await callback_query.answer("Товар не найден!", show_alert=True)
-#         return
-
-#     new_quantity = product.quantity + 1
-#     await CartDAO.update(filter_by={'id': prod_cart_id, 'telegram_id': telegram_id}, quantity=new_quantity)
-
-#     await callback_query.message.edit_text(
-#         f"{product.product_name} | Кол-во: {new_quantity} шт.",
-#         reply_markup=kb.cart_product_keyboard(
-#             product_id=product_id, prod_cart_id=product.id, quantity=new_quantity
-#         )
-#     )
-#     await callback_query.answer("Количество увеличено ✅")
-
-
-# @cart_router.callback_query(F.data.startswith('cart-product_[-]'))
-# async def minus_product_cart(callback_query: CallbackQuery):
-#     telegram_id = callback_query.from_user.id
-#     prod_cart_id = int(callback_query.data.split('_')[2])
-#     product_id = callback_query.data.split('_')[1]
-
-#     product = await CartDAO.find_one_or_none(id=prod_cart_id, telegram_id=telegram_id)
-#     if not product or product.quantity <= 1:
-#         await callback_query.answer("Нельзя уменьшить ниже 1!", show_alert=True)
-#         return
-
-#     new_quantity = product.quantity - 1
-#     await CartDAO.update(filter_by={'id': prod_cart_id, 'telegram_id': telegram_id}, quantity=new_quantity)
-
-#     await callback_query.message.edit_text(
-#         f"{product.product_name} | Кол-во: {new_quantity} шт.",
-#         reply_markup=kb.cart_product_keyboard(
-#             product_id=product_id, prod_cart_id=product.id, quantity=new_quantity
-#         )
-#     )
-#     await callback_query.answer("Количество уменьшено ✅")
-
-
-############################# ОЧИСТИТЬ КОРЗИНУ #################################
-
+        result = await callback_query.message.answer("Корзина пуста.")
+        return [result]
 
 @cart_router.callback_query(F.data.startswith('clear_cart'))
 async def clear_cart(callback_query: CallbackQuery):
     telegram_id = callback_query.from_user.id
     await CartDAO.delete(telegram_id=telegram_id, delete_all=True)
     await callback_query.answer('Корзина очищена.')
+    # Отправляем сообщение пользователю
+    result = await callback_query.message.answer("Корзина очищена.")
+    return [result]

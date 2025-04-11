@@ -239,7 +239,7 @@ async def planfix_create_order(description: str, order_id: int):
         # "name": "Новый заказ OLEDBot",
         "description": f"{description}",
         "status": {
-                "id": 2
+                "id": 1
             },
         "customFieldData": [
             {
@@ -379,7 +379,7 @@ async def planfix_create_chat(contact_pf_id: int):
 
     payload = {
         "template": {
-            "id": 43 # Коммуникация с контрагентами
+            "id": 262731 # Чат OLEDBot
         },
           "counterparty": {
             "id": contact_pf_id

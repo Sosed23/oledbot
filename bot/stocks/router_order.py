@@ -22,17 +22,18 @@ from bot.operations import OPERATION_NAMES
 
 order_router = Router()
 
-
 @order_router.message(F.text == '🗂 Мои заказы')
 async def send_orders(message: Message):
     telegram_id = message.from_user.id
+    messages = []  # Список для хранения отправленных сообщений
 
     try:
         my_orders = await OrderDAO.find_all(telegram_id=telegram_id)
  
         if not my_orders:
-            await message.answer("У вас нет заказов.")
-            return
+            result = await message.answer("У вас нет заказов.")
+            messages.append(result)
+            return messages
 
         logger.info(f"Получено {len(my_orders)} заказов для telegram_id={telegram_id}")
 
@@ -66,15 +67,17 @@ async def send_orders(message: Message):
                 f"📝 Состав заказа:\n{items_text}"
             )
 
-            await message.answer(message_text)
+            order_message = await message.answer(message_text)
+            messages.append(order_message)
 
     except Exception as e:
         logger.error(f"Ошибка при получении заказов для telegram_id={telegram_id}: {e}")
-        await message.answer("Произошла ошибка при получении заказов. Попробуйте снова.")
+        error_message = await message.answer("Произошла ошибка при получении заказов. Попробуйте снова.")
+        messages.append(error_message)
 
+    return messages
 
 ############################# ОФОРМИТЬ ЗАКАЗ (NEW) #################################
-
 
 # Определяем состояния FSM
 class OrderStates(StatesGroup):
@@ -83,16 +86,17 @@ class OrderStates(StatesGroup):
 
 # Вспомогательная функция для создания заказа и синхронизации с Планфиксом
 async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str, message_obj, state: FSMContext):
+    messages = []  # Список для хранения отправленных сообщений
     try:
         # Получаем items корзины
         cart_items = await CartDAO.find_all(telegram_id=telegram_id)
         if not cart_items:
-            await message_obj.answer(
+            error_message = await message_obj.answer(
                 "Ваша корзина пуста!",
                 reply_markup=markup_kb.back_keyboard()
             )
             await state.clear()
-            return
+            return [error_message]
 
         # Создаем заказ и получаем только его id
         order_id = await OrderDAO.add(
@@ -171,10 +175,11 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
             f"📝 Состав заказа:\n{items_text}"
         )
         logger.info(f"Отправка сообщения пользователю: {message_text}")
-        await message_obj.answer(
+        order_message = await message_obj.answer(
             message_text,
             reply_markup=markup_kb.back_keyboard()
         )
+        messages.append(order_message)
         logger.info("Сообщение успешно отправлено пользователю")
 
         # Интеграция с Планфиксом
@@ -183,7 +188,8 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
         data_order = await planfix_create_order(description=description, order_id=order_id)
         order_pf_id = data_order['id']
         logger.info(f"Создан заказ в Планфиксе: {order_pf_id}")
-        await message_obj.answer(f"Заказ в Планфиксе создан: {order_pf_id}")
+        planfix_message = await message_obj.answer(f"Заказ в Планфиксе создан: {order_pf_id}")
+        messages.append(planfix_message)
 
         await OrderDAO.update(
             {"id": order_id},
@@ -203,21 +209,24 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                 prodaction_id=prodaction_id
             )
             logger.info(f"Продукция добавлена в Планфикс: {data_prodaction}")
-            await message_obj.answer(f"Продукция добавлена в Планфикс: {data_prodaction}")
+            product_message = await message_obj.answer(f"Продукция добавлена в Планфикс: {data_prodaction}")
+            messages.append(product_message)
 
     except Exception as e:
         logger.error(f"Ошибка при создании заказа или интеграции с Планфиксом для telegram_id={telegram_id}: {e}")
-        await message_obj.answer(
+        error_message = await message_obj.answer(
             "Произошла ошибка при создании заказа или синхронизации с Планфиксом. Пожалуйста, попробуйте снова.",
             reply_markup=markup_kb.back_keyboard()
         )
         await state.clear()
-        return
+        return [error_message]
 
     # Сбрасываем состояние после успешной обработки
     logger.info("Сброс состояния FSM")
     await state.clear()
 
+    # Возвращаем список отправленных сообщений
+    return messages
 
 # Обработчик нажатия на "Оформить заказ"
 @order_router.callback_query(F.data.startswith('place_order'))
@@ -227,11 +236,11 @@ async def request_phone_before_order(callback_query: types.CallbackQuery, state:
     # Проверяем, есть ли товары в корзине
     cart_items = await CartDAO.find_all(telegram_id=telegram_id)
     if not cart_items:
-        await callback_query.message.answer(
+        result = await callback_query.message.answer(
             "Ваша корзина пуста!",
             reply_markup=markup_kb.back_keyboard()
         )
-        return
+        return result
 
     # Проверяем, есть ли номер телефона в базе данных
     user_info = await UserDAO.find_one_or_none(telegram_id=telegram_id)
@@ -245,19 +254,21 @@ async def request_phone_before_order(callback_query: types.CallbackQuery, state:
                 InlineKeyboardButton(text="Нет", callback_data="confirm_phone_no")
             ]
         ])
-        await callback_query.message.answer(
+        result = await callback_query.message.answer(
             f"Мы нашли ваш номер телефона: {phone_number}. Использовать его для оформления заказа?",
             reply_markup=keyboard
         )
         logger.info(f"Установлено состояние OrderStates.confirm_phone для telegram_id={telegram_id}")
         await state.set_state(OrderStates.confirm_phone)
+        return result
     else:
         # Если номера телефона нет, просим ввести его вручную
-        await callback_query.message.answer(
+        result = await callback_query.message.answer(
             "Для оформления заказа нам нужен ваш номер телефона. Пожалуйста, введите его в формате +7XXXXXXXXXX или 8XXXXXXXXXX:"
         )
         logger.info(f"Установлено состояние OrderStates.waiting_for_phone для telegram_id={telegram_id}")
         await state.set_state(OrderStates.waiting_for_phone)
+        return result
 
     await callback_query.answer()
 
@@ -274,19 +285,21 @@ async def process_phone_confirmation(callback_query: types.CallbackQuery, state:
         telegram_id = callback_query.from_user.id
 
         # Вызываем общую функцию для создания заказа и интеграции с Планфиксом
-        await create_order_and_sync_with_planfix(
+        result = await create_order_and_sync_with_planfix(
             telegram_id=telegram_id,
             phone_number=phone_number,
             message_obj=callback_query.message,
             state=state
         )
+        return result
 
     elif confirmation == "no":
         # Если пользователь отказался от номера, просим ввести новый
-        await callback_query.message.answer(
+        result = await callback_query.message.answer(
             "Пожалуйста, введите новый номер телефона в формате +7XXXXXXXXXX или 8XXXXXXXXXX:"
         )
         await state.set_state(OrderStates.waiting_for_phone)
+        return result
 
     await callback_query.answer()
 
@@ -298,10 +311,10 @@ async def process_manual_phone_input(message: types.Message, state: FSMContext):
     # Проверяем формат номера телефона с помощью регулярного выражения
     phone_pattern = r'^(\+7|8)\d{10}$'  # Формат: +7XXXXXXXXXX или 8XXXXXXXXXX
     if not re.match(phone_pattern, phone_number):
-        await message.answer(
+        result = await message.answer(
             "Некорректный формат номера телефона. Пожалуйста, введите номер в формате +7XXXXXXXXXX или 8XXXXXXXXXX:"
         )
-        return
+        return result
 
     telegram_id = message.from_user.id
 
@@ -324,27 +337,26 @@ async def process_manual_phone_input(message: types.Message, state: FSMContext):
             )
 
         # Вызываем общую функцию для создания заказа и интеграции с Планфиксом
-        await create_order_and_sync_with_planfix(
+        result = await create_order_and_sync_with_planfix(
             telegram_id=telegram_id,
             phone_number=phone_number,
             message_obj=message,
             state=state
         )
+        return result
 
     except Exception as e:
         logger.error(f"Ошибка при обработке номера телефона для telegram_id={telegram_id}: {e}")
-        await message.answer(
+        error_message = await message.answer(
             "Произошла ошибка при обработке номера телефона. Пожалуйста, попробуйте снова.",
             reply_markup=markup_kb.back_keyboard()
         )
         await state.clear()
-
+        return error_message
 
 ############################# ОФОРМИТЬ ЗАКАЗ (OLD) #################################
 
-
 # @order_router.callback_query(F.data.startswith('place_order'))
-
 # async def create_order_from_cart(callback_query: CallbackQuery):
 #     telegram_id = callback_query.from_user.id
 
@@ -406,9 +418,7 @@ async def process_manual_phone_input(message: types.Message, state: FSMContext):
 #     # Очищаем корзину
 #     await CartDAO.delete(telegram_id=telegram_id, delete_all=True)
 
-
 # ############################# ОЧИСТИТЬ КОРЗИНУ #################################
-
 
 # @order_router.callback_query(F.data.startswith('clear_cart'))
 # async def clear_cart(callback_query: CallbackQuery):
