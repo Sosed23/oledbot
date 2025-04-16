@@ -57,11 +57,11 @@ def search_keyboard() -> InlineKeyboardMarkup:
     return kb.as_markup()
 
 
-def product_keyboard(product_id: int, model_name: str, operation: str) -> InlineKeyboardMarkup:
-    kb = InlineKeyboardBuilder()
-    kb.button(
-        text="В корзину",
-        callback_data=f"product-cart_{product_id}_{model_name}_{operation}"
-    )
-    kb.adjust(1)
-    return kb.as_markup()
+# def product_keyboard(product_id: int, model_name: str, operation: str) -> InlineKeyboardMarkup:
+#     kb = InlineKeyboardBuilder()
+#     kb.button(
+#         text="В корзину",
+#         callback_data=f"product-cart_{product_id}_{model_name}_{operation}"
+#     )
+#     kb.adjust(1)
+#     return kb.as_markup()

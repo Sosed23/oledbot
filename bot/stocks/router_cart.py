@@ -8,6 +8,7 @@ from aiogram.fsm.state import StatesGroup, State
 from bot.planfix import planfix_production_task_id
 from bot.stocks.keyboards import inline_kb_cart as kb
 from bot.stocks.dao import CartDAO
+from bot.operations import OPERATION_NAMES
 
 cart_router = Router()
 
@@ -29,6 +30,13 @@ async def send_product_cart(message: Message):
             task_id = product.task_id
             name = product.product_name
             quantity = product.quantity
+            operation = product.operation
+
+            # Приводим operation к целому числу, если это строка
+            try:
+                operation = int(operation)
+            except (ValueError, TypeError):
+                operation = 0  # Если не удалось преобразовать, задаём значение по умолчанию
 
             product_cart_data = await planfix_production_task_id(task_id=task_id)
             custom_fields = product_cart_data.get("task", {}).get("customFieldData", [])
@@ -47,8 +55,10 @@ async def send_product_cart(message: Message):
 
             await CartDAO.update(filter_by={"id": prod_cart_id}, price=price)
 
+            name_operation = OPERATION_NAMES.get(operation, "Неизвестная операция")
+
             message_text = (
-                f"🔹 <b>{idx + 1}. Готовая продукция:</b>\n"
+                f"🔹 <b>{idx + 1}. {name_operation}:</b>\n"
                 f"📌 Артикул: <b>{task_id}</b>\n"
                 f"ℹ️ Модель: <b>{name}</b>\n"
                 f"💰 Цена: <b>{formatted_price} руб.</b>\n"
@@ -98,7 +108,6 @@ async def delete_product_aiagent_cart(callback_query: types.CallbackQuery):
     total_price = 0
     messages = []  # Список для хранения отправленных сообщений
 
-    # Удаляем старые сообщения (если есть способ их отслеживать) или просто отправляем новые
     if product_cart:
         for idx, product in enumerate(product_cart):
             prod_cart_id = product.id

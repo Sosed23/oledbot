@@ -5,15 +5,16 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from loguru import logger
 
-from bot.planfix import planfix_stock_balance_filter
+from bot.planfix import planfix_stock_balance_filter, planfix_price_re_gluing, planfix_stock_balance, planfix_basic_nomenclature_re_gluing
 from bot.users.keyboards import inline_kb as kb
+from bot.stocks.keyboards import inline_kb_cart as in_kb
 from bot.stocks.dao import CartDAO, ModelDAO
 from bot.utils.cache import get_cached_search_results, cache_search_results
-import requests
 
+from bot.operations import RE_GLUING_NAMES
 from bot.config import pf_token, pf_url_rest
 
-# Импорты из utils
+from bot.stocks.handlers_re_gluing import handle_re_gluing_common
 from bot.stocks.handlers_production import handle_production_common, add_to_cart
 from bot.utils.planfix_utils import extract_price_from_data, extract_balance_from_data
 
@@ -123,32 +124,67 @@ async def process_selected_product(message: Message, state: FSMContext):
     except IndexError:
         await message.answer("Не удалось обработать выбранную модель. Пожалуйста, попробуйте снова.")
 
+
 ####################### ЦЕНА ПЕРЕКЛЕЙКИ ###############################
 
 @search_router.callback_query(F.data == "search_re-gluing")
 async def handle_re_gluing(callback: CallbackQuery, state: FSMContext):
-    # Получаем сохраненные данные о состоянии
-    state_data = await state.get_data()
-    model_name = state_data.get('model_name', 'не указан')
-    model_id = state_data.get('model_id', 'не указан')
+    return await handle_re_gluing_common(callback, state)
 
-    # Запрашиваем данные о переклейке
-    data_re_gluing = await planfix_stock_balance_filter(model_id=model_id, operation="1")
+    # # Получаем сохраненные данные о состоянии
+    # state_data = await state.get_data()
+    # model_name = state_data.get('model_name', 'не указан')
+    # model_id = state_data.get('model_id', 'не указан')
 
-    # Извлекаем единственную цену
-    price = extract_price_from_data(data_re_gluing)
+    # # Запрашиваем данные о переклейке
+    # data_re_gluing = await planfix_price_re_gluing(model_id=model_id)
+    
+    # for entry in data_re_gluing['directoryEntries']:
+    #     for field_data in entry['customFieldData']:
+    #         value = field_data['value']
+    #         if value is not None and value != 0:
+    #             name_operation = RE_GLUING_NAMES.get(field_data['field']['id'], "Неизвестная операция")
+    #             formatted_value = f"{int(value):,}".replace(",", " ")
+    #             value_re_gluing = (
+    #                 f"🔹 <b>{name_operation}</b>\n"
+    #                 f"📌 Артикул: <b>{model_id}</b>\n"
+    #                 f"ℹ️ Модель: <b>{model_name}</b>\n"
+    #                 f"💰 Цена: <b>{formatted_value} руб.</b>"
+    #             )
+                
+    #             await callback.message.answer(f"{value_re_gluing}", reply_markup=in_kb.re_gluing_cart_keyboard(
+    #                 model_id=model_id, model_name=model_name, operation="Переклейка"))
 
-    # Формируем текст для вывода
-    if price:
-        prices_text = f"**{model_name}  Цена: {price} RUB**"
-    else:
-        prices_text = f"**{model_name}  Цена не найдена.**"
+    # await callback.answer()
 
-    # Отправляем сообщение
-    await callback.message.answer(
-        f"Вы выбрали опцию 'Цена переклейки' для модели:\n{prices_text}", parse_mode="Markdown"
-    )
-    await callback.answer()
+
+@search_router.callback_query(F.data.startswith('re-gluing-cart_'))
+async def add_product_cart(callback_query: types.CallbackQuery):
+
+    product_id = int(callback_query.data.split('_')[1])
+    model_name = callback_query.data.split('_')[2]
+    operation = callback_query.data.split('_')[3]
+    telegram_id = callback_query.from_user.id
+
+    product_cart = await CartDAO.find_one_or_none(product_id=product_id, telegram_id=telegram_id)
+
+    if not product_cart:
+
+        product_data = await planfix_stock_balance()
+        product_name = next((item[1] for item in product_data if item[0] == product_id), "Неизвестный товар")
+
+        await CartDAO.add(
+            telegram_id=telegram_id,
+            product_id=product_id,
+            product_name=model_name,
+            quantity=1,
+            operation=operation,
+            price=1000
+        )
+        await callback_query.answer(f'Новый товар {model_name} добавлен в корзину.')
+
+    await callback_query.answer()
+
 
 ####################### ПРОДАТЬ БИТИК ###############################
 

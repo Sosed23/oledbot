@@ -7,10 +7,7 @@ from bot.stocks.keyboards import inline_kb_cart as in_kb
 from bot.stocks.dao import CartDAO
 
 async def handle_production_common(callback: CallbackQuery, state: FSMContext, operation: str = "4"):
-    """
-    Общая функция для обработки готовой продукции.
-    Извлекает данные о продукции и отправляет сообщения с информацией о каждом товаре.
-    """
+
     try:
         state_data = await state.get_data()
         model_name = state_data.get('model_name', 'не указан')
@@ -36,13 +33,15 @@ async def handle_production_common(callback: CallbackQuery, state: FSMContext, o
                     model = field["value"].get("value", "Неизвестно")
                 elif field_name == "Price":
                     price = field.get("value", "Не указана")
+                    formatted_price = f"{int(price):,}".replace(",", " ")
                 elif field_name == "Комментарии":
                     description = field.get("value", "Описание отсутствует")
             
             message_text = (
+                f"🔹 <b>Дисплей (восстановленный)</b>\n"
                 f"📌 Артикул: <b>{task_id}</b>\n"
                 f"ℹ️ Модель: <b>{model}</b>\n"
-                f"💰 Цена: <b>{price} руб.</b>\n"
+                f"💰 Цена: <b>{formatted_price} руб.</b>\n"
                 f"📝 Описание: {description}"
             )
             

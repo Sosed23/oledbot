@@ -61,3 +61,13 @@ def cart_aiagent_product_keyboard(product_id: int, prod_cart_id: int) -> InlineK
         text="✖️ Удалить из корзины", callback_data=f"cart-aiagent-product-delete_{product_id}_{prod_cart_id}")
     kb.adjust(1)
     return kb.as_markup()
+
+
+def re_gluing_cart_keyboard(model_id: int, model_name: str, operation: str) -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    kb.button(
+        text="В корзину",
+        callback_data=f"re-gluing-cart_{model_id}_{model_name}_{operation}"
+    )
+    kb.adjust(1)
+    return kb.as_markup()
