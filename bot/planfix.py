@@ -495,7 +495,7 @@ async def planfix_basic_nomenclature_re_gluing(model_id: int):
     payload = {
         "offset": 0,
         "pageSize": 10,
-        "fields": "name,key,3902",   # 3902 (Прайс-лист); ;
+        "fields": "3884,name,key,3902",   # 3884 (Название); 3902 (Прайс-лист);
         # "filterId": 104410,
         "filters": [
             {
@@ -513,6 +513,38 @@ async def planfix_basic_nomenclature_re_gluing(model_id: int):
     }
 
     response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+
+####################### PRICE BASIC NOMENCLATURE RE-GLUING (FILTER) ####################################
+
+async def planfix_price_basic_nomenclature_re_gluing(model_id: int, pricelist_key: int):
+
+    url = f"{pf_url_rest}/directory/1430/entry/{pricelist_key}"
+
+    payload = {
+        "offset": 0,
+        "pageSize": 10,
+        "fields": "name,key,3780,3782,3784,3792",   # 3780 (Цена разборки/сборки); 3782 (Цена переклейки); 
+        "filterId": 104410,                                            # 3784 (Цена замены подсветки/тача); 3792 (Цена замены крышки);
+        "filters": [
+            {
+            "type": 6114,
+            "field": 4308, # Совместимость моделей
+            "operator": "equal",
+            "value": model_id
+            }
+        ]
+        }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.get(url, json=payload, headers=headers)
     data = response.json()
 
     return data
