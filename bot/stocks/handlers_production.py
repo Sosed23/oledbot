@@ -63,10 +63,7 @@ async def handle_production_common(callback: CallbackQuery, state: FSMContext, o
         return result
 
 async def add_to_cart(callback_query: types.CallbackQuery, prefix: str):
-    """
-    Общая функция для добавления товара в корзину.
-    Обрабатывает callback_data с указанным префиксом (например, 'aiagent-cart_' или 'search-cart_').
-    """
+
     try:
         data_parts = callback_query.data.split('_')
         if len(data_parts) != 5 or data_parts[0] != prefix:

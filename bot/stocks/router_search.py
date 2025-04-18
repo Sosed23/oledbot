@@ -14,7 +14,8 @@ from bot.utils.cache import get_cached_search_results, cache_search_results
 from bot.operations import RE_GLUING_NAMES
 from bot.config import pf_token, pf_url_rest
 
-from bot.stocks.handlers_re_gluing import handle_re_gluing_common
+from bot.stocks.handlers_re_gluing import handle_re_gluing_common, add_re_gluing_cart
+from bot.stocks.handlers_back_cover import handle_back_cover_common
 from bot.stocks.handlers_production import handle_production_common, add_to_cart
 from bot.utils.planfix_utils import extract_price_from_data, extract_balance_from_data
 
@@ -131,59 +132,24 @@ async def process_selected_product(message: Message, state: FSMContext):
 async def handle_re_gluing(callback: CallbackQuery, state: FSMContext):
     return await handle_re_gluing_common(callback, state)
 
-    # # Получаем сохраненные данные о состоянии
-    # state_data = await state.get_data()
-    # model_name = state_data.get('model_name', 'не указан')
-    # model_id = state_data.get('model_id', 'не указан')
-
-    # # Запрашиваем данные о переклейке
-    # data_re_gluing = await planfix_price_re_gluing(model_id=model_id)
-    
-    # for entry in data_re_gluing['directoryEntries']:
-    #     for field_data in entry['customFieldData']:
-    #         value = field_data['value']
-    #         if value is not None and value != 0:
-    #             name_operation = RE_GLUING_NAMES.get(field_data['field']['id'], "Неизвестная операция")
-    #             formatted_value = f"{int(value):,}".replace(",", " ")
-    #             value_re_gluing = (
-    #                 f"🔹 <b>{name_operation}</b>\n"
-    #                 f"📌 Артикул: <b>{model_id}</b>\n"
-    #                 f"ℹ️ Модель: <b>{model_name}</b>\n"
-    #                 f"💰 Цена: <b>{formatted_value} руб.</b>"
-    #             )
-                
-    #             await callback.message.answer(f"{value_re_gluing}", reply_markup=in_kb.re_gluing_cart_keyboard(
-    #                 model_id=model_id, model_name=model_name, operation="Переклейка"))
-
-    # await callback.answer()
-
+# ДОБАВЛЕНИЕ В КОРЗИНУ ПЕРЕКЛЕЙКУ
 
 @search_router.callback_query(F.data.startswith('re-gluing-cart_'))
-async def add_product_cart(callback_query: types.CallbackQuery):
+async def add_re_gluing_search_cart(callback_query: types.CallbackQuery):
+    return await add_re_gluing_cart(callback_query, prefix='re-gluing-cart')
 
-    product_id = int(callback_query.data.split('_')[1])
-    model_name = callback_query.data.split('_')[2]
-    operation = callback_query.data.split('_')[3]
-    telegram_id = callback_query.from_user.id
 
-    product_cart = await CartDAO.find_one_or_none(product_id=product_id, telegram_id=telegram_id)
+####################### ЗАМЕНА ЗАДНЕЙ КРЫШКИ ###############################
 
-    if not product_cart:
+@search_router.callback_query(F.data == "search_back_cover")
+async def handle_back_cover(callback: CallbackQuery, state: FSMContext):
+    return await handle_back_cover_common(callback, state)
 
-        product_data = await planfix_stock_balance()
-        product_name = next((item[1] for item in product_data if item[0] == product_id), "Неизвестный товар")
+# ДОБАВЛЕНИЕ В КОРЗИНУ ЗАМЕНУ КРЫШКИ
 
-        await CartDAO.add(
-            telegram_id=telegram_id,
-            product_id=product_id,
-            product_name=model_name,
-            quantity=1,
-            operation=operation,
-            price=1000
-        )
-        await callback_query.answer(f'Новый товар {model_name} добавлен в корзину.')
-
-    await callback_query.answer()
+# @search_router.callback_query(F.data.startswith('re-gluing-cart_'))
+# async def add_re_gluing_search_cart(callback_query: types.CallbackQuery):
+#     return await add_re_gluing_cart(callback_query, prefix='re-gluing-cart')
 
 
 ####################### ПРОДАТЬ БИТИК ###############################
@@ -220,7 +186,7 @@ async def handle_crash_display(callback: CallbackQuery, state: FSMContext):
 async def handle_production(callback: CallbackQuery, state: FSMContext):
     return await handle_production_common(callback, state, operation="4")
 
-####################### ДОБАВЛЕНИЕ В КОРЗИНУ ###############################
+# ДОБАВЛЕНИЕ В КОРЗИНУ ГОТОВОЙ ПРОДУКЦИИ
 
 @search_router.callback_query(F.data.startswith('search-cart_'))
 async def add_search_cart(callback_query: types.CallbackQuery):

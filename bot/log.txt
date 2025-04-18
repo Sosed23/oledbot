@@ -11283,3 +11283,755 @@ WHERE users.telegram_id = $1::BIGINT]
 2025-04-17 at 13:44:34 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
 2025-04-17 at 13:44:35 | INFO | Исходящий комментарий добавлен в Planfix для пользователя 1775933471
 2025-04-17 at 13:44:35 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 16:26:36 | ERROR | Бот остановлен!
+2025-04-17 at 16:26:42 | INFO | Starting bot polling...
+2025-04-17 at 16:26:42 | INFO | Starting FastAPI server...
+2025-04-17 at 16:26:43 | INFO | Бот успешно запущен.
+2025-04-17 at 16:28:06 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 16:28:06 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 16:28:08 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 16:28:08 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 16:28:10 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 16:28:10 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 16:28:11 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 16:28:13 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 16:28:13 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 16:28:13 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 16:28:14 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 16:28:20 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 16:28:20 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 16:28:21 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 16:28:21 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 16:28:21 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 16:28:22 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 16:28:22 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 16:28:22 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 16:28:22 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 16:28:22 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 16:28:22 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 16:28:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 16:28:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 16:28:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 16:28:38 | INFO | Поиск одной записи Cart по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 16:28:38 | INFO | Запись найдена по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 16:29:04 | INFO | Поиск одной записи Cart по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 16:29:04 | INFO | Запись найдена по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 16:47:57 | ERROR | Бот остановлен!
+2025-04-17 at 16:48:03 | INFO | Starting bot polling...
+2025-04-17 at 16:48:03 | INFO | Starting FastAPI server...
+2025-04-17 at 16:48:04 | INFO | Бот успешно запущен.
+2025-04-17 at 16:48:10 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 16:48:10 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 16:48:11 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 16:48:12 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 16:48:14 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 16:48:14 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 16:48:14 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 16:48:16 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 16:48:16 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 16:48:16 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 16:48:17 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 16:48:20 | ERROR | Ошибка в handle_re_gluing_common: re_gluing_cart_keyboard() got an unexpected keyword argument 'task_id'
+2025-04-17 at 16:48:20 | INFO | Обрабатываем исходящее сообщение: Произошла ошибка при обработке данных.
+2025-04-17 at 16:48:20 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 16:48:21 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 16:48:21 | INFO | Исходящий комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 16:48:22 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:07:29 | ERROR | Бот остановлен!
+2025-04-17 at 17:07:35 | INFO | Starting bot polling...
+2025-04-17 at 17:07:35 | INFO | Starting FastAPI server...
+2025-04-17 at 17:07:36 | INFO | Бот успешно запущен.
+2025-04-17 at 17:07:36 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:07:36 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:07:38 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:07:39 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:07:39 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:07:39 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:07:40 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:07:41 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:07:41 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 17:07:41 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 17:07:41 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 17:07:44 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:07:44 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:07:44 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:07:46 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:07:49 | ERROR | Ошибка в handle_re_gluing_common: re_gluing_cart_keyboard() got an unexpected keyword argument 'task_id'
+2025-04-17 at 17:07:49 | INFO | Обрабатываем исходящее сообщение: Произошла ошибка при обработке данных.
+2025-04-17 at 17:07:49 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:07:50 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:07:50 | INFO | Исходящий комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:07:51 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:08:25 | ERROR | Бот остановлен!
+2025-04-17 at 17:08:30 | INFO | Starting bot polling...
+2025-04-17 at 17:08:30 | INFO | Starting FastAPI server...
+2025-04-17 at 17:08:30 | INFO | Бот успешно запущен.
+2025-04-17 at 17:08:43 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:08:43 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:08:44 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:08:45 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:08:46 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 17:08:47 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 17:08:47 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 17:08:49 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:08:49 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:08:49 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:08:49 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:08:53 | ERROR | Ошибка в handle_re_gluing_common: re_gluing_cart_keyboard() got an unexpected keyword argument 'basic_key'
+2025-04-17 at 17:08:54 | INFO | Обрабатываем исходящее сообщение: Произошла ошибка при обработке данных.
+2025-04-17 at 17:08:54 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:08:54 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:08:55 | INFO | Исходящий комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:08:55 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:10:07 | ERROR | Бот остановлен!
+2025-04-17 at 17:10:13 | INFO | Starting bot polling...
+2025-04-17 at 17:10:13 | INFO | Starting FastAPI server...
+2025-04-17 at 17:10:14 | INFO | Бот успешно запущен.
+2025-04-17 at 17:10:17 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:10:17 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:10:19 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:10:19 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:10:21 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 17:10:22 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 17:10:22 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 17:10:24 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:10:24 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:10:24 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:10:25 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:10:28 | ERROR | Ошибка в handle_re_gluing_common: re_gluing_cart_keyboard() got an unexpected keyword argument 'basic_key'
+2025-04-17 at 17:10:28 | INFO | Обрабатываем исходящее сообщение: Произошла ошибка при обработке данных.
+2025-04-17 at 17:10:28 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:10:28 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:10:29 | INFO | Исходящий комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:10:29 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:12:52 | ERROR | Бот остановлен!
+2025-04-17 at 17:12:58 | INFO | Starting bot polling...
+2025-04-17 at 17:12:58 | INFO | Starting FastAPI server...
+2025-04-17 at 17:12:58 | INFO | Бот успешно запущен.
+2025-04-17 at 17:13:16 | ERROR | Бот остановлен!
+2025-04-17 at 17:13:22 | INFO | Starting bot polling...
+2025-04-17 at 17:13:22 | INFO | Starting FastAPI server...
+2025-04-17 at 17:13:22 | INFO | Бот успешно запущен.
+2025-04-17 at 17:13:26 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:13:26 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:13:28 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:13:29 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:13:30 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 17:13:30 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 17:13:30 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 17:13:32 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:13:32 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:13:32 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:13:33 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:13:38 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:13:38 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:13:39 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:13:39 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:13:39 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:13:40 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:13:40 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:13:40 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:13:41 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:13:41 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:13:41 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:13:42 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:13:42 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:13:42 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:22:28 | ERROR | Бот остановлен!
+2025-04-17 at 17:22:35 | INFO | Starting bot polling...
+2025-04-17 at 17:22:35 | INFO | Starting FastAPI server...
+2025-04-17 at 17:22:35 | INFO | Бот успешно запущен.
+2025-04-17 at 17:22:39 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:22:39 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:22:41 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:22:42 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:22:45 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 17:22:45 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 17:22:45 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 17:22:47 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:22:47 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:22:47 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:22:48 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:22:52 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:22:52 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:22:52 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:22:52 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:22:52 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:22:53 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:22:53 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:22:53 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:22:54 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:22:54 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:22:54 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:22:55 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:22:55 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:22:55 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:23:02 | INFO | Поиск одной записи Cart по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 17:23:03 | INFO | Запись найдена по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 17:23:07 | INFO | Поиск одной записи Cart по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 17:23:07 | INFO | Запись найдена по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 17:23:09 | INFO | Поиск одной записи Cart по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 17:23:09 | INFO | Запись найдена по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 17:24:59 | ERROR | Бот остановлен!
+2025-04-17 at 17:25:06 | INFO | Starting bot polling...
+2025-04-17 at 17:25:06 | INFO | Starting FastAPI server...
+2025-04-17 at 17:25:07 | INFO | Бот успешно запущен.
+2025-04-17 at 17:25:11 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:25:11 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:25:13 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:25:14 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:25:15 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 17:25:15 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 17:25:16 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 17:25:18 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:25:18 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:25:18 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:25:19 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:25:22 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:22 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:24 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:24 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:24 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:25 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:25 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:25:25 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:26:18 | ERROR | Бот остановлен!
+2025-04-17 at 17:26:23 | INFO | Starting bot polling...
+2025-04-17 at 17:26:23 | INFO | Starting FastAPI server...
+2025-04-17 at 17:26:24 | INFO | Бот успешно запущен.
+2025-04-17 at 17:26:25 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:26:25 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:26:26 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:26:27 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:26:29 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 17:26:29 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 17:26:29 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 17:26:31 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:26:31 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:26:31 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:26:32 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:26:35 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:26:35 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:26:36 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:26:36 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:26:36 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:26:37 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:26:37 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:26:37 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:26:38 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:26:38 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:26:38 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:26:39 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:26:39 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:26:39 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:27:48 | ERROR | Бот остановлен!
+2025-04-17 at 17:27:56 | INFO | Starting bot polling...
+2025-04-17 at 17:27:56 | INFO | Starting FastAPI server...
+2025-04-17 at 17:27:57 | INFO | Бот успешно запущен.
+2025-04-17 at 17:28:04 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:28:04 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:28:05 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:28:06 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:28:07 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 17:28:07 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 17:28:08 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 17:28:09 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:28:09 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:28:09 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:28:10 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:28:14 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:28:14 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:28:15 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:28:15 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:28:15 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:28:16 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:28:16 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:28:16 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:28:17 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:28:17 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:28:17 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:28:18 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:28:18 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:28:18 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:28:21 | INFO | Поиск одной записи Cart по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 17:28:21 | INFO | Запись найдена по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 17:29:03 | ERROR | Бот остановлен!
+2025-04-17 at 17:29:09 | INFO | Starting bot polling...
+2025-04-17 at 17:29:09 | INFO | Starting FastAPI server...
+2025-04-17 at 17:29:10 | INFO | Бот успешно запущен.
+2025-04-17 at 17:29:13 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:29:13 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:29:14 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:29:15 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:29:16 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 17:29:17 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 17:29:17 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 17:29:19 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:29:19 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:29:19 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:29:20 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:29:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:24 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:24 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:24 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:25 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:25 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:25 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:26 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:26 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:26 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:27 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:27 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:27 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:29:29 | INFO | Поиск одной записи Cart по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 17:29:29 | INFO | Запись найдена по фильтрам: {'product_id': 80, 'telegram_id': 1775933471}
+2025-04-17 at 17:31:09 | ERROR | Бот остановлен!
+2025-04-17 at 17:31:14 | INFO | Starting bot polling...
+2025-04-17 at 17:31:14 | INFO | Starting FastAPI server...
+2025-04-17 at 17:31:15 | INFO | Бот успешно запущен.
+2025-04-17 at 17:31:23 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:31:23 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:31:24 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:31:25 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:31:27 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 17:31:27 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 17:31:27 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 17:31:29 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:31:29 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:31:29 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:31:30 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:31:33 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:31:33 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:31:34 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:31:34 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:31:34 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:31:35 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:31:35 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:31:35 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:31:36 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:31:36 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:31:36 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:31:37 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:31:37 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:31:37 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:32:23 | ERROR | Бот остановлен!
+2025-04-17 at 17:32:29 | INFO | Starting bot polling...
+2025-04-17 at 17:32:29 | INFO | Starting FastAPI server...
+2025-04-17 at 17:32:29 | INFO | Бот успешно запущен.
+2025-04-17 at 17:32:31 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:32:31 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:32:32 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:32:33 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:32:35 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 17:32:35 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 17:32:35 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 17:32:37 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:32:37 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:32:37 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:32:38 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:32:41 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:32:41 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:32:42 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:32:42 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:32:42 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:32:42 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:32:42 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:32:42 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:32:43 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:32:43 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:32:43 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:32:44 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:32:44 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:32:44 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:32:47 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '1', 'task_id': '234', 'price': '2800.0'}
+2025-04-17 at 17:36:01 | ERROR | Бот остановлен!
+2025-04-17 at 17:36:08 | INFO | Starting bot polling...
+2025-04-17 at 17:36:08 | INFO | Starting FastAPI server...
+2025-04-17 at 17:36:08 | INFO | Бот успешно запущен.
+2025-04-17 at 17:36:12 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:36:12 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:36:14 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:36:14 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:36:16 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 17:36:16 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 17:36:16 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 17:36:18 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 17:36:18 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:36:18 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 17:36:19 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 17:36:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:36:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:36:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:36:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:36:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:36:24 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:36:24 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:36:24 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 17:36:25 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:36:25 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:36:25 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:36:26 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:36:26 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:36:26 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 17:36:30 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '1', 'task_id': 234, 'price': 2800}
+2025-04-17 at 17:36:30 | INFO | Запись Cart успешно добавлена.
+2025-04-17 at 17:36:53 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '6', 'task_id': 350, 'price': 1000}
+2025-04-17 at 17:36:53 | INFO | Запись Cart успешно добавлена.
+2025-04-17 at 17:36:56 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '3', 'task_id': 234, 'price': 500}
+2025-04-17 at 17:36:57 | INFO | Запись Cart успешно добавлена.
+2025-04-17 at 17:37:07 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '6', 'task_id': 349, 'price': 1000}
+2025-04-17 at 17:37:07 | INFO | Запись Cart успешно добавлена.
+2025-04-17 at 17:37:07 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '6', 'task_id': 352, 'price': 1000}
+2025-04-17 at 17:37:08 | INFO | Запись Cart успешно добавлена.
+2025-04-17 at 17:37:10 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '6', 'task_id': 352, 'price': 1000}
+2025-04-17 at 17:37:10 | INFO | Запись Cart успешно добавлена.
+2025-04-17 at 19:29:09 | INFO | Входящее сообщение от 1702502799 (@None) переслано в -4630381789
+2025-04-17 at 19:29:09 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1702502799}
+2025-04-17 at 19:29:09 | ERROR | Ошибка при поиске записи по фильтрам {'telegram_id': 1702502799}: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: connection is closed
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.referral_id, users.phone_number, users.contact_pf_id, users.chat_pf_id, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::BIGINT]
+[parameters: (1702502799,)]
+(Background on this error at: https://sqlalche.me/e/20/rvf5)
+2025-04-17 at 19:29:09 | ERROR | Ошибка при пересылке входящего сообщения: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: connection is closed
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.referral_id, users.phone_number, users.contact_pf_id, users.chat_pf_id, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::BIGINT]
+[parameters: (1702502799,)]
+(Background on this error at: https://sqlalche.me/e/20/rvf5)
+2025-04-17 at 19:29:11 | INFO | Исходящее сообщение для 1702502799 (@None) переслано в -4630381789
+2025-04-17 at 19:29:11 | INFO | Поиск всех записей Cart по фильтрам: {'telegram_id': 1702502799}
+2025-04-17 at 19:29:15 | INFO | Найдено 0 записей.
+2025-04-17 at 19:29:16 | INFO | Обрабатываем исходящее сообщение: Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте снова позже.
+2025-04-17 at 19:29:16 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1702502799}
+2025-04-17 at 19:29:16 | INFO | Запись найдена по фильтрам: {'telegram_id': 1702502799}
+2025-04-17 at 19:29:23 | INFO | Исходящий комментарий добавлен в Planfix для пользователя 1702502799
+2025-04-17 at 19:29:23 | INFO | Исходящее сообщение для 1702502799 (@None) переслано в -4630381789
+2025-04-17 at 23:52:03 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 23:52:03 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 23:52:18 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 23:52:18 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 23:52:19 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 23:52:20 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 23:52:22 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 23:52:22 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 23:52:22 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 23:52:25 | INFO | Полнотекстовый поиск моделей по запросу: '13', offset: 0, limit: 50
+2025-04-17 at 23:52:25 | INFO | Найдено 7 моделей по запросу: '13'
+2025-04-17 at 23:52:25 | INFO | Результаты поиска для '13' закэшированы
+2025-04-17 at 23:52:25 | INFO | ModelDAO (поиск): Найдено моделей: 7
+2025-04-17 at 23:52:25 | INFO | Результаты поиска для '13' найдены в кэше
+2025-04-17 at 23:52:25 | INFO | ModelDAO (поиск): Найдено моделей: 7
+2025-04-17 at 23:52:27 | INFO | Полнотекстовый поиск моделей по запросу: '13 p', offset: 0, limit: 50
+2025-04-17 at 23:52:27 | INFO | Найдено 0 моделей по запросу: '13 p'
+2025-04-17 at 23:52:27 | INFO | ModelDAO (поиск): Найдено моделей: 0
+2025-04-17 at 23:52:30 | INFO | Полнотекстовый поиск моделей по запросу: '13 P', offset: 0, limit: 50
+2025-04-17 at 23:52:30 | INFO | Найдено 0 моделей по запросу: '13 P'
+2025-04-17 at 23:52:30 | INFO | ModelDAO (поиск): Найдено моделей: 0
+2025-04-17 at 23:52:31 | INFO | Полнотекстовый поиск моделей по запросу: '13 Pro', offset: 0, limit: 50
+2025-04-17 at 23:52:31 | ERROR | Ошибка при поиске записи по фильтрам {'telegram_id': 1775933471}: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.ConnectionDoesNotExistError'>: connection was closed in the middle of operation
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.referral_id, users.phone_number, users.contact_pf_id, users.chat_pf_id, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::BIGINT]
+[parameters: (1775933471,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-04-17 at 23:52:31 | ERROR | Ошибка при пересылке входящего сообщения: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.ConnectionDoesNotExistError'>: connection was closed in the middle of operation
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.referral_id, users.phone_number, users.contact_pf_id, users.chat_pf_id, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::BIGINT]
+[parameters: (1775933471,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-04-17 at 23:52:31 | INFO | Найдено 3 моделей по запросу: '13 Pro'
+2025-04-17 at 23:52:31 | INFO | Результаты поиска для '13 Pro' закэшированы
+2025-04-17 at 23:52:31 | INFO | ModelDAO (поиск): Найдено моделей: 3
+2025-04-17 at 23:52:32 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 23:52:32 | INFO | Обрабатываем исходящее сообщение: Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте снова позже.
+2025-04-17 at 23:52:32 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 23:52:33 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 23:52:34 | INFO | Исходящий комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 23:52:35 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 23:52:35 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 23:52:35 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 23:52:36 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 23:52:37 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 23:52:46 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:46 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:46 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:47 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:47 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:47 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:48 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:48 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:48 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:49 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:49 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:49 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:50 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:50 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:52:50 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-17 at 23:56:34 | ERROR | Бот остановлен!
+2025-04-17 at 23:56:42 | INFO | Starting bot polling...
+2025-04-17 at 23:56:42 | INFO | Starting FastAPI server...
+2025-04-17 at 23:56:42 | INFO | Бот успешно запущен.
+2025-04-17 at 23:57:48 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 23:57:48 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 23:57:49 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 23:57:50 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 23:57:52 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-17 at 23:57:53 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-17 at 23:57:53 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-17 at 23:58:06 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 23:58:06 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 23:58:06 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-17 at 23:58:07 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-17 at 23:58:11 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 23:58:11 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'stringValue': ''}
+2025-04-17 at 23:59:41 | ERROR | Бот остановлен!
+2025-04-17 at 23:59:46 | INFO | Starting bot polling...
+2025-04-17 at 23:59:46 | INFO | Starting FastAPI server...
+2025-04-17 at 23:59:46 | INFO | Бот успешно запущен.
+2025-04-17 at 23:59:58 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-17 at 23:59:58 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 00:00:00 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 00:00:00 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 00:00:02 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-18 at 00:00:02 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-18 at 00:00:02 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-18 at 00:00:05 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 00:00:05 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 00:00:05 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 00:00:06 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 00:00:10 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 00:00:10 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 00:00:16 | INFO | Обрабатываем исходящее сообщение: 🔹 Дисплей (восстановленный)
+📌 Артикул: 243172
+ℹ️ Модель: Samsung S9
+💰 Цена: 8 000 руб.
+📝 Описание:
+2025-04-18 at 00:00:16 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 00:00:17 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 00:00:17 | INFO | Исходящий комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 00:00:18 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 00:00:18 | INFO | Обрабатываем исходящее сообщение: 🔹 Дисплей (восстановленный)
+📌 Артикул: 258155
+ℹ️ Модель: Samsung S9
+💰 Цена: 8 000 руб.
+📝 Описание:
+2025-04-18 at 00:00:18 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 00:00:18 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 00:00:19 | INFO | Исходящий комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 00:00:19 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 00:00:28 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '1', 'task_id': 234, 'price': 2800}
+2025-04-18 at 00:00:28 | INFO | Запись Cart успешно добавлена.
+2025-04-18 at 00:05:52 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '1', 'task_id': 234, 'price': 2800}
+2025-04-18 at 00:05:52 | INFO | Запись Cart успешно добавлена.
+2025-04-18 at 12:33:47 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 12:33:47 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:33:47 | ERROR | Ошибка при поиске записи по фильтрам {'telegram_id': 1775933471}: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: connection is closed
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.referral_id, users.phone_number, users.contact_pf_id, users.chat_pf_id, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::BIGINT]
+[parameters: (1775933471,)]
+(Background on this error at: https://sqlalche.me/e/20/rvf5)
+2025-04-18 at 12:33:47 | ERROR | Ошибка при пересылке входящего сообщения: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: connection is closed
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.referral_id, users.phone_number, users.contact_pf_id, users.chat_pf_id, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::BIGINT]
+[parameters: (1775933471,)]
+(Background on this error at: https://sqlalche.me/e/20/rvf5)
+2025-04-18 at 12:33:48 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 12:33:48 | INFO | Обрабатываем исходящее сообщение: Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте снова позже.
+2025-04-18 at 12:33:48 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:33:49 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:33:50 | INFO | Исходящий комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 12:33:50 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-18 at 12:33:50 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 12:33:51 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-18 at 12:33:51 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-18 at 12:33:53 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 12:33:53 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:33:54 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:33:54 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 12:33:58 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:33:58 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:44:41 | ERROR | Бот остановлен!
+2025-04-18 at 12:44:48 | INFO | Starting bot polling...
+2025-04-18 at 12:44:48 | INFO | Starting FastAPI server...
+2025-04-18 at 12:44:48 | INFO | Бот успешно запущен.
+2025-04-18 at 12:44:52 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 12:44:52 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:44:54 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:44:54 | INFO | Обрабатываем исходящее сообщение: 👋 Привет, Григорий! Выберите необходимое действие
+2025-04-18 at 12:44:54 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:44:54 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:44:55 | INFO | Исходящий комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 12:44:55 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 12:44:59 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 12:44:59 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:44:59 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:45:00 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 12:45:02 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-18 at 12:45:02 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-18 at 12:45:02 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-18 at 12:45:04 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 12:45:04 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:45:04 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 12:45:05 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 12:45:21 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:21 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:21 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:22 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:22 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:22 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:23 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:24 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3780, 'name': 'Цена разборки/сборки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:24 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3782, 'name': 'Цена переклейки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:24 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:33 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:45:33 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3792, 'name': 'Цена замены крышки', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 12:48:55 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '1', 'task_id': 234, 'price': 2800}
+2025-04-18 at 12:48:56 | INFO | Запись Cart успешно добавлена.
+2025-04-18 at 12:49:00 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '6', 'task_id': 349, 'price': 1000}
+2025-04-18 at 12:49:00 | INFO | Запись Cart успешно добавлена.
+2025-04-18 at 13:16:54 | ERROR | Бот остановлен!
+2025-04-18 at 13:17:00 | INFO | Starting bot polling...
+2025-04-18 at 13:17:00 | INFO | Starting FastAPI server...
+2025-04-18 at 13:17:01 | INFO | Бот успешно запущен.
+2025-04-18 at 13:18:42 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 13:18:42 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:18:43 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:18:44 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 13:18:46 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-18 at 13:18:46 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-18 at 13:18:46 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-18 at 13:18:48 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 13:18:48 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:18:48 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:18:49 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 13:18:55 | WARNING | Отсутствует или пустое 'value' в field_data: {'field': {'id': 3784, 'name': 'Цена замены подсветки/тача', 'names': {}, 'type': 1, 'objectType': 2, 'delimiter': ',', 'numberOfDecimalPlaces': 0}, 'value': None, 'stringValue': ''}
+2025-04-18 at 13:24:30 | ERROR | Бот остановлен!
+2025-04-18 at 13:24:41 | INFO | Starting bot polling...
+2025-04-18 at 13:24:41 | INFO | Starting FastAPI server...
+2025-04-18 at 13:24:42 | INFO | Бот успешно запущен.
+2025-04-18 at 13:25:11 | ERROR | Бот остановлен!
+2025-04-18 at 13:25:18 | INFO | Starting bot polling...
+2025-04-18 at 13:25:18 | INFO | Starting FastAPI server...
+2025-04-18 at 13:25:18 | INFO | Бот успешно запущен.
+2025-04-18 at 13:25:26 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 13:25:26 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:25:28 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:25:29 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 13:25:30 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-18 at 13:25:30 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-18 at 13:25:31 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-18 at 13:25:32 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 13:25:32 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:25:33 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:25:33 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 13:43:47 | ERROR | Бот остановлен!
+2025-04-18 at 13:43:53 | INFO | Starting bot polling...
+2025-04-18 at 13:43:53 | INFO | Starting FastAPI server...
+2025-04-18 at 13:43:53 | INFO | Бот успешно запущен.
+2025-04-18 at 13:44:01 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 13:44:01 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:44:03 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:44:04 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 13:44:06 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-18 at 13:44:06 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-18 at 13:44:06 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-18 at 13:44:08 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 13:44:08 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:44:08 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:44:09 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 13:45:20 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '6', 'task_id': 2883, 'price': 1000}
+2025-04-18 at 13:45:21 | INFO | Запись Cart успешно добавлена.
+2025-04-18 at 13:52:49 | ERROR | Бот остановлен!
+2025-04-18 at 13:52:54 | INFO | Starting bot polling...
+2025-04-18 at 13:52:54 | INFO | Starting FastAPI server...
+2025-04-18 at 13:52:55 | INFO | Бот успешно запущен.
+2025-04-18 at 13:53:12 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 13:53:12 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:53:14 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:53:14 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 13:53:16 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-18 at 13:53:16 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-18 at 13:53:16 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-18 at 13:53:18 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 13:53:18 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:53:18 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:53:19 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 13:54:29 | ERROR | Бот остановлен!
+2025-04-18 at 13:54:35 | INFO | Starting bot polling...
+2025-04-18 at 13:54:35 | INFO | Starting FastAPI server...
+2025-04-18 at 13:54:35 | INFO | Бот успешно запущен.
+2025-04-18 at 13:54:44 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 13:54:44 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:54:46 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:54:46 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 13:54:48 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-18 at 13:54:48 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-18 at 13:54:48 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-18 at 13:54:50 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 13:54:50 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:54:50 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:54:50 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 13:55:11 | ERROR | Бот остановлен!
+2025-04-18 at 13:55:16 | INFO | Starting bot polling...
+2025-04-18 at 13:55:16 | INFO | Starting FastAPI server...
+2025-04-18 at 13:55:16 | INFO | Бот успешно запущен.
+2025-04-18 at 13:55:35 | INFO | Добавление новой записи в Cart: {'telegram_id': 1775933471, 'product_id': 80, 'product_name': 'Samsung S9', 'quantity': 1, 'operation': '6', 'task_id': 2883, 'price': 1000}
+2025-04-18 at 13:55:37 | INFO | Запись Cart успешно добавлена.
+2025-04-18 at 13:56:21 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 13:56:21 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:56:21 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:56:22 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 13:56:24 | INFO | Полнотекстовый поиск моделей по запросу: '', offset: 0, limit: 50
+2025-04-18 at 13:56:24 | INFO | Найдено 50 моделей по запросу: ''
+2025-04-18 at 13:56:24 | INFO | ModelDAO (пустой запрос): Найдено моделей: 50
+2025-04-18 at 13:56:26 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 13:56:26 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:56:27 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 13:56:27 | INFO | Комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 17:00:51 | INFO | Входящее сообщение от 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 17:00:51 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 17:01:11 | ERROR | Ошибка при поиске записи по фильтрам {'telegram_id': 1775933471}: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.ConnectionDoesNotExistError'>: connection was closed in the middle of operation
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.referral_id, users.phone_number, users.contact_pf_id, users.chat_pf_id, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::BIGINT]
+[parameters: (1775933471,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-04-18 at 17:01:11 | ERROR | Ошибка при пересылке входящего сообщения: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.ConnectionDoesNotExistError'>: connection was closed in the middle of operation
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.referral_id, users.phone_number, users.contact_pf_id, users.chat_pf_id, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::BIGINT]
+[parameters: (1775933471,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-04-18 at 17:01:11 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789
+2025-04-18 at 17:01:11 | INFO | Поиск всех записей Cart по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 17:01:12 | INFO | Найдено 6 записей.
+2025-04-18 at 17:01:13 | INFO | Обновление записей Cart по фильтру: {'id': 136} с параметрами: {'price': 2700.0}
+2025-04-18 at 17:01:13 | INFO | Обновлено 1 записей.
+2025-04-18 at 17:01:15 | INFO | Обновление записей Cart по фильтру: {'id': 151} с параметрами: {'price': 0}
+2025-04-18 at 17:01:16 | INFO | Обновлено 1 записей.
+2025-04-18 at 17:01:18 | INFO | Обновление записей Cart по фильтру: {'id': 153} с параметрами: {'price': 0}
+2025-04-18 at 17:01:19 | INFO | Обновлено 1 записей.
+2025-04-18 at 17:01:19 | INFO | Обновление записей Cart по фильтру: {'id': 154} с параметрами: {'price': 0}
+2025-04-18 at 17:01:20 | INFO | Обновлено 1 записей.
+2025-04-18 at 17:01:21 | INFO | Обновление записей Cart по фильтру: {'id': 155} с параметрами: {'price': 0}
+2025-04-18 at 17:01:21 | INFO | Обновлено 1 записей.
+2025-04-18 at 17:01:22 | INFO | Обновление записей Cart по фильтру: {'id': 156} с параметрами: {'price': 0}
+2025-04-18 at 17:01:22 | INFO | Обновлено 1 записей.
+2025-04-18 at 17:01:22 | INFO | Обрабатываем исходящее сообщение: Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте снова позже.
+2025-04-18 at 17:01:22 | INFO | Поиск одной записи User по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 17:01:23 | INFO | Запись найдена по фильтрам: {'telegram_id': 1775933471}
+2025-04-18 at 17:01:23 | INFO | Исходящий комментарий добавлен в Planfix для пользователя 1775933471
+2025-04-18 at 17:01:24 | INFO | Исходящее сообщение для 1775933471 (@sosed2393) переслано в -4630381789

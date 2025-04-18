@@ -50,10 +50,11 @@ def product_keyboard(product_id: int) -> InlineKeyboardMarkup:
 def search_keyboard() -> InlineKeyboardMarkup:
     kb = InlineKeyboardBuilder()
     kb.button(text="Цена переклейки", callback_data="search_re-gluing")
+    kb.button(text="Замена задней крышки", callback_data="search_back_cover")
     kb.button(text="Продать битик", callback_data="search_crash-display")
     kb.button(text="Готовая продукция", callback_data="search_production")
     kb.button(text="Запчасти", callback_data="search_spare-parts")
-    kb.adjust(2, 2)
+    kb.adjust(2, 1, 2)
     return kb.as_markup()
 
 
