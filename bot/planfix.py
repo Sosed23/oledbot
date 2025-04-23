@@ -226,109 +226,6 @@ async def planfix_production_task_id(task_id: int):
     return data
 
 
-####################### CREATE NEW ORDER (PLANFIX) ####################################
-
-async def planfix_create_order(description: str, order_id: int):
-
-    url = f"{pf_url_rest}/task/"
-
-    payload = {
-        "template": {
-            "id": 46
-        },
-        # "name": "Новый заказ OLEDBot",
-        "description": f"{description}",
-        "status": {
-                "id": 1
-            },
-        "customFieldData": [
-            {
-            "field": {
-                "id": 5478 # Метки 
-            },
-            "value": [
-                {
-                "id": 2 # Заказ
-                },
-                {
-                "id": 110 # OLEDBot
-                },
-                {
-                "id": 83 # Добавить QR код
-                }
-            ]
-            },
-            {
-            "field": {
-                "id": 12124 # Курс USD - RUB (id заказа postgres)
-            },
-            "value": order_id
-            }
-        ]
-        }
-
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {pf_token}"
-    }
-
-    response = requests.post(url, json=payload, headers=headers)
-    data = response.json()
-
-    return data
-
-
-####################### CREATE NEW PRODACTION (PLANFIX) ####################################
-
-async def planfix_create_prodaction(order_pf_id: int, prodaction_pf_id: int, price: int, prodaction_id: int):
-
-    url = f"{pf_url_rest}/task/{order_pf_id}"
-
-    payload = {
-        "template": {
-            "id": 113 # Заказ: Новый заказ
-        },
-        "customFieldData": [
-            {
-            "field": {
-                "id": 5624 # Новая готовая продукция
-            },
-            "value": {
-                "id": prodaction_pf_id
-            }
-            },
-            {
-            "field": {
-                "id": 5484 # СОХРАНИТЬ
-            },
-            "value": "true"
-            },
-            {
-            "field": {
-                "id": 5594 # Цена индив, RUB
-            },
-            "value": price
-            },
-            {
-            "field": {
-                "id": 12114 # Бронирование для проброски поля prodaction_id
-            },
-            "value": prodaction_id
-            }
-        ]
-        }
-
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {pf_token}"
-    }
-
-    response = requests.post(url, json=payload, headers=headers)
-    data = response.json()
-
-    return data
-
-
 
 ####################### CREATE CONTACT (PLANFIX) ####################################
 
@@ -486,7 +383,7 @@ async def planfix_price_re_gluing(model_id: int):
     return data
 
 
-####################### BASIC NOMENCLATURE RE-GLUING (FILTER) ####################################
+####################### BASIC NOMENCLATURE DISPLAY and BACK COVER (FILTER) ####################################
 
 async def planfix_basic_nomenclature_re_gluing(model_id: int, filter_id: int):
 
@@ -559,7 +456,7 @@ async def planfix_price_basic_back_cover(model_id: int, pricelist_key: int):
     payload = {
         "offset": 0,
         "pageSize": 10,
-        "fields": "name,key,3792",   # 3792 (Цена замены крышки);
+        "fields": "name,key,3792",   # 3792 (Цена замены крышки); 3780 (Цена разборки/сборки);
         "filterId": 104410,                                            
         "filters": [
             {
@@ -602,6 +499,70 @@ async def planfix_back_cover_filter(model_id: str, operation: str):
         ],
         "fields": "id,5556,"
     }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+
+####################### BASIC BACK COVER CART (FILTER) ####################################
+
+async def planfix_basic_back_cover_cart(task_id: int, filter_id: int):
+
+    url = f"{pf_url_rest}/directory/1442/entry/list"
+
+    payload = {
+        "offset": 0,
+        "pageSize": 10,
+        "fields": "3884,name,key,3902,3906,3892",   # 3884 (Название); 3902 (Прайс-лист); 3906 (Карточка основной номенклатуры);
+        "filterId": filter_id,                      # 3892 (Цвет)
+        "filters": [
+            {
+            "type": 6115,
+            "field": 3906, # Карточка основной номенклатуры
+            "operator": "equal",
+            "value": task_id
+            }
+        ]
+        }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+
+####################### PRICE ASSEMBLY BASIC BACK COVER (FILTER) ####################################
+
+async def planfix_price_assembly_basic_back_cover(model_id: int):
+
+    url = f"{pf_url_rest}/directory/1430/entry/list"
+
+    payload = {
+        "offset": 0,
+        "pageSize": 10,
+        "fields": "name,key,3780",   # 3780 (Цена разборки/сборки);
+        "filterId": 104410,                                            
+        "filters": [
+            {
+            "type": 6114,
+            "field": 4308, # Совместимость моделей
+            "operator": "equal",
+            "value": model_id
+            }
+        ]
+        }
 
     headers = {
         "Content-Type": "application/json",

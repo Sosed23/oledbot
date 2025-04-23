@@ -3,6 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram import types
 from loguru import logger
 from bot.planfix import planfix_price_basic_back_cover, planfix_basic_nomenclature_re_gluing, planfix_stock_balance
+
 from bot.stocks.keyboards import inline_kb_cart as in_kb
 from bot.stocks.dao import CartDAO
 
@@ -10,6 +11,8 @@ from bot.operations import OPERATION_NAMES, PLANFIX_TO_OPERATION_ID
 
 
 import asyncio
+
+# ФУНКЦИЯ ОБРАЩЕНИЯ К ПФ: ЗАМЕНА ЗАДНЕЙ КРЫШКИ
 
 async def handle_back_cover_common(callback: CallbackQuery, state: FSMContext):
     try:
@@ -95,3 +98,6 @@ async def handle_back_cover_common(callback: CallbackQuery, state: FSMContext):
         result = await callback.message.answer("Произошла ошибка при обработке данных.")
         await callback.answer()
         return result
+    
+
+# ФУНКЦИЯ ОБРАЩЕНИЯ К PG CART: ЗАМЕНА ЗАДНЕЙ КРЫШКИ

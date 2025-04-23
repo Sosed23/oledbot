@@ -7,7 +7,8 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
-from bot.planfix import planfix_stock_balance, planfix_create_order, planfix_create_prodaction
+# from bot.planfix import planfix_stock_balance, planfix_create_order, planfix_create_order_prodaction_4
+from bot import planfix_order as pf_order
 from bot.users.keyboards import inline_kb as kb
 from bot.stocks.keyboards import inline_kb_cart as in_kb
 from bot.users.keyboards import markup_kb
@@ -77,7 +78,7 @@ async def send_orders(message: Message):
 
     return messages
 
-############################# ОФОРМИТЬ ЗАКАЗ (NEW) #################################
+############################# ФУНКЦИЯ ДЛЯ СОЗДАНИЯ ЗАКАЗ и ОПЕРАЦИЙ #################################
 
 # Определяем состояния FSM
 class OrderStates(StatesGroup):
@@ -142,18 +143,72 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
         await CartDAO.delete(telegram_id=telegram_id, delete_all=True)
         logger.info("Корзина очищена")
 
-        # Группируем элементы заказа по операциям
+        # Группируем элементы заказа по операциям и сразу интегрируем с Planfix
         grouped_items = {}
-        for item in order_items:
-            operation_id = int(item.operation) if isinstance(item.operation, (int, str)) and str(item.operation).isdigit() else item.operation
-            operation_name = OPERATION_NAMES.get(operation_id, f"Операция {operation_id}")
+        for idx, item in enumerate(order_items):
+            operation_id = int(item.operation) if isinstance(item.operation, (int, str)) and str(item.operation).isdigit() else 0
+            operation_name = OPERATION_NAMES.get(operation_id, f"Неизвестная операция {operation_id}")
+
+            # Формируем описание и строку элемента в зависимости от операции
+            if operation_id == 1:
+                item_text = (
+                    f"   🔹 {item.product_name}\n"
+                    f"   💰 Цена: {item.price} руб.\n"
+                    f"   📝 Описание: Тестирование"
+                )
+            elif operation_id == 2:
+                item_text = (
+                    f"   🔹 {item.product_name}\n"
+                    f"   💰 Цена: {item.price} руб.\n"
+                    f"   📝 Описание: Тестирование и замена подсветки/тача"
+                )
+            elif operation_id == 3:
+                item_text = (
+                    f"   🔹 {item.product_name}\n"
+                    f"   💰 Цена: {item.price} руб.\n"
+                    f"   📝 Описание: Разборка и сборка дисплея"
+                )
+            elif operation_id == 4:
+                # Предполагаем, что комментарий сохранен в cart_items
+                comment = getattr(cart_items[idx], 'comment', 'Тестирование')
+                item_text = (
+                    f"   🔹 {item.product_name}\n"
+                    f"   💰 Цена: {item.price} руб.\n"
+                    f"   📝 Описание: {comment}"
+                )
+            elif operation_id == 5:
+                item_text = (
+                    f"   🔹 {item.product_name}\n"
+                    f"   💰 Цена: {item.price} руб.\n"
+                    f"   📝 Описание: Поставка запчасти"
+                )
+            elif operation_id == 6:
+                item_text = (
+                    f"   🔹 {item.product_name}\n"
+                    f"   💰 Цена: {item.price} руб.\n"
+                    f"   📝 Описание: Замена задней крышки"
+                )
+            elif operation_id == 7:
+                item_text = (
+                    f"   🔹 {item.product_name}\n"
+                    f"   💰 Цена: {item.price} руб.\n"
+                    f"   📝 Описание: Продажа устройства"
+                )
+            else:
+                item_text = (
+                    f"   🔹 {item.product_name}\n"
+                    f"   💰 Цена: {item.price} руб.\n"
+                    f"   📝 Описание: Нет описания"
+                )
+
+            # Добавляем элемент в группу по операции
             if operation_name not in grouped_items:
                 grouped_items[operation_name] = []
-            grouped_items[operation_name].append(f"   🔹 {item.product_name} 💰 Цена: {item.price} руб.")
+            grouped_items[operation_name].append((idx, item_text))
 
         # Формируем текст элементов заказа
         items_text = "\n".join([
-            f"📌 <b>{operation}:</b>\n" + "\n".join(items)
+            f"📌 <b>{operation}:</b>\n" + "\n".join([item for idx, item in items])
             for operation, items in grouped_items.items()
         ]) if order_items else "Товары отсутствуют."
 
@@ -185,32 +240,86 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
         # Интеграция с Планфиксом
         logger.info("Начало интеграции с Планфиксом")
 
-        data_order = await planfix_create_order(description=description, order_id=order_id)
+        # Создаем общий заказ в Планфиксе
+        data_order = await pf_order.planfix_create_order(description=description, order_id=order_id)
         order_pf_id = data_order['id']
         logger.info(f"Создан заказ в Планфиксе: {order_pf_id}")
         planfix_message = await message_obj.answer(f"Заказ в Планфиксе создан: {order_pf_id}")
         messages.append(planfix_message)
 
+        # Обновляем заказ с order_pf_id
         await OrderDAO.update(
             {"id": order_id},
             order_pf_id=order_pf_id
         )
         logger.info(f"Заказ #{order_id} обновлён с order_pf_id={order_pf_id}")
 
-        # Добавляем продукцию в Планфикс с уникальным prodaction_id
-        for idx, cart_item in enumerate(cart_items):
-            prodaction_pf_id = cart_item.task_id
-            prodaction_id = order_item_ids[idx]  # Уникальный id из OrderItem
-            price = cart_item.price
-            data_prodaction = await planfix_create_prodaction(
-                order_pf_id=order_pf_id,
-                prodaction_pf_id=prodaction_pf_id,
-                price=price,
-                prodaction_id=prodaction_id
-            )
-            logger.info(f"Продукция добавлена в Планфикс: {data_prodaction}")
-            product_message = await message_obj.answer(f"Продукция добавлена в Планфикс: {data_prodaction}")
-            messages.append(product_message)
+        # Добавляем продукцию в Планфикс с разбивкой по операциям
+        for operation_name, items in grouped_items.items():
+            operation_id = None
+            for idx, _ in items:
+                item_operation_id = int(order_items[idx].operation) if isinstance(order_items[idx].operation, (int, str)) and str(order_items[idx].operation).isdigit() else 0
+                operation_id = item_operation_id
+                cart_item = cart_items[idx]
+                prodaction_pf_id = cart_item.task_id
+                prodaction_id = order_item_ids[idx]  # Уникальный id из OrderItem
+                price = cart_item.price
+
+                # Выбираем функцию для добавления продукции
+                # if operation_id == 1:
+                #     data_prodaction = await planfix_create_order_prodaction_1(
+                #         order_pf_id=order_pf_id,
+                #         prodaction_pf_id=prodaction_pf_id,
+                #         price=price,
+                #         prodaction_id=prodaction_id
+                #     )
+                # elif operation_id == 2:
+                #     data_prodaction = await planfix_create_order_prodaction_2(
+                #         order_pf_id=order_pf_id,
+                #         prodaction_pf_id=prodaction_pf_id,
+                #         price=price,
+                #         prodaction_id=prodaction_id
+                #     )
+                # elif operation_id == 3:
+                #     data_prodaction = await planfix_create_order_prodaction_3(
+                #         order_pf_id=order_pf_id,
+                #         prodaction_pf_id=prodaction_pf_id,
+                #         price=price,
+                #         prodaction_id=prodaction_id
+                #     )
+                if operation_id == 4:
+                    data_prodaction = await pf_order.planfix_create_order_prodaction_4(
+                        order_pf_id=order_pf_id,
+                        prodaction_pf_id=prodaction_pf_id,
+                        price=price,
+                        prodaction_id=prodaction_id
+                    )
+                # elif operation_id == 5:
+                #     data_prodaction = await planfix_create_order_prodaction_5(
+                #         order_pf_id=order_pf_id,
+                #         prodaction_pf_id=prodaction_pf_id,
+                #         price=price,
+                #         prodaction_id=prodaction_id
+                #     )
+                elif operation_id == 6:
+                    data_prodaction = await pf_order.planfix_create_order_back_cover_6(
+                        order_pf_id=order_pf_id,
+                        back_cover_pf_id=prodaction_pf_id,
+                        price=price
+                    )
+                # elif operation_id == 7:
+                #     data_prodaction = await planfix_create_order_prodaction_7(
+                #         order_pf_id=order_pf_id,
+                #         prodaction_pf_id=prodaction_pf_id,
+                #         price=price,
+                #         prodaction_id=prodaction_id
+                #     )
+                else:
+                    data_prodaction = {'id': f'unknown_operation_prodaction_{operation_id}'}
+
+                logger.info(f"Продукция добавлена в Планфикс (операция {operation_name}): {data_prodaction}")
+                product_message = await message_obj.answer(f"Продукция добавлена в Планфикс (операция {operation_name}): {data_prodaction}")
+                messages.append(product_message)
 
     except Exception as e:
         logger.error(f"Ошибка при создании заказа или интеграции с Планфиксом для telegram_id={telegram_id}: {e}")
@@ -227,6 +336,9 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
 
     # Возвращаем список отправленных сообщений
     return messages
+
+
+#######################  ОФОРМИТЬ ЗАКАЗ ############################
 
 # Обработчик нажатия на "Оформить заказ"
 @order_router.callback_query(F.data.startswith('place_order'))
@@ -260,6 +372,7 @@ async def request_phone_before_order(callback_query: types.CallbackQuery, state:
         )
         logger.info(f"Установлено состояние OrderStates.confirm_phone для telegram_id={telegram_id}")
         await state.set_state(OrderStates.confirm_phone)
+        await callback_query.answer()
         return result
     else:
         # Если номера телефона нет, просим ввести его вручную
@@ -268,9 +381,9 @@ async def request_phone_before_order(callback_query: types.CallbackQuery, state:
         )
         logger.info(f"Установлено состояние OrderStates.waiting_for_phone для telegram_id={telegram_id}")
         await state.set_state(OrderStates.waiting_for_phone)
+        await callback_query.answer()
         return result
 
-    await callback_query.answer()
 
 # Обработчик подтверждения номера телефона
 @order_router.callback_query(F.data.startswith('confirm_phone'), OrderStates.confirm_phone)
@@ -291,6 +404,7 @@ async def process_phone_confirmation(callback_query: types.CallbackQuery, state:
             message_obj=callback_query.message,
             state=state
         )
+        await callback_query.answer()
         return result
 
     elif confirmation == "no":
@@ -299,6 +413,7 @@ async def process_phone_confirmation(callback_query: types.CallbackQuery, state:
             "Пожалуйста, введите новый номер телефона в формате +7XXXXXXXXXX или 8XXXXXXXXXX:"
         )
         await state.set_state(OrderStates.waiting_for_phone)
+        await callback_query.answer()
         return result
 
     await callback_query.answer()
@@ -354,74 +469,3 @@ async def process_manual_phone_input(message: types.Message, state: FSMContext):
         await state.clear()
         return error_message
 
-############################# ОФОРМИТЬ ЗАКАЗ (OLD) #################################
-
-# @order_router.callback_query(F.data.startswith('place_order'))
-# async def create_order_from_cart(callback_query: CallbackQuery):
-#     telegram_id = callback_query.from_user.id
-
-#     async with async_session_maker() as session:
-
-#         # Получаем items корзины
-#         cart_items = await CartDAO.find_all(telegram_id=telegram_id)
-#         if not cart_items:
-#             await callback_query.message.answer("Ваша корзина пуста!")
-#             return
-
-#         # Создаем заказ
-#         order = await OrderDAO.add(
-#             session=session,
-#             telegram_id=telegram_id,
-#             total_amount=0  # Обновим позже
-#         )
-
-#         # Добавляем items заказа
-#         total_amount = 0
-#         for cart_item in cart_items:
-#             order_item = await OrderItemDAO.add(
-#                 session=session,
-#                 order_id=order.id,
-#                 product_id=cart_item.product_id,
-#                 product_name=cart_item.product_name,
-#                 quantity=cart_item.quantity,
-#                 price=cart_item.price
-#             )
-#             total_amount += cart_item.price * cart_item.quantity
-
-#         # Обновляем общую сумму заказа
-#         order.total_amount = total_amount
-
-#         # Добавляем начальный статус
-#         status_record = await OrderStatusHistoryDAO.add(
-#             session=session,
-#             order_id=order.id,  # Добавляем order_id
-#             status=OrderStatus.PENDING.value,
-#             comment="Order created"
-#         )
-
-#         # # Сохраняем все изменения (commit транзакции)
-#         # await session.commit()
-
-#         await callback_query.answer('Заказ сформирован')
-
-#         # Формируем сообщение о создании заказа
-#         message_text = (
-#             f"Заказ #{order.id} успешно создан!\n"
-#             f"Сумма заказа: {order.total_amount} руб.\n"
-#             f"Статус: {status_record.status}"
-#         )
-#         await callback_query.message.answer(message_text)
-
-#         # Сохраняем все изменения (commit транзакции)
-#         await session.commit()
-
-#     # Очищаем корзину
-#     await CartDAO.delete(telegram_id=telegram_id, delete_all=True)
-
-# ############################# ОЧИСТИТЬ КОРЗИНУ #################################
-
-# @order_router.callback_query(F.data.startswith('clear_cart'))
-# async def clear_cart(callback_query: CallbackQuery):
-#     telegram_id = callback_query.from_user.id
-#     await CartDAO.delete(telegram_id=telegram_id, delete_all=True)
-#     await callback_query.answer('Корзина очищена.')

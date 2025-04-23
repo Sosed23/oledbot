@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import BigInteger, ForeignKey, String, Integer
+from sqlalchemy import BigInteger, ForeignKey, String, Integer, Boolean
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from typing import Optional, Any
 from bot.database import Base
@@ -19,6 +19,10 @@ class Cart(Base):
     operation: Mapped[Optional[str]] = mapped_column(String)
     quantity: Mapped[int] = mapped_column(Integer)
     price: Mapped[int] = mapped_column(Integer)
+
+    assembly_required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)  # Разбор/Сбор
+    touch_or_backlight: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)  # Подсветка/Тач
+
 
     # Односторонняя связь: Cart знает о User, но User не знает о Cart
     user: Mapped['User'] = relationship("User")
