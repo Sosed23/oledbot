@@ -5,6 +5,7 @@ from loguru import logger
 from bot.planfix import planfix_all_production_filter, planfix_production_task_id
 from bot.stocks.keyboards import inline_kb_cart as in_kb
 from bot.stocks.dao import CartDAO
+from bot.users.keyboards import inline_kb as user_kb
 
 async def handle_production_common(callback: CallbackQuery, state: FSMContext, operation: str = "4"):
 
@@ -95,13 +96,20 @@ async def add_to_cart(callback_query: types.CallbackQuery, prefix: str):
         )
 
         result = await callback_query.message.answer(
-            f"📝 Новый дисплей (восстановленный) добавлен в корзину:\n"
+            f"✅ Товар успешно добавлена в корзину!\n\n"
+            f"🔹 <b>Дисплей (восстановленный)</b>\n"
             f"📌 Артикул: <b>{task_id}</b>\n"
             f"ℹ️ Модель: <b>{model_name}</b>\n"
             f"💰 Цена: <b>{price} руб.</b>\n",
             parse_mode="HTML"
         )
         await callback_query.message.delete()
+
+        # await callback_query.message.answer(
+        #     f"Выберете нужную опцию для модели: {model_name}",
+        #     reply_markup=user_kb.search_keyboard_with_model(model_id=model_id, model_name=model_name)
+        # )
+
         return result
     except Exception as e:
         logger.error(f"Ошибка при добавлении товара в корзину для telegram_id={telegram_id}: {e}")

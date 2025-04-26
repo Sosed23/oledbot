@@ -3,13 +3,26 @@ from aiogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessag
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from bot.planfix import planfix_production_task_id, planfix_basic_back_cover_cart, planfix_price_basic_back_cover, planfix_price_assembly_basic_back_cover
+from bot.planfix import (
+    planfix_production_task_id, 
+    planfix_basic_back_cover_cart, 
+    planfix_price_basic_back_cover, 
+    planfix_price_assembly_basic_back_cover,
+    planfix_price_basic_nomenclature_re_gluing, 
+    planfix_basic_nomenclature_re_gluing
+)
 from bot.stocks.keyboards import inline_kb_cart as kb
+from bot.users.keyboards import inline_kb as user_kb
 from bot.stocks.dao import CartDAO
-from bot.operations import OPERATION_NAMES
+from bot.operations import OPERATION_NAMES, PLANFIX_TO_OPERATION_ID
 import logging
+import asyncio
+
+from bot.stocks.handlers_back_cover import handle_back_cover_common
+from bot.stocks.handlers_production import handle_production_common
 
 cart_router = Router()
+
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
@@ -28,7 +41,193 @@ def get_confirmation_keyboard(prod_cart_id: str) -> InlineKeyboardMarkup:
     ])
     return keyboard
 
-# Обработчик нажатия кнопки "В корзину"
+##### ОБРАБОТЧИК ДЛЯ ОТОБРАЖЕНИЯ УСЛУГИ: ПЕРЕКЛЕЙКА ДИСПЛЕЯ - 1, 2
+
+@cart_router.callback_query(F.data.startswith("cart_search_re-gluing_"))
+async def handle_re_gluing_common(callback: CallbackQuery, state: FSMContext):
+    logger.debug(f"Вызван handle_re_gluing_common с callback_data: {callback.data}")
+    try:
+        # Извлекаем model_id и model_name из callback_data
+        data = callback.data.split("_")
+        model_id = data[3] if len(data) > 3 else None
+        model_name = data[4] if len(data) > 4 else "не указана"
+
+        if not model_id:
+            await callback.message.answer("Не удалось определить ID модели. Пожалуйста, выберите модель заново.")
+            await callback.answer()
+            return
+
+        # Сохраняем model_id и model_name в состоянии
+        await state.update_data(model_id=model_id, model_name=model_name)
+
+        data_basic_nomenclature_re_gluing = await planfix_basic_nomenclature_re_gluing(model_id=model_id, filter_id=104412)
+
+        messages = []
+        
+        for entry in data_basic_nomenclature_re_gluing['directoryEntries']:
+            pricelist_key = None
+            name_model = None
+            basic_key = entry.get('key')
+            
+            for field_data in entry['customFieldData']:
+                if field_data['field']['id'] == 3884 and field_data['field']['name'] == 'Название':
+                    name_model = field_data['value']
+                if field_data['field']['id'] == 3902 and field_data['field']['name'] == 'Прайс-лист':
+                    pricelist_key = field_data['value'].get('id')
+            
+            if pricelist_key is not None and pricelist_key != 0 and name_model:
+                messages.append(f"ID: {pricelist_key}, name_model: {name_model}")
+                data_pricelist = await planfix_price_basic_nomenclature_re_gluing(model_id=model_id, pricelist_key=pricelist_key)
+
+                if data_pricelist.get('result') == 'success' and 'entry' in data_pricelist:
+                    for field_data in data_pricelist['entry']['customFieldData']:
+                        if 'value' not in field_data or field_data['value'] is None:
+                            logger.warning(f"Отсутствует или пустое 'value' в field_data: {field_data}")
+                            continue
+                        
+                        value = field_data['value']
+                        if value != 0:
+                            planfix_field_id = field_data['field']['id']
+                            operation_id = PLANFIX_TO_OPERATION_ID.get(planfix_field_id)
+                            if operation_id is None:
+                                logger.warning(f"Неизвестный Planfix field_id: {planfix_field_id}, field_data: {field_data}")
+                                continue
+                            
+                            name_operation = OPERATION_NAMES.get(operation_id, "Неизвестная операция")
+                            pricelist_formatted = f"{int(value):,}".replace(",", " ")
+                            value_re_gluing = (
+                                f"🔹 <b>{name_operation}</b>\n"
+                                f"📌 Артикул: <b>{basic_key}</b>\n"
+                                f"ℹ️ Модель: <b>{model_name}</b>\n"
+                                f"💰 Цена: <b>{pricelist_formatted} руб.</b>"
+                            )
+                            
+                            # Ограничиваем длину только для callback_data
+                            callback_model_id = str(model_id)[:10]
+                            callback_model_name = model_name[:15]
+                            callback_data = f"re-gluing-cart_{callback_model_id}_{callback_model_name}_{operation_id}_{basic_key}_{pricelist_formatted}"
+                            logger.debug(f"Callback data: {callback_data} (length: {len(callback_data.encode('utf-8'))} bytes)")
+                            
+                            await callback.message.answer(
+                                f"{value_re_gluing}",
+                                reply_markup=kb.re_gluing_cart_keyboard(
+                                    model_id=callback_model_id,
+                                    model_name=callback_model_name,
+                                    operation=operation_id,
+                                    task_id=basic_key,
+                                    price=value
+                                )
+                            )
+                            await asyncio.sleep(0.1)
+                else:
+                    logger.warning(f"Некорректный ответ от planfix_price_basic_nomenclature_re_gluing: {data_pricelist}")
+            else:
+                logger.debug(f"Пропущен вызов planfix_price_basic_nomenclature_re_gluing: basic_key={basic_key}, pricelist_key={pricelist_key}, name_model={name_model}")
+        
+        await callback.answer()
+
+    except Exception as e:
+        logger.error(f"Ошибка в handle_re_gluing_common: {e}")
+#pragma: no cover
+        result = await callback.message.answer("Произошла ошибка при обработке данных.")
+        await callback.answer()
+        return result
+
+
+##### ОБРАБОТЧИК ДЛЯ ОТОБРАЖЕНИЯ УСЛУГИ: ЗАМЕНА ЗАДНЕЙ КРЫШКИ - 6
+
+@cart_router.callback_query(F.data.startswith("cart_search_back_cover_"))
+async def handle_back_cover_cart(callback: CallbackQuery, state: FSMContext):
+    logger.debug(f"Вызван handle_back_cover_cart с callback_data: {callback.data}")
+    try:
+        # Извлекаем model_id и model_name из callback_data
+        data = callback.data.split("_")
+        logger.debug(f"Разделенные данные callback.data: {data}")
+        
+        if len(data) < 6:  # Ожидаем минимум 6 частей: "cart_search_back_cover_MODELID_MODELNAME"
+            logger.error(f"Неверный формат callback_data: {callback.data}")
+            await callback.message.answer("Ошибка: неверный формат данных. Пожалуйста, выберите модель заново.")
+            await callback.answer()
+            return
+
+        model_id = data[4]  # Правильный индекс для model_id
+        model_name = "_".join(data[5:])  # Объединяем оставшиеся части, так как model_name может содержать пробелы (например, "Samsung S9")
+
+        # Проверяем, что model_id является числом
+        try:
+            model_id = int(model_id)
+        except ValueError:
+            logger.error(f"model_id не является числом: {model_id}")
+            await callback.message.answer("Ошибка: некорректный ID модели. Пожалуйста, выберите модель заново.")
+            await callback.answer()
+            return
+
+        logger.debug(f"Извлеченный model_id: {model_id}, model_name: {model_name}")
+
+        # Сохраняем model_id и model_name в состояние
+        await state.update_data(model_id=model_id, model_name=model_name)
+
+        # Вызываем обработку замены крышки
+        await handle_back_cover_common(callback, state)
+
+        # # После вывода всех вариантов добавляем клавиатуру для возврата к выбору опций
+        # await callback.message.answer(
+        #     f"Выберите другую опцию для модели: {model_name}",
+        #     reply_markup=user_kb.search_keyboard_with_model(model_id=model_id, model_name=model_name)
+        # )
+
+    except Exception as e:
+        logger.error(f"Ошибка в handle_back_cover_cart: {e}")
+        await callback.message.answer("Произошла ошибка при обработке замены крышки.")
+        await callback.answer()
+
+
+##### ОБРАБОТЧИК ДЛЯ ОТОБРАЖЕНИЯ ТОВАРА: ДИСПЛЕЙ (ВОССТАНОВЛЕННЫЙ) - 4
+
+@cart_router.callback_query(F.data.startswith("cart_ready_products_"))
+async def handle_ready_products_cart(callback: CallbackQuery, state: FSMContext):
+    logger.debug(f"Вызван handle_ready_products_cart с callback_data: {callback.data}")
+    try:
+        # Извлекаем model_id и model_name из callback_data
+        data = callback.data.split("_")
+        logger.debug(f"Разделенные данные callback.data: {data}")
+        
+        if len(data) < 5:  # Ожидаем минимум 5 частей: "cart_ready_products_MODELID_MODELNAME"
+            logger.error(f"Неверный формат callback_data: {callback.data}")
+            result = await callback.message.answer("Ошибка: неверный формат данных. Пожалуйста, выберите модель заново.")
+            await callback.answer()
+            return result
+
+        model_id = data[3]  # Правильный индекс для model_id
+        model_name = "_".join(data[4:])  # Объединяем оставшиеся части, так как model_name может содержать пробелы
+
+        # Проверяем, что model_id является числом
+        try:
+            model_id = int(model_id)
+        except ValueError:
+            logger.error(f"model_id не является числом: {model_id}")
+            result = await callback.message.answer("Ошибка: некорректный ID модели. Пожалуйста, выберите модель заново.")
+            await callback.answer()
+            return result
+
+        logger.debug(f"Извлеченный model_id: {model_id}, model_name: {model_name}")
+
+        # Сохраняем model_id и model_name в состояние
+        await state.update_data(model_id=model_id, model_name=model_name)
+
+        # Вызываем обработку готовой продукции и возвращаем результат
+        result = await handle_production_common(callback, state, operation="4")
+        return result
+
+    except Exception as e:
+        logger.error(f"Ошибка в handle_ready_products_cart: {e}")
+        result = await callback.message.answer("Произошла ошибка при обработке готовой продукции.")
+        await callback.answer()
+        return result
+
+
+# ОБРАБОТЧИК НАЖАТИЯ КНОПКИ "В КОРЗИНУ"
+
 @cart_router.callback_query(F.data.startswith("re-gluing-cart_"))
 async def add_to_cart(callback: CallbackQuery, state: FSMContext):
     logger.debug(f"Вызван add_to_cart с callback_data: {callback.data}")
@@ -52,6 +251,15 @@ async def add_to_cart(callback: CallbackQuery, state: FSMContext):
 
     logger.debug(f"Извлеченные данные: product_id={product_id}, product_name={product_name}, operation={operation}, task_id={task_id}, price={price}")
 
+    # Сохраняем данные модели в состоянии (если они ещё не сохранены)
+    state_data = await state.get_data()
+    model_id = state_data.get('model_id', product_id)
+    model_name = state_data.get('model_name', product_name)
+    await state.update_data(model_id=model_id, model_name=model_name)
+
+    # Устанавливаем touch_or_backlight=True для операции 2
+    touch_or_backlight = True if operation == 2 else False
+
     # Добавляем услугу в корзину
     cart_item_id = await CartDAO.add(
         telegram_id=telegram_id,
@@ -62,7 +270,7 @@ async def add_to_cart(callback: CallbackQuery, state: FSMContext):
         price=price,
         quantity=1,
         assembly_required=False,
-        touch_or_backlight=False
+        touch_or_backlight=touch_or_backlight
     )
 
     if not isinstance(cart_item_id, int):
@@ -70,8 +278,8 @@ async def add_to_cart(callback: CallbackQuery, state: FSMContext):
         await callback.answer("Ошибка при добавлении в корзину.", show_alert=True)
         return
 
-    if operation == 6:
-        # Для операции 6 задаем вопрос о подтверждении
+    if operation in (1, 2, 6):  # Операции с подтверждением разборки/сборки
+        # Для операций 1, 2 и 6 задаем вопрос о подтверждении
         formatted_price = f"{price:,.0f}".replace(',', ' ')
 
         # Получаем цену разборки/сборки
@@ -99,7 +307,7 @@ async def add_to_cart(callback: CallbackQuery, state: FSMContext):
             return
 
         message_text = (
-            f"🔹 <b>Замена/Сборка задней крышки</b>\n"
+            f"🔹 <b>{OPERATION_NAMES.get(operation, 'Неизвестная операция')}</b>\n"
             f"📌 Артикул: <b>{task_id}</b>\n"
             f"ℹ️ Модель: <b>{product_name}</b>\n"
             f"💰 Цена: <b>{formatted_price} руб.</b>\n\n"
@@ -119,7 +327,8 @@ async def add_to_cart(callback: CallbackQuery, state: FSMContext):
                 product_name=product_name,
                 task_id=task_id,
                 price=price,
-                price_assembly=price_assembly  # Добавляем price_assembly
+                price_assembly=price_assembly,
+                operation=operation
             )
             await state.set_state(CartStates.waiting_for_confirmation)
         except Exception as e:
@@ -131,8 +340,14 @@ async def add_to_cart(callback: CallbackQuery, state: FSMContext):
             filter_by={"id": cart_item_id},
             assembly_required=True
         )
-        logger.debug("Услуга подтверждена для не-6 операции.")
-        await callback.message.answer("Услуга добавлена в корзину!")
+        logger.debug("Услуга подтверждена для не-1, не-2 и не-6 операции.")
+        # Отправляем сообщение об успешном добавлении без клавиатуры
+        await callback.message.answer("✅ Услуга успешно добавлена в корзину!")
+        # Отправляем отдельное сообщение с клавиатурой
+        await callback.message.answer(
+            f"Выберете нужную опцию для модели: {model_name}",
+            reply_markup=user_kb.search_keyboard_with_model(model_id=model_id, model_name=model_name)
+        )
 
     await callback.answer()
 
@@ -156,28 +371,31 @@ async def process_cart_confirmation(callback: CallbackQuery, state: FSMContext):
     product_name = state_data.get('product_name')
     task_id = state_data.get('task_id')
     price = state_data.get('price')
-    price_assembly = state_data.get('price_assembly', 0)  # Извлекаем price_assembly, по умолчанию 0
+    price_assembly = state_data.get('price_assembly', 0)
+    operation = state_data.get('operation')
+    model_id = state_data.get('model_id')
+    model_name = state_data.get('model_name')
 
     # Получаем данные для формирования сообщения
-    data_back_cover = await planfix_basic_back_cover_cart(task_id=task_id, filter_id=104414)
-    custom_fields = data_back_cover.get("directoryEntries", [{}])[0].get("customFieldData", [])
     color = "не указан"
-    name_operation = OPERATION_NAMES.get(6, "Неизвестная операция")
-    
-    for field in custom_fields:
-        field_id = field.get("field", {}).get("id")
-        if field_id == 3892:  # ID поля Цвет
-            color = field.get("value", {}).get("value", "не указан")
-        elif field_id == 3902:  # ID поля Прайс-лист
-            pricelist_key = field.get("value", {}).get("id", "не указан")
-            data_pricelist = await planfix_price_basic_back_cover(model_id=int(product_id), pricelist_key=pricelist_key)
-            if data_pricelist.get('result') == 'success' and 'entry' in data_pricelist:
-                for field_data in data_pricelist['entry']['customFieldData']:
-                    price = int(field_data['value'])  # Обновляем цену
+    if operation == 6:
+        data_back_cover = await planfix_basic_back_cover_cart(task_id=task_id, filter_id=104414)
+        custom_fields = data_back_cover.get("directoryEntries", [{}])[0].get("customFieldData", [])
+        for field in custom_fields:
+            field_id = field.get("field", {}).get("id")
+            if field_id == 3892:  # ID поля Цвет
+                color = field.get("value", {}).get("value", "не указан")
+            elif field_id == 3902:  # ID поля Прайс-лист
+                pricelist_key = field.get("value", {}).get("id", "не указан")
+                data_pricelist = await planfix_price_basic_back_cover(model_id=int(product_id), pricelist_key=pricelist_key)
+                if data_pricelist.get('result') == 'success' and 'entry' in data_pricelist:
+                    for field_data in data_pricelist['entry']['customFieldData']:
+                        price = int(field_data['value'])  # Обновляем цену
 
     formatted_price = f"{price:,.0f}".replace(',', ' ')
     confirmation_status = "Подтвержден"
     formatted_assembly_price = f"{int(price_assembly):,.0f}".replace(',', ' ') + " руб."
+    name_operation = OPERATION_NAMES.get(operation, "Неизвестная операция")
 
     if action == "yes":
         # Подтверждение: обновляем assembly_required=True
@@ -187,32 +405,63 @@ async def process_cart_confirmation(callback: CallbackQuery, state: FSMContext):
         )
         logger.info(f"Услуга подтверждена: prod_cart_id={prod_cart_id}")
 
-        message_text = (
-            f"✅ <b>Услуга успешно добавлена в корзину!</b>\n\n"
-            f"🔹 <b>{name_operation}:</b>\n"
-            f"📌 Артикул: <b>{task_id}</b>\n"
-            f"ℹ️ Модель: <b>{product_name}</b>\n"
-            f"🎨 Цвет: <b>{color}</b>\n"
-            f"💰 Цена: <b>{formatted_price} руб.</b>\n\n"
-            f"📝 Разбор/Сбор: <b>{confirmation_status}</b>\n"
-            f"💰 Цена разбора/сбора: <b>{formatted_assembly_price}</b>\n"
-        )
+        if operation == 6:
+            message_text = (
+                f"✅ Услуга успешно добавлена в корзину!\n\n"
+                f"🔹 <b>{name_operation}:</b>\n"
+                f"📌 Артикул: <b>{task_id}</b>\n"
+                f"ℹ️ Модель: <b>{product_name}</b>\n"
+                f"🎨 Цвет: <b>{color}</b>\n"
+                f"💰 Цена: <b>{formatted_price} руб.</b>\n\n"
+                f"📝 Разбор/Сбор: <b>{confirmation_status}</b>\n"
+                f"💰 Цена разбора/сборки: <b>{formatted_assembly_price}</b>\n"
+            )
+        else:  # operation == 1 или operation == 2
+            message_text = (
+                f"✅ Услуга успешно добавлена в корзину!\n\n"
+                f"🔹 <b>{name_operation}:</b>\n"
+                f"📌 Артикул: <b>{task_id}</b>\n"
+                f"ℹ️ Модель: <b>{product_name}</b>\n"
+                f"💰 Цена: <b>{formatted_price} руб.</b>\n\n"
+                f"📝 Разбор/Сбор: <b>{confirmation_status}</b>\n"
+                f"💰 Цена разбора/сборки: <b>{formatted_assembly_price}</b>\n"
+            )
 
         await callback.message.delete()
+        # Отправляем сообщение об успешном добавлении
         await callback.message.answer(message_text)
+        # Отправляем отдельное сообщение с клавиатурой
+        await callback.message.answer(
+            f"Выберете нужную опцию для модели: {model_name}",
+            reply_markup=user_kb.search_keyboard_with_model(model_id=model_id, model_name=model_name)
+        )
     elif action == "no":
-        
-        message_text = (
-            f"✅ <b>Услуга успешно добавлена в корзину!</b>\n\n"
-            f"🔹 <b>{name_operation}:</b>\n"
-            f"📌 Артикул: <b>{task_id}</b>\n"
-            f"ℹ️ Модель: <b>{product_name}</b>\n"
-            f"🎨 Цвет: <b>{color}</b>\n"
-            f"💰 Цена: <b>{formatted_price} руб.</b>\n"
-        )
+        if operation == 6:
+            message_text = (
+                f"✅ Услуга успешно добавлена в корзину!\n\n"
+                f"🔹 <b>{name_operation}:</b>\n"
+                f"📌 Артикул: <b>{task_id}</b>\n"
+                f"ℹ️ Модель: <b>{product_name}</b>\n"
+                f"🎨 Цвет: <b>{color}</b>\n"
+                f"💰 Цена: <b>{formatted_price} руб.</b>\n"
+            )
+        else:  # operation == 1 или operation == 2
+            message_text = (
+                f"✅ Услуга успешно добавлена в корзину!\n\n"
+                f"🔹 <b>{name_operation}:</b>\n"
+                f"📌 Артикул: <b>{task_id}</b>\n"
+                f"ℹ️ Модель: <b>{product_name}</b>\n"
+                f"💰 Цена: <b>{formatted_price} руб.</b>\n"
+            )
 
         await callback.message.delete()
+        # Отправляем сообщение об успешном добавлении
         await callback.message.answer(message_text)
+        # Отправляем отдельное сообщение с клавиатурой
+        await callback.message.answer(
+            f"Выберете нужную опцию для модели: {model_name}",
+            reply_markup=user_kb.search_keyboard_with_model(model_id=model_id, model_name=model_name)
+        )
 
     await state.clear()
     await callback.answer()
@@ -250,6 +499,27 @@ async def send_product_cart(message: Message):
             name_operation = OPERATION_NAMES.get(operation, "Неизвестная операция")
             formatted_price = f"{price:,.0f}".replace(',', ' ')
 
+            # Инициализируем price_assembly для операций 1, 2 и 6
+            price_assembly = 0
+            if operation in (1, 2, 6):  # Операции с разборкой/сборкой
+                # Получаем цену разборки/сборки
+                data_price_assembly = await planfix_price_assembly_basic_back_cover(model_id=product_id)
+                try:
+                    if data_price_assembly.get("result") == "success":
+                        entries = data_price_assembly.get("directoryEntries", [])
+                        if entries and "customFieldData" in entries[0]:
+                            custom_fields = entries[0]["customFieldData"]
+                            for field in custom_fields:
+                                if field.get("field", {}).get("id") == 3780:  # Поле "Цена разборки/сборки"
+                                    price_assembly = field.get("value")
+                                    break
+                    if price_assembly is None:
+                        logger.warning(f"Цена разборки/сборки не найдена в ответе: {data_price_assembly}")
+                        price_assembly = 0
+                except Exception as e:
+                    logger.error(f"Ошибка извлечения цены разборки/сборки: {e}, данные: {data_price_assembly}")
+                    price_assembly = 0
+
             # Логика для операции 4: получаем данные из Planfix
             if operation == 4:
                 product_cart_data = await planfix_production_task_id(task_id=task_id)
@@ -269,21 +539,47 @@ async def send_product_cart(message: Message):
 
             # Формируем message_text в зависимости от операции
             if operation == 1:
-                message_text = (
-                    f"🔹 <b>{idx + 1}. {name_operation}:</b>\n"
-                    f"📌 Артикул: <b>{task_id}</b>\n"
-                    f"ℹ️ Модель: <b>{name}</b>\n"
-                    f"💰 Цена: <b>{formatted_price} руб.</b>\n"
-                    f"📝 Описание: Тестирование"
-                )
+                confirmation_status = "Подтвержден"
+                formatted_assembly_price = f"{int(price_assembly):,.0f}".replace(',', ' ') + " руб."
+                if assembly_required:
+                    message_text = (
+                        f"🔹 <b>{idx + 1}. {name_operation}:</b>\n"
+                        f"📌 Артикул: <b>{task_id}</b>\n"
+                        f"ℹ️ Модель: <b>{name}</b>\n"
+                        f"💰 Цена: <b>{formatted_price} руб.</b>\n"
+                        f"📝 Описание: Тестирование\n\n"
+                        f"📝 Разбор/Сбор: <b>{confirmation_status}</b>\n"
+                        f"💰 Цена разбора/сборки: <b>{formatted_assembly_price}</b>\n"
+                    )
+                else:
+                    message_text = (
+                        f"🔹 <b>{idx + 1}. {name_operation}:</b>\n"
+                        f"📌 Артикул: <b>{task_id}</b>\n"
+                        f"ℹ️ Модель: <b>{name}</b>\n"
+                        f"💰 Цена: <b>{formatted_price} руб.</b>\n"
+                        f"📝 Описание: Тестирование"
+                    )
             elif operation == 2:
-                message_text = (
-                    f"🔹 <b>{idx + 1}. {name_operation}:</b>\n"
-                    f"📌 Артикул: <b>{task_id}</b>\n"
-                    f"ℹ️ Модель: <b>{name}</b>\n"
-                    f"💰 Цена: <b>{formatted_price} руб.</b>\n"
-                    f"📝 Описание: Тестирование и замена подсветки/тача"
-                )
+                confirmation_status = "Подтвержден"
+                formatted_assembly_price = f"{int(price_assembly):,.0f}".replace(',', ' ') + " руб."
+                if assembly_required:
+                    message_text = (
+                        f"🔹 <b>{idx + 1}. {name_operation}:</b>\n"
+                        f"📌 Артикул: <b>{task_id}</b>\n"
+                        f"ℹ️ Модель: <b>{name}</b>\n"
+                        f"💰 Цена: <b>{formatted_price} руб.</b>\n"
+                        f"📝 Описание: Тестирование и замена подсветки/тача\n\n"
+                        f"📝 Разбор/Сбор: <b>{confirmation_status}</b>\n"
+                        f"💰 Цена разбора/сборки: <b>{formatted_assembly_price}</b>\n"
+                    )
+                else:
+                    message_text = (
+                        f"🔹 <b>{idx + 1}. {name_operation}:</b>\n"
+                        f"📌 Артикул: <b>{task_id}</b>\n"
+                        f"ℹ️ Модель: <b>{name}</b>\n"
+                        f"💰 Цена: <b>{formatted_price} руб.</b>\n"
+                        f"📝 Описание: Тестирование и замена подсветки/тача"
+                    )
             elif operation == 3:
                 message_text = (
                     f"🔹 <b>{idx + 1}. {name_operation}:</b>\n"
@@ -326,15 +622,27 @@ async def send_product_cart(message: Message):
                             await CartDAO.update(filter_by={"id": prod_cart_id}, price=price_back_cover)
                             price = price_back_cover
 
-                confirmation_status = "✅ Подтверждено" if assembly_required else "❌ Не подтверждено"
-                message_text = (
-                    f"🔹 <b>{idx + 1}. {name_operation}:</b>\n"
-                    f"📌 Артикул: <b>{task_id}</b>\n"
-                    f"ℹ️ Модель: <b>{name}</b>\n"
-                    f"🎨 Цвет: <b>{color}</b>\n"
-                    f"💰 Цена: <b>{formatted_price} руб.</b>\n"
-                    f"📝 Статус: <b>{confirmation_status}</b>"
-                )
+                confirmation_status = "Подтвержден"
+                formatted_assembly_price = f"{int(price_assembly):,.0f}".replace(',', ' ') + " руб."
+
+                if assembly_required:
+                    message_text = (
+                        f"🔹 <b>{idx + 1}. {name_operation}:</b>\n"
+                        f"📌 Артикул: <b>{task_id}</b>\n"
+                        f"ℹ️ Модель: <b>{name}</b>\n"
+                        f"🎨 Цвет: <b>{color}</b>\n"
+                        f"💰 Цена: <b>{formatted_price} руб.</b>\n\n"
+                        f"📝 Разбор/Сбор: <b>{confirmation_status}</b>\n"
+                        f"💰 Цена разбора/сборки: <b>{formatted_assembly_price}</b>\n"
+                    )
+                else:
+                    message_text = (
+                        f"🔹 <b>{idx + 1}. {name_operation}:</b>\n"
+                        f"📌 Артикул: <b>{task_id}</b>\n"
+                        f"ℹ️ Модель: <b>{name}</b>\n"
+                        f"🎨 Цвет: <b>{color}</b>\n"
+                        f"💰 Цена: <b>{formatted_price} руб.</b>\n"
+                    )
             elif operation == 7:
                 message_text = (
                     f"🔹 <b>{idx + 1}. {name_operation}:</b>\n"
@@ -352,7 +660,16 @@ async def send_product_cart(message: Message):
                     f"📝 Описание: Нет описания"
                 )
 
-            total_price += price * quantity if assembly_required else 0  # Учитываем только подтвержденные услуги
+            # Учитываем price и price_assembly в зависимости от операции
+            if operation in (1, 2, 6):  # Операции с разборкой/сборкой
+                # Для операций 1, 2 и 6: если assembly_required == True, добавляем price + price_assembly, иначе только price
+                if assembly_required:
+                    total_price += (price + int(price_assembly)) * quantity
+                else:
+                    total_price += price * quantity
+            else:
+                # Для остальных операций добавляем только price
+                total_price += price * quantity
 
             # Отправляем сообщение
             sent_message = await message.answer(

@@ -117,7 +117,9 @@ async def add_re_gluing_cart(callback_query: types.CallbackQuery, prefix: str):
         quantity=1,
         operation=operation,
         task_id=task_id,
-        price=price
+        price=price,
+        assembly_required=False,
+        touch_or_backlight=False
     )
     await callback_query.answer(f'Новый товар {model_name} добавлен в корзину.')
 

@@ -424,7 +424,7 @@ async def planfix_price_basic_nomenclature_re_gluing(model_id: int, pricelist_ke
     payload = {
         "offset": 0,
         "pageSize": 10,
-        "fields": "name,key,3780,3782,3784",  # 3780 (Цена разборки/сборки); 3782 (Цена переклейки);
+        "fields": "name,key,3782,3784",  # 3780 (Цена разборки/сборки); 3782 (Цена переклейки);
         "filterId": 104410,                         # 3784 (Цена замены подсветки/тача); 
         "filters": [
             {
