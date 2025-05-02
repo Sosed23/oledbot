@@ -4,13 +4,14 @@ from aiogram import types
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.filters import Command
 from loguru import logger
-from bot.planfix import planfix_stock_balance_filter, upload_photo_to_planfix, planfix_price_assembly_basic_back_cover
+from bot.planfix import planfix_stock_balance_filter, upload_photo_to_planfix, planfix_price_assembly_basic_back_cover, add_outgoing_comment_to_chat
 from bot.utils.planfix_utils import extract_price_from_data
 from bot.stocks.keyboards import inline_kb_cart as in_kb
 from bot.stocks.dao import CartDAO
 from bot.users.dao import UserDAO
 from collections import defaultdict
 import asyncio
+import re
 
 from bot.operations import OPERATION_NAMES, PLANFIX_TO_OPERATION_ID
 
@@ -20,6 +21,10 @@ MEDIA_GROUP_TIMEOUT = 1.0
 class CrashDisplayOrder(StatesGroup):
     waiting_for_quantity = State()
     waiting_for_photo = State()
+
+def strip_html(text: str) -> str:
+    clean = re.compile('<.*?>')
+    return re.sub(clean, '', text)
 
 async def handle_crash_display_common(callback: CallbackQuery, state: FSMContext):
     state_data = await state.get_data()
@@ -33,6 +38,16 @@ async def handle_crash_display_common(callback: CallbackQuery, state: FSMContext
     price_minus = extract_price_from_data(data_crash_display_minus)
     
     operation = 7
+
+    # Получаем chat_pf_id для отправки в Planfix
+    telegram_id = callback.from_user.id
+    data_chat_pf_id = await UserDAO.find_one_or_none(telegram_id=telegram_id)
+    if not data_chat_pf_id or not data_chat_pf_id.chat_pf_id:
+        logger.warning(f"У пользователя {telegram_id} отсутствует chat_pf_id")
+        await callback.message.answer("Ошибка: у вас нет активного чата в Planfix. Пожалуйста, перезапустите бота с помощью /start.")
+        await state.clear()
+        return
+    chat_pf_id = data_chat_pf_id.chat_pf_id
 
     if price_plus and float(price_plus) > 0:
         formatted_price_plus = f"{int(price_plus):,}".replace(",", " ")
@@ -55,6 +70,15 @@ async def handle_crash_display_common(callback: CallbackQuery, state: FSMContext
             ),
             parse_mode="HTML"
         )
+
+        # Отправляем сообщение в Planfix
+        clean_message_text = strip_html(message_text)
+        success = await add_outgoing_comment_to_chat(chat_pf_id=chat_pf_id, comment=clean_message_text)
+        if not success:
+            logger.error(f"Не удалось отправить сообщение в Planfix для пользователя {telegram_id}")
+            await callback.message.answer("Ошибка: не удалось отправить сообщение в Planfix.")
+        else:
+            logger.info(f"Сообщение успешно отправлено в Planfix для пользователя {telegram_id}")
         
         await callback.answer()
 
@@ -79,6 +103,15 @@ async def handle_crash_display_common(callback: CallbackQuery, state: FSMContext
             ),
             parse_mode="HTML"
         )
+
+        # Отправляем сообщение в Planfix
+        clean_message_text = strip_html(message_text)
+        success = await add_outgoing_comment_to_chat(chat_pf_id=chat_pf_id, comment=clean_message_text)
+        if not success:
+            logger.error(f"Не удалось отправить сообщение в Planfix для пользователя {telegram_id}")
+            await callback.message.answer("Ошибка: не удалось отправить сообщение в Planfix.")
+        else:
+            logger.info(f"Сообщение успешно отправлено в Planfix для пользователя {telegram_id}")
     
         await callback.answer()
 
@@ -152,6 +185,11 @@ async def process_photo(message: types.Message, state: FSMContext):
     quantity = state_data.get('quantity')
 
     data_chat_pf_id = await UserDAO.find_one_or_none(telegram_id=telegram_id)
+    if not data_chat_pf_id or not data_chat_pf_id.chat_pf_id:
+        logger.warning(f"У пользователя {telegram_id} отсутствует chat_pf_id")
+        await message.answer("Ошибка: у вас нет активного чата в Planfix. Пожалуйста, перезапустите бота с помощью /start.")
+        await state.clear()
+        return
     chat_pf_id = data_chat_pf_id.chat_pf_id
 
     photo_files = []
@@ -170,7 +208,7 @@ async def process_photo(message: types.Message, state: FSMContext):
                 photo_files.append(photo_bytes)
                 photo_file_ids.append(photo.file_id)
             except Exception as e:
-                logger.error(f"Ошибка при скачивании фото из Telegram: {e}")
+                logger.error(f"Ошибка при скачиванием фото из Telegram: {e}")
                 failed_photos += 1
                 continue
 
@@ -202,6 +240,8 @@ async def process_photo(message: types.Message, state: FSMContext):
             "quantity": new_quantity,
             "photo_file_ids": updated_file_ids
         }
+        valid_columns = ["quantity", "photo_file_ids"]
+        data = {k: v for k, v in data.items() if k in valid_columns}
         logger.debug(f"Данные для обновления: {data}")
         await CartDAO.update(
             filter_by={
@@ -228,23 +268,43 @@ async def process_photo(message: types.Message, state: FSMContext):
         logger.info(f"Новая запись добавлена в корзину: telegram_id={telegram_id}, product_id={model_id}, operation={operation}")
 
     if touch_or_backlight == False:
-        await message.answer(
+        message_text = (
             f"✅ Услуга успешно добавлена в корзину!\n\n"
             f"🔹 <b>Битик с оригинальной подсветкой/тачом</b>\n"
             f"📌 Артикул: <b>{task_id_crash_display}</b>\n"
             f"ℹ️ Модель: <b>{model_name}</b>\n"
             f"🔢 Количество: <b>{quantity} шт.</b>\n"
             f"💰 Цена: <b>{price} руб.</b>"
-        )                           
+        )
+        await message.answer(message_text, parse_mode="HTML")
+
+        # Отправляем сообщение в Planfix
+        clean_message_text = strip_html(message_text)
+        success = await add_outgoing_comment_to_chat(chat_pf_id=chat_pf_id, comment=clean_message_text)
+        if not success:
+            logger.error(f"Не удалось отправить сообщение в Planfix для пользователя {telegram_id}")
+            await message.answer("Ошибка: не удалось отправить сообщение в Planfix.")
+        else:
+            logger.info(f"Сообщение успешно отправлено в Planfix для пользователя {telegram_id}")
 
     else:
-        await message.answer(
+        message_text = (
             f"✅ Услуга успешно добавлена в корзину!\n\n"
-            f"🔹 <b>Битик с поврежде подсветкой/тачом</b>\n"
+            f"🔹 <b>Битик с повреждённой подсветкой/тачом</b>\n"
             f"📌 Артикул: <b>{task_id_crash_display}</b>\n"
             f"ℹ️ Модель: <b>{model_name}</b>\n"
             f"🔢 Количество: <b>{quantity} шт.</b>\n"
             f"💰 Цена: <b>{price} руб.</b>"
         )
+        await message.answer(message_text, parse_mode="HTML")
+
+        # Отправляем сообщение в Planfix
+        clean_message_text = strip_html(message_text)
+        success = await add_outgoing_comment_to_chat(chat_pf_id=chat_pf_id, comment=clean_message_text)
+        if not success:
+            logger.error(f"Не удалось отправить сообщение в Planfix для пользователя {telegram_id}")
+            await message.answer("Ошибка: не удалось отправить сообщение в Planfix.")
+        else:
+            logger.info(f"Сообщение успешно отправлено в Planfix для пользователя {telegram_id}")
 
     await state.clear()
