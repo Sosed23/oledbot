@@ -71,3 +71,19 @@ def re_gluing_cart_keyboard(model_id: int, model_name: str, operation: str, task
     )
     kb.adjust(1)
     return kb.as_markup()
+
+
+def crash_display_cart_keyboard(model_id: int,
+                                model_name: str,
+                                operation: str,
+                                task_id: str,
+                                price: int,
+                                touch_or_backlight: str
+                                ) -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    kb.button(
+        text="Оформить заявку",
+        callback_data=f"crash-display-cart_{model_id}_{model_name}_{operation}_{task_id}_{price}_{touch_or_backlight}"
+    )
+    kb.adjust(1)
+    return kb.as_markup()

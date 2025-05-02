@@ -6,6 +6,7 @@ from aiogram.filters import Command
 from aiogram.types import BotCommand, BotCommandScopeDefault
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from loguru import logger
+import re
 
 from bot.config import bot, admins, dp, target_chat_id
 from bot.users.router import user_router
@@ -18,6 +19,10 @@ from bot.stocks.group_router import group_router
 from bot.webhook import app as fastapi_app  # Импортируем FastAPI-приложение
 from bot.planfix import add_incoming_comment_to_chat, add_outgoing_comment_to_chat
 from bot.users.dao import UserDAO
+
+def strip_html(text: str) -> str:
+    clean = re.compile('<.*?>')
+    return re.sub(clean, '', text)
 
 # Middleware для пересылки входящих сообщений (от пользователя к боту)
 class ForwardIncomingMessageMiddleware(BaseMiddleware):
@@ -127,12 +132,17 @@ class ForwardOutgoingMessageMiddleware(BaseMiddleware):
                 username = result.chat.username if result.chat.username else "None"
                 message_text = result.text if result.text else "Сообщение без текста"
 
-                logger.info(f"Обрабатываем исходящее сообщение: {message_text}")
+                logger.debug(f"Перехват исходящего сообщения: {message_text} для пользователя {user_id}")
+
+                # Очищаем HTML перед отправкой в Planfix
+                clean_message_text = strip_html(message_text)
+
+                logger.info(f"Обрабатываем исходящее сообщение: {clean_message_text}")
                 user_data = await UserDAO.find_one_or_none(telegram_id=user_id)
                 if user_data and user_data.chat_pf_id:
                     success = await add_outgoing_comment_to_chat(
                         chat_pf_id=user_data.chat_pf_id,
-                        comment=message_text
+                        comment=clean_message_text
                     )
                     if not success:
                         logger.error(f"Не удалось добавить исходящий комментарий в Planfix для пользователя {user_id}")
@@ -159,12 +169,17 @@ class ForwardOutgoingMessageMiddleware(BaseMiddleware):
                     username = msg.chat.username if msg.chat.username else "None"
                     message_text = msg.text if msg.text else "Сообщение без текста"
 
-                    logger.info(f"Обрабатываем исходящее сообщение: {message_text}")
+                    logger.debug(f"Перехват исходящего сообщения: {message_text} для пользователя {user_id}")
+
+                    # Очищаем HTML перед отправкой в Planfix
+                    clean_message_text = strip_html(message_text)
+
+                    logger.info(f"Обрабатываем исходящее сообщение: {clean_message_text}")
                     user_data = await UserDAO.find_one_or_none(telegram_id=user_id)
                     if user_data and user_data.chat_pf_id:
                         success = await add_outgoing_comment_to_chat(
                             chat_pf_id=user_data.chat_pf_id,
-                            comment=message_text
+                            comment=clean_message_text
                         )
                         if not success:
                             logger.error(f"Не удалось добавить исходящий комментарий в Planfix для пользователя {user_id}")

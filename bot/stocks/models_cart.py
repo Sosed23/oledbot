@@ -1,10 +1,9 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import BigInteger, ForeignKey, String, Integer, Boolean
-from sqlalchemy.dialects.postgresql import TSVECTOR
+from sqlalchemy.dialects.postgresql import TSVECTOR, JSONB  # Добавляем JSONB
 from typing import Optional, Any
 from bot.database import Base
-from bot.users.models import User  # Добавлен импорт модели User
-
+from bot.users.models import User
 
 class Cart(Base):
     __tablename__ = 'carts'
@@ -23,10 +22,11 @@ class Cart(Base):
     assembly_required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)  # Разбор/Сбор
     touch_or_backlight: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)  # Подсветка/Тач
 
+    # Поле для хранения списка file_id фото
+    photo_file_ids: Mapped[Optional[list[str]]] = mapped_column(JSONB, nullable=True, default=[])
 
     # Односторонняя связь: Cart знает о User, но User не знает о Cart
     user: Mapped['User'] = relationship("User")
-
 
 class Model(Base):
     __tablename__ = 'models'

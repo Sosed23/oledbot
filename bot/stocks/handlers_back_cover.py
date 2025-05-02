@@ -85,11 +85,6 @@ async def handle_back_cover_common(callback: CallbackQuery, state: FSMContext):
                                     price=value
                                 )
                             )
-
-            #     else:
-            #         logger.warning(f"Некорректный ответ от planfix_price_basic_nomenclature_re_gluing: {data_pricelist}")
-            # else:
-            #     logger.debug(f"Пропущен вызов planfix_price_basic_back_cover: task_id={task_id}, pricelist_key={pricelist_key}, name_model={name_model}")
         
         await callback.answer()
 
@@ -99,5 +94,3 @@ async def handle_back_cover_common(callback: CallbackQuery, state: FSMContext):
         await callback.answer()
         return result
     
-
-# ФУНКЦИЯ ОБРАЩЕНИЯ К PG CART: ЗАМЕНА ЗАДНЕЙ КРЫШКИ

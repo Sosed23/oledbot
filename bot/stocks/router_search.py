@@ -17,6 +17,14 @@ from bot.config import pf_token, pf_url_rest
 from bot.stocks.handlers_re_gluing import handle_re_gluing_common, add_re_gluing_cart
 from bot.stocks.handlers_back_cover import handle_back_cover_common
 from bot.stocks.handlers_production import handle_production_common, add_to_cart
+from bot.stocks.handlers_crash_display import (
+    handle_crash_display_common, 
+    add_crash_display_search_ai_cart,
+    CrashDisplayOrder,  # Импортируем класс состояний
+    process_quantity,   # Импортируем обработчик количества
+    process_photo       # Импортируем обработчик фото
+)
+
 from bot.utils.planfix_utils import extract_price_from_data, extract_balance_from_data
 
 search_router = Router()
@@ -145,40 +153,27 @@ async def add_re_gluing_search_cart(callback_query: types.CallbackQuery):
 async def handle_back_cover(callback: CallbackQuery, state: FSMContext):
     return await handle_back_cover_common(callback, state)
 
-# ДОБАВЛЕНИЕ В КОРЗИНУ ЗАМЕНУ КРЫШКИ
-
-# @search_router.callback_query(F.data.startswith('re-gluing-cart_'))
-# async def add_re_gluing_search_cart(callback_query: types.CallbackQuery):
-#     return await add_re_gluing_cart(callback_query, prefix='re-gluing-cart')
-
 
 ####################### ПРОДАТЬ БИТИК ###############################
 
 @search_router.callback_query(F.data == "search_crash-display")
 async def handle_crash_display(callback: CallbackQuery, state: FSMContext):
-    # Получаем сохраненные данные о состоянии
-    state_data = await state.get_data()
-    model_name = state_data.get('model_name', 'не указан')
-    model_id = state_data.get('model_id', 'не указан')
+    return await handle_crash_display_common(callback, state)
 
-    # Запрашиваем данные о переклейке
-    data_crash_display_plus = await planfix_stock_balance_filter(model_id=model_id, operation="2")
-    data_crash_display_minus = await planfix_stock_balance_filter(model_id=model_id, operation="3")
+# Оформление заказа: Продать битик
 
-    # Извлекаем единственную цену
-    price_plus = extract_price_from_data(data_crash_display_plus)
-    price_minus = extract_price_from_data(data_crash_display_minus)
+@search_router.callback_query(F.data.startswith('crash-display-cart_'))
+async def add_crash_display_cart(callback_query: types.CallbackQuery, state: FSMContext):
+    return await add_crash_display_search_ai_cart(callback_query, prefix='crash-display-cart', state=state)
 
-    # Формируем текст сообщения
-    message = f"Вы выбрали опцию 'Продать битик' для модели: {model_name}\n"
-    if price_plus and float(price_plus) > 0:
-        message += f"Цена битика с оригинальной подсветкой/тачом: {price_plus} RUB\n"
-    if price_minus and float(price_minus) > 0:
-        message += f"Цена битика с поврежденной подсветкой/тачом: {price_minus} RUB\n"
+# Обработчики для количества и фото
+@search_router.message(CrashDisplayOrder.waiting_for_quantity)
+async def process_quantity_handler(message: types.Message, state: FSMContext):
+    return await process_quantity(message, state)
 
-    # Отправляем сообщение
-    await callback.message.answer(message)
-    await callback.answer()
+@search_router.message(CrashDisplayOrder.waiting_for_photo, F.photo)
+async def process_photo_handler(message: types.Message, state: FSMContext):
+    return await process_photo(message, state)
 
 ####################### ГОТОВАЯ ПРОДУКЦИЯ ###############################
 

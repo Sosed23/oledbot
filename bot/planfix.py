@@ -2,9 +2,13 @@ import asyncio
 import requests
 import sys
 import aiohttp
+import logging
 from bot.config import pf_token, pf_url_rest
 
 sys.stdout.reconfigure(encoding='utf-8')
+
+# Настройка логирования
+logger = logging.getLogger(__name__)
 
 
 ####################### STOCK BALANCE ####################################
@@ -417,7 +421,7 @@ async def planfix_basic_nomenclature_re_gluing(model_id: int, filter_id: int):
 
 ####################### PRICE BASIC NOMENCLATURE RE-GLUING (FILTER) ####################################
 
-async def planfix_price_basic_nomenclature_re_gluing(model_id: int, pricelist_key: int):
+async def  planfix_price_basic_nomenclature_re_gluing(model_id: int, pricelist_key: int):
 
     url = f"{pf_url_rest}/directory/1430/entry/{pricelist_key}"
 
@@ -558,6 +562,120 @@ async def planfix_price_assembly_basic_back_cover(model_id: int):
             {
             "type": 6114,
             "field": 4308, # Совместимость моделей
+            "operator": "equal",
+            "value": model_id
+            }
+        ]
+        }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+
+###### ДОБАВЛЕНИЕ ФОТО БИТИКА В ПЛАНФИКС ###############################
+
+async def upload_files_to_planfix(photo_files: list[bytes], filename_prefix: str = "photo") -> list[int]:
+    """
+    Загружает несколько файлов в Planfix и возвращает список их fileId.
+    
+    Args:
+        photo_files (list[bytes]): Список байтов файлов фотографий.
+        filename_prefix (str): Префикс для имени файла (по умолчанию "photo").
+    
+    Returns:
+        list[int]: Список fileId загруженных файлов.
+    """
+    url_upload = f"{pf_url_rest}/file/"
+    headers = {
+        "Authorization": f"Bearer {pf_token}"
+    }
+    
+    file_ids = []
+    for i, photo_file in enumerate(photo_files):
+        filename = f"{filename_prefix}_{i+1}.jpg"
+        files = {
+            "file": (filename, photo_file, "image/jpeg")
+        }
+        
+        try:
+            response = requests.post(url_upload, headers=headers, files=files)
+            response.raise_for_status()
+            data = response.json()
+            file_id = data.get("id")
+            if not file_id:
+                logger.error(f"Не удалось получить fileId для файла {filename} после загрузки в Planfix")
+                continue
+            logger.info(f"Файл {filename} успешно загружен в Planfix, fileId: {file_id}")
+            file_ids.append(file_id)
+        except Exception as e:
+            logger.error(f"Ошибка при загрузке файла {filename} в Planfix: {e}")
+            continue
+
+    return file_ids
+
+async def upload_photo_to_planfix(chat_pf_id: int, photo_files: list[bytes]) -> bool:
+    """
+    Загружает несколько фото в Planfix и прикрепляет их к одному комментарию в задаче.
+    
+    Args:
+        chat_pf_id (int): ID чата/задачи в Planfix.
+        photo_files (list[bytes]): Список байтов файлов фотографий.
+    
+    Returns:
+        bool: True, если загрузка и прикрепление успешны, False в противном случае.
+    """
+    # Шаг 1: Загружаем все файлы в Planfix
+    file_ids = await upload_files_to_planfix(photo_files)
+    if not file_ids:
+        logger.error("Не удалось загрузить ни один файл в Planfix")
+        return False
+
+    # Шаг 2: Создаём один комментарий с несколькими файлами
+    url_comment = f"{pf_url_rest}/task/{chat_pf_id}/comments"
+    payload = {
+        "description": f"Добавлено {len(file_ids)} фото битика",
+        "owner": {
+            "id": "contact:3077"  # Тот же owner, что в add_outgoing_comment_to_chat
+        },
+        "files": [{"id": file_id} for file_id in file_ids]
+    }
+    
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+    
+    try:
+        response = requests.post(url_comment, json=payload, headers=headers)
+        response.raise_for_status()
+        logger.info(f"{len(file_ids)} фото успешно прикреплены к задаче {chat_pf_id} в Planfix в одном комментарии")
+        return True
+    except Exception as e:
+        logger.error(f"Ошибка при прикреплении фото к задаче {chat_pf_id} в Planfix: {e}")
+        return False
+
+
+####################### KEY CRASH DISPLAY PLANFIX (FILTER) ####################################
+
+async def planfix_price_assembly_basic_back_cover(model_id: int):
+
+    url = f"{pf_url_rest}/directory/1432/entry/list"
+
+    payload = {
+        "offset": 0,
+        "pageSize": 10,
+        "fields": "name,key",   # 3780 (Цена разборки/сборки);                                          
+        "filters": [
+            {
+            "type": 6114,
+            "field": 3798, # Совместимость моделей
             "operator": "equal",
             "value": model_id
             }

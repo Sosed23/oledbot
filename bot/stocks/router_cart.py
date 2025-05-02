@@ -41,7 +41,7 @@ def get_confirmation_keyboard(prod_cart_id: str) -> InlineKeyboardMarkup:
     ])
     return keyboard
 
-##### ОБРАБОТЧИК ДЛЯ ОТОБРАЖЕНИЯ УСЛУГИ: ПЕРЕКЛЕЙКА ДИСПЛЕЯ - 1, 2
+##### ОБРАБОТЧИК ДЛЯ ОТОБРАЖЕНИЯ ПОВТОРНО КНОПКИ -> УСЛУГИ: ПЕРЕКЛЕЙКА ДИСПЛЕЯ - 1, 2
 
 @cart_router.callback_query(F.data.startswith("cart_search_re-gluing_"))
 async def handle_re_gluing_common(callback: CallbackQuery, state: FSMContext):
@@ -134,7 +134,7 @@ async def handle_re_gluing_common(callback: CallbackQuery, state: FSMContext):
         return result
 
 
-##### ОБРАБОТЧИК ДЛЯ ОТОБРАЖЕНИЯ УСЛУГИ: ЗАМЕНА ЗАДНЕЙ КРЫШКИ - 6
+##### ОБРАБОТЧИК ДЛЯ ОТОБРАЖЕНИЯ ПОВТОРНО КНОПКИ -> УСЛУГИ: ЗАМЕНА ЗАДНЕЙ КРЫШКИ - 6
 
 @cart_router.callback_query(F.data.startswith("cart_search_back_cover_"))
 async def handle_back_cover_cart(callback: CallbackQuery, state: FSMContext):
@@ -182,7 +182,7 @@ async def handle_back_cover_cart(callback: CallbackQuery, state: FSMContext):
         await callback.answer()
 
 
-##### ОБРАБОТЧИК ДЛЯ ОТОБРАЖЕНИЯ ТОВАРА: ДИСПЛЕЙ (ВОССТАНОВЛЕННЫЙ) - 4
+##### ОБРАБОТЧИК ДЛЯ ОТОБРАЖЕНИЯ ПОВТОРНО КНОПКИ -> ТОВАРА: ДИСПЛЕЙ (ВОССТАНОВЛЕННЫЙ) - 4
 
 @cart_router.callback_query(F.data.startswith("cart_ready_products_"))
 async def handle_ready_products_cart(callback: CallbackQuery, state: FSMContext):
@@ -465,6 +465,9 @@ async def process_cart_confirmation(callback: CallbackQuery, state: FSMContext):
 
     await state.clear()
     await callback.answer()
+
+
+###################### СПИСОК ПОЗИЦИЙ КОРЗИНЫ ####################
 
 @cart_router.message(F.text == '🛒 Корзина')
 async def send_product_cart(message: Message):
