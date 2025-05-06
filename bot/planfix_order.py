@@ -112,7 +112,7 @@ async def planfix_create_order_prodaction_4(order_pf_id: int, prodaction_pf_id: 
 
 ####################### CREATE SPARE PARTS - 5 (PLANFIX) ####################################
 
-async def planfix_create_order_spare_parts_5(order_pf_id: int, spare_parts_pf_id: int, price: int):
+async def planfix_create_order_spare_parts_5(order_pf_id: int, spare_parts_pf_id: int, price: int, quantity: int):
 
     url = f"{pf_url_rest}/task/{order_pf_id}"
 
@@ -135,14 +135,12 @@ async def planfix_create_order_spare_parts_5(order_pf_id: int, spare_parts_pf_id
             },
             "value": price
             },
-            # {
-            # "field": {
-            #     "id": 5564 # Исполнитель на производстве (справочник)
-            # },
-            # "value": {
-            #     "id": 9 # Демо производство (исполнитель)
-            # }
-            # },
+            {
+            "field": {
+                "id": 5560 # Кол-во
+            },
+            "value": quantity
+            },
             {
             "field": {
                 "id": 5484 # СОХРАНИТЬ
@@ -219,7 +217,11 @@ async def planfix_create_order_back_cover_6(order_pf_id: int, back_cover_pf_id: 
 
 ####################### CREATE CRASH DISPLAY - 7 (PLANFIX) ####################################
 
-async def planfix_create_order_crash_display_7(order_pf_id: int, crash_display_pf_id: int, price: int, quantity: int):
+async def planfix_create_order_crash_display_7(order_pf_id: int,
+                                               crash_display_pf_id: int,
+                                               price: int, quantity: int,
+                                               touch_or_backlight: int
+                                               ):
 
     url = f"{pf_url_rest}/task/{order_pf_id}"
 
@@ -247,7 +249,7 @@ async def planfix_create_order_crash_display_7(order_pf_id: int, crash_display_p
                 "id": 5642 # Подсветка/Тач
             },
             "value": {
-                "id": 1
+                "id": touch_or_backlight
             }
             },
             {

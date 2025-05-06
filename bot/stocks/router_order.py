@@ -116,7 +116,9 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                 quantity=cart_item.quantity,
                 price=cart_item.price,
                 task_id=cart_item.task_id,
-                operation=cart_item.operation
+                operation=cart_item.operation,
+                touch_or_backlight=cart_item.touch_or_backlight,
+                photo_file_ids=cart_item.photo_file_ids
             )
             order_item_ids.append(order_item_id)  # Сохраняем уникальный id элемента
             total_amount += cart_item.price * cart_item.quantity
@@ -148,6 +150,7 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
         for idx, item in enumerate(order_items):
             operation_id = int(item.operation) if isinstance(item.operation, (int, str)) and str(item.operation).isdigit() else 0
             operation_name = OPERATION_NAMES.get(operation_id, f"Неизвестная операция {operation_id}")
+            # touch_or_backlight = item.touch_or_backlight
 
             # Формируем описание и строку элемента в зависимости от операции
             if operation_id == 1:
@@ -192,7 +195,7 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                 item_text = (
                     f"   🔹 {item.product_name}\n"
                     f"   💰 Цена: {item.price} руб.\n"
-                    f"   📝 Описание: Продажа устройства"
+                    f"   📝 Описание: Продать битик"
                 )
             else:
                 item_text = (
@@ -265,6 +268,10 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                 prodaction_id = order_item_ids[idx]  # Уникальный id из OrderItem
                 price = cart_item.price
                 quantity = cart_item.quantity
+                touch_or_backlight = cart_item.touch_or_backlight
+
+                touch_or_backlight = bool(touch_or_backlight)
+                touch_or_backlight = 1 if touch_or_backlight is False else 2
 
                 # Выбираем функцию для добавления продукции
                 # if operation_id == 1:
@@ -274,20 +281,7 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                 #         price=price,
                 #         prodaction_id=prodaction_id
                 #     )
-                # elif operation_id == 2:
-                #     data_prodaction = await planfix_create_order_prodaction_2(
-                #         order_pf_id=order_pf_id,
-                #         prodaction_pf_id=prodaction_pf_id,
-                #         price=price,
-                #         prodaction_id=prodaction_id
-                #     )
-                # elif operation_id == 3:
-                #     data_prodaction = await planfix_create_order_prodaction_3(
-                #         order_pf_id=order_pf_id,
-                #         prodaction_pf_id=prodaction_pf_id,
-                #         price=price,
-                #         prodaction_id=prodaction_id
-                #     )
+
                 if operation_id == 4:
                     data_prodaction = await pf_order.planfix_create_order_prodaction_4(
                         order_pf_id=order_pf_id,
@@ -300,7 +294,7 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                         order_pf_id=order_pf_id,
                         spare_parts_pf_id=prodaction_pf_id,
                         price=price,
-                        # prodaction_id=prodaction_id
+                        quantity=quantity
                     )
                 elif operation_id == 6:
                     data_prodaction = await pf_order.planfix_create_order_back_cover_6(
@@ -313,7 +307,8 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                         order_pf_id=order_pf_id,
                         crash_display_pf_id=prodaction_pf_id,
                         price=price,
-                        quantity=quantity
+                        quantity=quantity,
+                        touch_or_backlight=touch_or_backlight
                     )
                 else:
                     data_prodaction = {'id': f'unknown_operation_prodaction_{operation_id}'}

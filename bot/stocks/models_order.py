@@ -1,7 +1,8 @@
 from enum import Enum
 from datetime import datetime
 from typing import List, Optional
-from sqlalchemy import BigInteger, ForeignKey, String, Integer, DateTime
+from sqlalchemy import BigInteger, ForeignKey, String, Integer, DateTime, Boolean
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from bot.database import Base
 from bot.users.models import User
@@ -58,10 +59,11 @@ class OrderItem(Base):
     operation: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     task_id: Mapped[int] = mapped_column(Integer, nullable=True)
     item_pf_id: Mapped[int] = mapped_column(Integer, nullable=True)
-
+    touch_or_backlight: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)  # Добавляем поле
+    photo_file_ids: Mapped[Optional[list[str]]] = mapped_column(JSONB, nullable=True, default=[])
+    
     # Relationship
     order: Mapped['Order'] = relationship(back_populates='items')
-
 
 
 class OrderStatusHistory(Base):

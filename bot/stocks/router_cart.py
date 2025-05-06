@@ -489,6 +489,7 @@ async def send_product_cart(message: Message):
             quantity = product.quantity
             operation = product.operation
             assembly_required = product.assembly_required
+            touch_or_backlight = product.touch_or_backlight
 
             # Приводим operation к целому числу
             try:
@@ -652,7 +653,7 @@ async def send_product_cart(message: Message):
                     f"📌 Артикул: <b>{task_id}</b>\n"
                     f"ℹ️ Модель: <b>{name}</b>\n"
                     f"💰 Цена: <b>{formatted_price} руб.</b>\n"
-                    f"📝 Описание: Продажа устройства"
+                    f"📝 Описание: Продажа устройства - {touch_or_backlight}"
                 )
             else:
                 message_text = (
