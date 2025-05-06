@@ -227,45 +227,24 @@ async def process_photo(message: types.Message, state: FSMContext):
     task_id_crash_display_response = await planfix_price_assembly_basic_back_cover(model_id=model_id)
     task_id_crash_display = task_id_crash_display_response['directoryEntries'][0]['key']
 
-    existing_cart = await CartDAO.find_one_or_none(
+    # Добавляем новую запись в корзину
+    await CartDAO.add(
         telegram_id=telegram_id,
         product_id=model_id,
-        operation=operation
+        product_name=model_name,
+        quantity=quantity,
+        operation=operation,
+        task_id=task_id_crash_display,
+        price=price,
+        assembly_required=False,
+        touch_or_backlight=touch_or_backlight,
+        photo_file_ids=photo_file_ids
     )
-    if existing_cart:
-        new_quantity = existing_cart.quantity + quantity
-        existing_file_ids = existing_cart.photo_file_ids or []
-        updated_file_ids = existing_file_ids + photo_file_ids
-        data = {
-            "quantity": new_quantity,
-            "photo_file_ids": updated_file_ids
-        }
-        valid_columns = ["quantity", "photo_file_ids"]
-        data = {k: v for k, v in data.items() if k in valid_columns}
-        logger.debug(f"Данные для обновления: {data}")
-        await CartDAO.update(
-            filter_by={
-                "telegram_id": telegram_id,
-                "product_id": model_id,
-                "operation": operation
-            },
-            data=data
-        )
-        logger.info(f"Запись в корзине обновлена: telegram_id={telegram_id}, product_id={model_id}, operation={operation}, новое количество={new_quantity}")
-    else:
-        await CartDAO.add(
-            telegram_id=telegram_id,
-            product_id=model_id,
-            product_name=model_name,
-            quantity=quantity,
-            operation=operation,
-            task_id=task_id_crash_display,
-            price=price,
-            assembly_required=False,
-            touch_or_backlight=touch_or_backlight,
-            photo_file_ids=photo_file_ids
-        )
-        logger.info(f"Новая запись добавлена в корзину: telegram_id={telegram_id}, product_id={model_id}, operation={operation}")
+
+    amount = price * quantity
+    amount_formatted = f"{int(amount):,}".replace(",", " ")
+
+    logger.info(f"Новая запись добавлена в корзину: telegram_id={telegram_id}, product_id={model_id}, operation={operation}")
 
     if touch_or_backlight == False:
         message_text = (
@@ -274,7 +253,8 @@ async def process_photo(message: types.Message, state: FSMContext):
             f"📌 Артикул: <b>{task_id_crash_display}</b>\n"
             f"ℹ️ Модель: <b>{model_name}</b>\n"
             f"🔢 Количество: <b>{quantity} шт.</b>\n"
-            f"💰 Цена: <b>{price} руб.</b>"
+            f"💰 Цена: <b>{price} руб.</b>\n"
+            f"🧾 Стоимость: <b>{amount_formatted} руб.</b>"
         )
         await message.answer(message_text, parse_mode="HTML")
 
@@ -294,7 +274,8 @@ async def process_photo(message: types.Message, state: FSMContext):
             f"📌 Артикул: <b>{task_id_crash_display}</b>\n"
             f"ℹ️ Модель: <b>{model_name}</b>\n"
             f"🔢 Количество: <b>{quantity} шт.</b>\n"
-            f"💰 Цена: <b>{price} руб.</b>"
+            f"💰 Цена: <b>{price} руб.</b>\n"
+            f"🧾 Стоимость: <b>{amount_formatted} руб.</b>"
         )
         await message.answer(message_text, parse_mode="HTML")
 

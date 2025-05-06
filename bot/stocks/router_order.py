@@ -264,6 +264,7 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                 prodaction_pf_id = cart_item.task_id
                 prodaction_id = order_item_ids[idx]  # Уникальный id из OrderItem
                 price = cart_item.price
+                quantity = cart_item.quantity
 
                 # Выбираем функцию для добавления продукции
                 # if operation_id == 1:
@@ -294,26 +295,26 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                         price=price,
                         prodaction_id=prodaction_id
                     )
-                # elif operation_id == 5:
-                #     data_prodaction = await planfix_create_order_prodaction_5(
-                #         order_pf_id=order_pf_id,
-                #         prodaction_pf_id=prodaction_pf_id,
-                #         price=price,
-                #         prodaction_id=prodaction_id
-                #     )
+                elif operation_id == 5:
+                    data_prodaction = await pf_order.planfix_create_order_spare_parts_5(
+                        order_pf_id=order_pf_id,
+                        spare_parts_pf_id=prodaction_pf_id,
+                        price=price,
+                        # prodaction_id=prodaction_id
+                    )
                 elif operation_id == 6:
                     data_prodaction = await pf_order.planfix_create_order_back_cover_6(
                         order_pf_id=order_pf_id,
                         back_cover_pf_id=prodaction_pf_id,
                         price=price
                     )
-                # elif operation_id == 7:
-                #     data_prodaction = await planfix_create_order_prodaction_7(
-                #         order_pf_id=order_pf_id,
-                #         prodaction_pf_id=prodaction_pf_id,
-                #         price=price,
-                #         prodaction_id=prodaction_id
-                #     )
+                elif operation_id == 7:
+                    data_prodaction = await pf_order.planfix_create_order_crash_display_7(
+                        order_pf_id=order_pf_id,
+                        crash_display_pf_id=prodaction_pf_id,
+                        price=price,
+                        quantity=quantity
+                    )
                 else:
                     data_prodaction = {'id': f'unknown_operation_prodaction_{operation_id}'}
 

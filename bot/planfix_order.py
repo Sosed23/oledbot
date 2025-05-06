@@ -110,7 +110,60 @@ async def planfix_create_order_prodaction_4(order_pf_id: int, prodaction_pf_id: 
     return data
 
 
-####################### CREATE PRODACTION - 6 (PLANFIX) ####################################
+####################### CREATE SPARE PARTS - 5 (PLANFIX) ####################################
+
+async def planfix_create_order_spare_parts_5(order_pf_id: int, spare_parts_pf_id: int, price: int):
+
+    url = f"{pf_url_rest}/task/{order_pf_id}"
+
+    payload = {
+        "template": {
+            "id": 45 # Заказ: Продажа запчастей
+        },
+        "customFieldData": [
+            {
+            "field": {
+                "id": 5512 # Запчасть
+            },
+            "value": {
+                "id": spare_parts_pf_id
+            }
+            },
+            {
+            "field": {
+                "id": 12012 # Цена запчасти, RUB
+            },
+            "value": price
+            },
+            # {
+            # "field": {
+            #     "id": 5564 # Исполнитель на производстве (справочник)
+            # },
+            # "value": {
+            #     "id": 9 # Демо производство (исполнитель)
+            # }
+            # },
+            {
+            "field": {
+                "id": 5484 # СОХРАНИТЬ
+            },
+            "value": "true"
+            }
+        ]
+        }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+
+####################### CREATE BACK COVER - 6 (PLANFIX) ####################################
 
 async def planfix_create_order_back_cover_6(order_pf_id: int, back_cover_pf_id: int, price: int):
 
@@ -142,6 +195,66 @@ async def planfix_create_order_back_cover_6(order_pf_id: int, back_cover_pf_id: 
             "value": {
                 "id": 9 # Демо производство (исполнитель)
             }
+            },
+            {
+            "field": {
+                "id": 5484 # СОХРАНИТЬ
+            },
+            "value": "true"
+            }
+        ]
+        }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
+
+
+
+####################### CREATE CRASH DISPLAY - 7 (PLANFIX) ####################################
+
+async def planfix_create_order_crash_display_7(order_pf_id: int, crash_display_pf_id: int, price: int, quantity: int):
+
+    url = f"{pf_url_rest}/task/{order_pf_id}"
+
+    payload = {
+        "template": {
+            "id": 118 # Заказ: Закупка битика
+        },
+        "customFieldData": [
+            {
+            "field": {
+                "id": 5532 # Битик
+            },
+            "value": {
+                "id": crash_display_pf_id
+            }
+            },
+            {
+            "field": {
+                "id": 5594 # Цена индив, RUB
+            },
+            "value": price
+            },
+            {
+            "field": {
+                "id": 5642 # Подсветка/Тач
+            },
+            "value": {
+                "id": 1
+            }
+            },
+            {
+            "field": {
+                "id": 5560 # Кол-во
+            },
+            "value": quantity
             },
             {
             "field": {

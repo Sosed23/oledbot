@@ -87,3 +87,13 @@ def crash_display_cart_keyboard(model_id: int,
     )
     kb.adjust(1)
     return kb.as_markup()
+
+
+def spare_parts_cart_keyboard(model_id: int, model_name: str, operation: str, task_id: str, price: int) -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    kb.button(
+        text="В корзину",
+        callback_data=f"spare-parts-cart_{model_id}_{model_name}_{operation}_{task_id}_{price}"
+    )
+    kb.adjust(1)
+    return kb.as_markup()

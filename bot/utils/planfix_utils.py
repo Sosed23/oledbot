@@ -1,4 +1,6 @@
 from loguru import logger
+import re
+
 
 def extract_price_from_data(data):
     """
@@ -31,3 +33,8 @@ def extract_balance_from_data(data):
     except Exception as e:
         logger.error(f"Ошибка при извлечении баланса: {e}")
     return None
+
+
+def strip_html(text: str) -> str:
+    clean = re.compile('<.*?>')
+    return re.sub(clean, '', text)

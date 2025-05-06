@@ -24,8 +24,12 @@ from bot.stocks.handlers_crash_display import (
     process_quantity,   # Импортируем обработчик количества
     process_photo       # Импортируем обработчик фото
 )
+from bot.stocks.handlers_spare_parts import (handle_spare_parts_common,
+                                             SparePartsOrder,
+                                             add_spare_parts_search_ai_cart,
+                                             process_quantity_spare_parts
+                                             )
 
-from bot.utils.planfix_utils import extract_price_from_data, extract_balance_from_data
 
 search_router = Router()
 
@@ -191,27 +195,15 @@ async def add_search_cart(callback_query: types.CallbackQuery):
 
 @search_router.callback_query(F.data == "search_spare-parts")
 async def handle_spare_parts(callback: CallbackQuery, state: FSMContext):
-    # Получаем сохраненные данные о состоянии
-    state_data = await state.get_data()
-    model_name = state_data.get('model_name', 'не указан')
-    model_id = state_data.get('model_id', 'не указан')
+    return await handle_spare_parts_common(callback, state)
 
-    # Запрашиваем данные о запчастях
-    data_spare_parts = await planfix_stock_balance_filter(model_id=model_id, operation="5")
+# Добавить в корзину: Дисплей (запчасть)
 
-    # Извлекаем единственную цену
-    price = extract_price_from_data(data_spare_parts)
-    balance = extract_balance_from_data(data_spare_parts)
+@search_router.callback_query(F.data.startswith('spare-parts-cart_'))
+async def add_spare_parts_cart(callback_query: types.CallbackQuery, state: FSMContext):
+    return await add_spare_parts_search_ai_cart(callback_query, prefix='spare-parts-cart_', state=state)
 
-    # Формируем текст для вывода
-    if price:
-        prices_balance = f"Цена: {price} RUB Остаток: {balance} шт."
-    else:
-        prices_balance = f"{model_name}  Цена не найдена."
-
-    # Отправляем сообщение
-    await callback.message.answer(
-        f"Вы выбрали опцию 'Запчасти'.\nМодели: {model_name}\n"
-        f"{prices_balance}"
-    )
-    await callback.answer()
+# Обработчики для количества запчастей
+@search_router.message(SparePartsOrder.waiting_for_quantity)
+async def process_quantity_handler_spare_parts(message: types.Message, state: FSMContext):
+    return await process_quantity_spare_parts(message, state)

@@ -691,3 +691,35 @@ async def planfix_price_assembly_basic_back_cover(model_id: int):
     data = response.json()
 
     return data
+
+
+####################### STOCK BALANCE (FILTER) ####################################
+
+async def planfix_stock_balance_spare_parts_filter(model_id: str):
+
+    url = f"{pf_url_rest}/task/list"
+
+    payload = {
+        "offset": 0,
+        "pageSize": 10,
+        "filterId": "104398",       # фильтр задач "All stock balance: spare parts"
+        "filters": [
+            {
+                "type": 107,
+                "field": 5556,      # Модель
+                "operator": "equal",
+                "value": model_id
+            }
+        ],
+        "fields": "id,5512,12126,5718,5722"     # 5512 (Запчасть); 12126 (Price); 5718 (Цена закупки, RUB); 5722 (Св. остаток);
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {pf_token}"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+
+    return data
