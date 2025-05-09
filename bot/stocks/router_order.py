@@ -118,7 +118,8 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                 task_id=cart_item.task_id,
                 operation=cart_item.operation,
                 touch_or_backlight=cart_item.touch_or_backlight,
-                photo_file_ids=cart_item.photo_file_ids
+                photo_file_ids=cart_item.photo_file_ids,
+                assembly_required=cart_item.assembly_required
             )
             order_item_ids.append(order_item_id)  # Сохраняем уникальный id элемента
             total_amount += cart_item.price * cart_item.quantity
@@ -265,7 +266,7 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                 operation_id = item_operation_id
                 cart_item = cart_items[idx]
                 prodaction_pf_id = cart_item.task_id
-                prodaction_id = order_item_ids[idx]  # Уникальный id из OrderItem
+                order_item_id = order_item_ids[idx]  # Уникальный id из OrderItem
                 price = cart_item.price
                 quantity = cart_item.quantity
                 touch_or_backlight = cart_item.touch_or_backlight
@@ -287,7 +288,7 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                         order_pf_id=order_pf_id,
                         prodaction_pf_id=prodaction_pf_id,
                         price=price,
-                        prodaction_id=prodaction_id
+                        order_item_id=order_item_id
                     )
                 elif operation_id == 5:
                     data_prodaction = await pf_order.planfix_create_order_spare_parts_5(
@@ -300,7 +301,8 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                     data_prodaction = await pf_order.planfix_create_order_back_cover_6(
                         order_pf_id=order_pf_id,
                         back_cover_pf_id=prodaction_pf_id,
-                        price=price
+                        price=price,
+                        order_item_id=order_item_id
                     )
                 elif operation_id == 7:
                     data_prodaction = await pf_order.planfix_create_order_crash_display_7(
@@ -308,7 +310,8 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                         crash_display_pf_id=prodaction_pf_id,
                         price=price,
                         quantity=quantity,
-                        touch_or_backlight=touch_or_backlight
+                        touch_or_backlight=touch_or_backlight,
+                        order_item_id=order_item_id
                     )
                 else:
                     data_prodaction = {'id': f'unknown_operation_prodaction_{operation_id}'}

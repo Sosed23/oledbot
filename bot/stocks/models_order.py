@@ -59,6 +59,7 @@ class OrderItem(Base):
     operation: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     task_id: Mapped[int] = mapped_column(Integer, nullable=True)
     item_pf_id: Mapped[int] = mapped_column(Integer, nullable=True)
+    assembly_required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     touch_or_backlight: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)  # Добавляем поле
     photo_file_ids: Mapped[Optional[list[str]]] = mapped_column(JSONB, nullable=True, default=[])
     

@@ -61,7 +61,7 @@ async def planfix_create_order(description: str, order_id: int):
 
 ####################### CREATE PRODACTION - 4 (PLANFIX) ####################################
 
-async def planfix_create_order_prodaction_4(order_pf_id: int, prodaction_pf_id: int, price: int, prodaction_id: int):
+async def planfix_create_order_prodaction_4(order_pf_id: int, prodaction_pf_id: int, price: int, order_item_id: int):
 
     url = f"{pf_url_rest}/task/{order_pf_id}"
 
@@ -94,7 +94,7 @@ async def planfix_create_order_prodaction_4(order_pf_id: int, prodaction_pf_id: 
             "field": {
                 "id": 12114 # Бронирование для проброски поля prodaction_id
             },
-            "value": prodaction_id
+            "value": order_item_id
             }
         ]
         }
@@ -163,7 +163,7 @@ async def planfix_create_order_spare_parts_5(order_pf_id: int, spare_parts_pf_id
 
 ####################### CREATE BACK COVER - 6 (PLANFIX) ####################################
 
-async def planfix_create_order_back_cover_6(order_pf_id: int, back_cover_pf_id: int, price: int):
+async def planfix_create_order_back_cover_6(order_pf_id: int, back_cover_pf_id: int, price: int, order_item_id: int):
 
     url = f"{pf_url_rest}/task/{order_pf_id}"
 
@@ -199,6 +199,12 @@ async def planfix_create_order_back_cover_6(order_pf_id: int, back_cover_pf_id: 
                 "id": 5484 # СОХРАНИТЬ
             },
             "value": "true"
+            },
+            {
+            "field": {
+                "id": 12114 # Бронирование для проброски поля prodaction_id
+            },
+            "value": order_item_id
             }
         ]
         }
@@ -220,7 +226,8 @@ async def planfix_create_order_back_cover_6(order_pf_id: int, back_cover_pf_id: 
 async def planfix_create_order_crash_display_7(order_pf_id: int,
                                                crash_display_pf_id: int,
                                                price: int, quantity: int,
-                                               touch_or_backlight: int
+                                               touch_or_backlight: int,
+                                               order_item_id: int
                                                ):
 
     url = f"{pf_url_rest}/task/{order_pf_id}"
@@ -263,6 +270,12 @@ async def planfix_create_order_crash_display_7(order_pf_id: int,
                 "id": 5484 # СОХРАНИТЬ
             },
             "value": "true"
+            },
+            {
+            "field": {
+                "id": 12114 # Бронирование для проброски поля prodaction_id
+            },
+            "value": order_item_id
             }
         ]
         }
