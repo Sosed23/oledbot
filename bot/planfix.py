@@ -73,43 +73,6 @@ async def planfix_stock_balance(query=None):
     return result
 
 
-# ####################### STOCK BALANCE (MODELS) ####################################
-
-# async def planfix_stock_balance_models(search_query=None, offset=0, limit=RESULTS_PER_PAGE):
-#     url = f"{pf_url_rest}/task/list"
-
-#     payload = {
-#         "offset": offset,
-#         "pageSize": limit,
-#         "filterId": "49864",
-#         "fields": "id,5556,5542,6640,6282,12140"
-#     }
-
-#     headers = {
-#         "Content-Type": "application/json",
-#         "Authorization": f"Bearer {pf_token}"
-#     }
-
-#     response = requests.post(url, json=payload, headers=headers)
-#     data = response.json()
-
-#     all_models = data.get('tasks', [])
-#     result = []
-
-#     for task in all_models:
-#         for custom_field in task.get('customFieldData', []):
-#             if custom_field['field']['name'] == 'Модель':
-#                 model_id = custom_field['value']['id']
-#                 model_name = custom_field['value']['value']
-
-#                 if search_query and search_query.lower() not in model_name.lower():
-#                     continue
-
-#                 result.append((model_id, model_name))
-
-#     return result
-
-
 ####################### STOCK BALANCE (FILTER) ####################################
 
 async def planfix_stock_balance_filter(model_id: str, operation: str):
@@ -181,7 +144,6 @@ async def planfix_all_production_filter(model_id: int):
 
 
 ####################### CONTACT ####################################
-
 
 async def planfix_contact(query=None):
 
@@ -284,15 +246,7 @@ async def planfix_create_chat(contact_pf_id: int):
         },
           "counterparty": {
             "id": contact_pf_id
-        },
-        # "customFieldData": [
-        #     {
-        #     "field": {
-        #         "id": 5624 # Новая готовая продукция
-        #     },
-        #     "value": prodaction_pf_id
-        #     }
-        # ]
+        }
         }
 
     headers = {
@@ -307,7 +261,6 @@ async def planfix_create_chat(contact_pf_id: int):
 
 
 ####################### ADD INCOMING COMMENT TO CHAT (PLANFIX) ####################################
-
 
 async def add_incoming_comment_to_chat(chat_pf_id: int, comment: str, contact_pf_id: int):
 

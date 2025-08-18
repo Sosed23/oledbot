@@ -142,9 +142,9 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
         order = await OrderDAO.find_one_or_none(id=order_id)
         order_items = await OrderItemDAO.find_all(order_id=order_id)
 
-        # Очищаем корзину
-        await CartDAO.delete(telegram_id=telegram_id, delete_all=True)
-        logger.info("Корзина очищена")
+        # # Очищаем корзину
+        # await CartDAO.delete(telegram_id=telegram_id, delete_all=True)
+        # logger.info("Корзина очищена")
 
         # Группируем элементы заказа по операциям и сразу интегрируем с Planfix
         grouped_items = {}
@@ -275,15 +275,15 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                 touch_or_backlight = 1 if touch_or_backlight is False else 2
 
                 # Выбираем функцию для добавления продукции
-                # if operation_id == 1:
-                #     data_prodaction = await planfix_create_order_prodaction_1(
-                #         order_pf_id=order_pf_id,
-                #         prodaction_pf_id=prodaction_pf_id,
-                #         price=price,
-                #         prodaction_id=prodaction_id
-                #     )
-
-                if operation_id == 4:
+                if operation_id == 1 or operation_id == 2:
+                    data_prodaction = await pf_order.planfix_create_order_re_gluing_1(
+                        order_pf_id=order_pf_id,
+                        re_gluing_pf_id=prodaction_pf_id,
+                        price=price,
+                        order_item_id=order_item_id,
+                        touch_or_backlight=touch_or_backlight
+                    )
+                elif operation_id == 4:
                     data_prodaction = await pf_order.planfix_create_order_prodaction_4(
                         order_pf_id=order_pf_id,
                         prodaction_pf_id=prodaction_pf_id,
@@ -295,7 +295,8 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
                         order_pf_id=order_pf_id,
                         spare_parts_pf_id=prodaction_pf_id,
                         price=price,
-                        quantity=quantity
+                        quantity=quantity,
+                        order_item_id=order_item_id
                     )
                 elif operation_id == 6:
                     data_prodaction = await pf_order.planfix_create_order_back_cover_6(
