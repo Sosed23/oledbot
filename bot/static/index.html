@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фильтр моделей</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 400px; margin: 0 auto; padding: 20px; }
+        select, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { background-color: #007bff; color: white; cursor: pointer; }
+        #result { margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 5px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <h2>Фильтр запасных частей</h2>
+    <label for="device">Устройство:</label>
+    <select id="device">
+        <option value="">Выберите устройство</option>
+    </select>
+
+    <div id="brandDiv" class="hidden">
+        <label for="brand">Бренд:</label>
+        <select id="brand">
+            <option value="">Выберите бренд</option>
+        </select>
+    </div>
+
+    <div id="seriesDiv" class="hidden">
+        <label for="series">Серия:</label>
+        <select id="series">
+            <option value="">Выберите серию</option>
+        </select>
+    </div>
+
+    <div id="modelDiv" class="hidden">
+        <label for="model">Модель:</label>
+        <select id="model">
+            <option value="">Выберите модель</option>
+        </select>
+    </div>
+
+    <button id="searchBtn">Поиск</button>
+
+    <div id="result"></div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+
+        const API_BASE = '/api'; // Relative to FastAPI /webapp
+
+        async function fetchData(endpoint) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`);
+                if (!response.ok) throw new Error('Error fetching data');
+                return await response.json();
+            } catch (error) {
+                console.error(error);
+                return null;
+            }
+        }
+
+        document.getElementById('device').addEventListener('change', async (e) => {
+            const device = e.target.value;
+            if (!device) return;
+
+            const data = await fetchData(`/brands/${device}`);
+            const brandSelect = document.getElementById('brand');
+            brandSelect.innerHTML = '<option value="">Выберите бренд</option>';
+            if (data && data.brands) {
+                data.brands.forEach(brand => {
+                    const option = document.createElement('option');
+                    option.value = brand;
+                    option.textContent = brand;
+                    brandSelect.appendChild(option);
+                });
+            }
+            document.getElementById('brandDiv').classList.remove('hidden');
+            document.getElementById('seriesDiv').classList.add('hidden');
+            document.getElementById('modelDiv').classList.add('hidden');
+        });
+
+        document.getElementById('brand').addEventListener('change', async (e) => {
+            const device = document.getElementById('device').value;
+            const brand = e.target.value;
+            if (!brand) return;
+
+            const data = await fetchData(`/series/${device}/${brand}`);
+            const seriesSelect = document.getElementById('series');
+            seriesSelect.innerHTML = '<option value="">Выберите серию</option>';
+            if (data && data.series) {
+                data.series.forEach(series => {
+                    const option = document.createElement('option');
+                    option.value = series;
+                    option.textContent = series;
+                    seriesSelect.appendChild(option);
+                });
+            }
+            document.getElementById('seriesDiv').classList.remove('hidden');
+            document.getElementById('modelDiv').classList.add('hidden');
+        });
+
+        document.getElementById('series').addEventListener('change', async (e) => {
+            const device = document.getElementById('device').value;
+            const brand = document.getElementById('brand').value;
+            const series = e.target.value;
+            if (!series) return;
+
+            const data = await fetchData(`/models/${device}/${brand}/${series}`);
+            const modelSelect = document.getElementById('model');
+            modelSelect.innerHTML = '<option value="">Выберите модель</option>';
+            if (data && data.models) {
+                data.models.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.model_id;
+                    option.textContent = model.name;
+                    modelSelect.appendChild(option);
+                });
+            }
+            document.getElementById('modelDiv').classList.remove('hidden');
+        });
+
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const modelId = document.getElementById('model').value;
+            if (!modelId) {
+                alert('Выберите модель');
+                return;
+            }
+            document.getElementById('result').innerHTML = `<p>Выбрана модель с ID: ${modelId}</p><p>Здесь можно показать результаты поиска или опции.</p>`;
+            tg.showAlert('Модель выбрана!'); // Or send to bot
+        });
+
+        // Initial load devices
+        async function loadDevices() {
+            const data = await fetchData('/devices');
+            const deviceSelect = document.getElementById('device');
+            deviceSelect.innerHTML = '<option value="">Выберите устройство</option>';
+            if (data && data.devices) {
+                data.devices.forEach(device => {
+                    const option = document.createElement('option');
+                    option.value = device;
+                    option.textContent = device;
+                    deviceSelect.appendChild(option);
+                });
+            }
+        }
+
+        loadDevices();
+    </script>
+</body>
+</html>

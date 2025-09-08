@@ -16,6 +16,7 @@ from bot.stocks.router_search import search_router
 from bot.stocks.router_order import order_router
 from bot.stocks.router_aiagent import aiagent_router
 from bot.stocks.group_router import group_router
+from bot.stocks.router_web_filter import web_filter_router
 from bot.webhook import app as fastapi_app  # Импортируем FastAPI-приложение
 from bot.planfix import add_incoming_comment_to_chat, add_outgoing_comment_to_chat
 from bot.users.dao import UserDAO
@@ -259,6 +260,7 @@ def setup_bot():
     dp.include_router(order_router)
     dp.include_router(aiagent_router)
     dp.include_router(group_router)
+    dp.include_router(web_filter_router)
 
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)

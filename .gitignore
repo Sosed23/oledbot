@@ -14,3 +14,5 @@ __pycache__/
 # Игнорирование настроек проекта для PyCharm
 .idea/
 **/.idea/
+
+.kilocode
