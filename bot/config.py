@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     N8N_AIAGENT_WEBHOOK: str
     TARGET_CHAT_ID: int
     ADMIN_IDS: List[int]
+    API_BASE: str
     FORMAT_LOG: str = "{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}"
     LOG_ROTATION: str = "10 MB"
     DB_HOST: str = os.environ.get("DB_HOST")
@@ -53,3 +54,4 @@ pf_url_rest = settings.PLANFIX_URL_REST
 n8n_aiagent_webhook = settings.N8N_AIAGENT_WEBHOOK
 target_chat_id = settings.TARGET_CHAT_ID
 db_host = settings.DB_HOST
+api_base = settings.API_BASE
