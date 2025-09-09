@@ -137,4 +137,4 @@ async def print_routes():
             print(f"  {route.methods} {route.path}")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=1111)
