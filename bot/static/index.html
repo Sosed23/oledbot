@@ -7,49 +7,74 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body { font-family: Arial, sans-serif; max-width: 400px; margin: 0 auto; padding: 20px; }
-        select, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        button { background-color: #007bff; color: white; cursor: pointer; }
+        .filter-section { margin-bottom: 20px; }
+        .filter-label { font-weight: bold; margin-bottom: 5px; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; }
+        .checkbox-item { display: flex; align-items: center; }
+        .checkbox-item input { margin-right: 5px; }
+        button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; background-color: #007bff; color: white; cursor: pointer; }
         #result { margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 5px; }
         .hidden { display: none; }
+
+        .model-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <h2>Фильтр запасных частей</h2>
-    <label for="device">Устройство:</label>
-    <select id="device">
-        <option value="">Выберите устройство</option>
-    </select>
-
-    <div id="brandDiv" class="hidden">
-        <label for="brand">Бренд:</label>
-        <select id="brand">
-            <option value="">Выберите бренд</option>
-        </select>
+    <h2>Фильтрация моделей</h2>
+    
+    <div class="filter-section">
+        <div class="filter-label">Устройства:</div>
+        <div id="devicesContainer" class="checkbox-group"></div>
     </div>
-
-    <div id="seriesDiv" class="hidden">
-        <label for="series">Серия:</label>
-        <select id="series">
-            <option value="">Выберите серию</option>
-        </select>
+    
+    <div class="filter-section">
+        <div class="filter-label">Бренды:</div>
+        <div id="brandsContainer" class="checkbox-group"></div>
     </div>
-
-    <div id="modelDiv" class="hidden">
-        <label for="model">Модель:</label>
-        <select id="model">
-            <option value="">Выберите модель</option>
-        </select>
+    
+    <div class="filter-section hidden" id="seriesSection">
+        <div class="filter-label">Серии:</div>
+        <div id="seriesContainer" class="checkbox-group"></div>
     </div>
-
-    <button id="searchBtn">Поиск</button>
-
+    
+    <div class="filter-section hidden" id="modelsSection">
+        <div class="filter-label">Модели:</div>
+        <div id="modelsContainer" class="checkbox-group"></div>
+    </div>
+    
+    
     <div id="result"></div>
+
+    <script>
+        function selectModel(model_id, name) {
+            const data = {
+                action: 'select_model',
+                name: name,
+                model_id: model_id
+            };
+            tg.sendData(JSON.stringify(data));
+            tg.close();
+        }
+    </script>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
 
-        const API_BASE = '/api'; // Relative to FastAPI /webapp
+        const API_BASE = '/api/v2'; // Relative to FastAPI /webapp
+        
+        // Store selected values
+        let selectedDevices = [];
+        let selectedBrands = [];
+        let selectedSeries = [];
+        let selectedModels = [];
 
         async function fetchData(endpoint) {
             try {
@@ -61,93 +86,222 @@
                 return null;
             }
         }
-
-        document.getElementById('device').addEventListener('change', async (e) => {
-            const device = e.target.value;
-            if (!device) return;
-
-            const data = await fetchData(`/brands/${device}`);
-            const brandSelect = document.getElementById('brand');
-            brandSelect.innerHTML = '<option value="">Выберите бренд</option>';
-            if (data && data.brands) {
-                data.brands.forEach(brand => {
-                    const option = document.createElement('option');
-                    option.value = brand;
-                    option.textContent = brand;
-                    brandSelect.appendChild(option);
-                });
-            }
-            document.getElementById('brandDiv').classList.remove('hidden');
-            document.getElementById('seriesDiv').classList.add('hidden');
-            document.getElementById('modelDiv').classList.add('hidden');
-        });
-
-        document.getElementById('brand').addEventListener('change', async (e) => {
-            const device = document.getElementById('device').value;
-            const brand = e.target.value;
-            if (!brand) return;
-
-            const data = await fetchData(`/series/${device}/${brand}`);
-            const seriesSelect = document.getElementById('series');
-            seriesSelect.innerHTML = '<option value="">Выберите серию</option>';
-            if (data && data.series) {
-                data.series.forEach(series => {
-                    const option = document.createElement('option');
-                    option.value = series;
-                    option.textContent = series;
-                    seriesSelect.appendChild(option);
-                });
-            }
-            document.getElementById('seriesDiv').classList.remove('hidden');
-            document.getElementById('modelDiv').classList.add('hidden');
-        });
-
-        document.getElementById('series').addEventListener('change', async (e) => {
-            const device = document.getElementById('device').value;
-            const brand = document.getElementById('brand').value;
-            const series = e.target.value;
-            if (!series) return;
-
-            const data = await fetchData(`/models/${device}/${brand}/${series}`);
-            const modelSelect = document.getElementById('model');
-            modelSelect.innerHTML = '<option value="">Выберите модель</option>';
-            if (data && data.models) {
-                data.models.forEach(model => {
-                    const option = document.createElement('option');
-                    option.value = model.model_id;
-                    option.textContent = model.name;
-                    modelSelect.appendChild(option);
-                });
-            }
-            document.getElementById('modelDiv').classList.remove('hidden');
-        });
-
-        document.getElementById('searchBtn').addEventListener('click', () => {
-            const modelId = document.getElementById('model').value;
-            if (!modelId) {
-                alert('Выберите модель');
-                return;
-            }
-            document.getElementById('result').innerHTML = `<p>Выбрана модель с ID: ${modelId}</p><p>Здесь можно показать результаты поиска или опции.</p>`;
-            tg.showAlert('Модель выбрана!'); // Or send to bot
-        });
-
-        // Initial load devices
-        async function loadDevices() {
-            const data = await fetchData('/devices');
-            const deviceSelect = document.getElementById('device');
-            deviceSelect.innerHTML = '<option value="">Выберите устройство</option>';
-            if (data && data.devices) {
-                data.devices.forEach(device => {
-                    const option = document.createElement('option');
-                    option.value = device;
-                    option.textContent = device;
-                    deviceSelect.appendChild(option);
-                });
+        
+        // Get selected values from checkboxes
+        function getSelectedValues(containerId) {
+            const container = document.getElementById(containerId);
+            const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+        
+        // Create checkboxes for items
+        function createCheckboxes(containerId, items, selectedValues) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            items.forEach(item => {
+                const itemName = typeof item === 'string' ? item : item.name;
+                const itemId = typeof item === 'string' ? item : (item.model_id || item.name);
+                
+                const div = document.createElement('div');
+                div.className = 'checkbox-item';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `${containerId}_${itemId}`;
+                checkbox.value = itemName;
+                checkbox.checked = selectedValues.includes(itemName);
+                
+                const label = document.createElement('label');
+                label.htmlFor = `${containerId}_${itemId}`;
+                label.textContent = itemName;
+                
+                checkbox.addEventListener('change', handleFilterChange);
+                
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                container.appendChild(div);
+            });
+        }
+        
+        // Handle filter changes
+        async function handleFilterChange() {
+            // Update series based on selected devices and brands
+            await updateSeries();
+            
+            // Update models based on all selected filters
+            await updateModels();
+            
+            // Update selected models and show cards if any selected
+            selectedModels = getSelectedValues('modelsContainer');
+            if (selectedModels.length > 0) {
+                // Build query parameters for models
+                let queryParams = [];
+                if (selectedDevices.length > 0) {
+                    queryParams = queryParams.concat(selectedDevices.map(d => `devices=${encodeURIComponent(d)}`));
+                }
+                if (selectedBrands.length > 0) {
+                    queryParams = queryParams.concat(selectedBrands.map(b => `brands=${encodeURIComponent(b)}`));
+                }
+                if (selectedSeries.length > 0) {
+                    queryParams = queryParams.concat(selectedSeries.map(s => `series=${encodeURIComponent(s)}`));
+                }
+                
+                const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+                const data = await fetchData(`/models${queryString}`);
+                
+                if (data && data.models) {
+                    const filteredModels = data.models.filter(m => selectedModels.includes(m.name));
+                    
+                    let cardsHtml = '';
+                    filteredModels.forEach(model => {
+                        cardsHtml += `
+                            <div class="model-card" onclick="selectModel(${model.model_id}, '${model.name.replace(/'/g, "\\'")}')">
+                                <p><strong>Устройство:</strong> ${model.device}</p>
+                                <p><strong>Бренд:</strong> ${model.brand}</p>
+                                <p><strong>Серия:</strong> ${model.series}</p>
+                                <p><strong>Название:</strong> ${model.name}</p>
+                                <p><strong>ID модели:</strong> ${model.model_id}</p>
+                            </div>
+                        `;
+                    });
+                    
+                    document.getElementById('result').innerHTML = `
+                        <p>Выбранные модели:</p>
+                        ${cardsHtml}
+                    `;
+                } else {
+                    document.getElementById('result').innerHTML = '<p>Ошибка при загрузке моделей.</p>';
+                }
+            } else {
+                document.getElementById('result').innerHTML = '';
             }
         }
-
-        loadDevices();
+        
+        // Update series filter
+        async function updateSeries() {
+            // Get currently selected devices and brands
+            const currentSelectedDevices = getSelectedValues('devicesContainer');
+            const currentSelectedBrands = getSelectedValues('brandsContainer');
+            
+            if (currentSelectedDevices.length === 0 && currentSelectedBrands.length === 0) {
+                // Hide series section if no devices or brands selected
+                document.getElementById('seriesSection').classList.add('hidden');
+                createCheckboxes('seriesContainer', [], []);
+                return;
+            }
+            
+            // Update global selected values
+            selectedDevices = currentSelectedDevices;
+            selectedBrands = currentSelectedBrands;
+            
+            // Build query parameters
+            let queryParams = [];
+            if (selectedDevices.length > 0) {
+                queryParams = queryParams.concat(selectedDevices.map(d => `devices=${encodeURIComponent(d)}`));
+            }
+            if (selectedBrands.length > 0) {
+                queryParams = queryParams.concat(selectedBrands.map(b => `brands=${encodeURIComponent(b)}`));
+            }
+            
+            const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+            const data = await fetchData(`/series${queryString}`);
+            
+            if (data && data.series) {
+                // Get currently selected series before recreating checkboxes
+                const currentSelectedSeries = getSelectedValues('seriesContainer');
+                createCheckboxes('seriesContainer', data.series, currentSelectedSeries);
+                // Show series section only if there are series to display
+                if (data.series.length > 0) {
+                    document.getElementById('seriesSection').classList.remove('hidden');
+                } else {
+                    document.getElementById('seriesSection').classList.add('hidden');
+                }
+            } else {
+                createCheckboxes('seriesContainer', [], []);
+                document.getElementById('seriesSection').classList.add('hidden');
+            }
+        }
+        
+        // Update models filter
+        async function updateModels() {
+            // Get currently selected series
+            const currentSelectedSeries = getSelectedValues('seriesContainer');
+            
+            if (currentSelectedSeries.length === 0) {
+                // Hide models section if no series selected
+                document.getElementById('modelsSection').classList.add('hidden');
+                createCheckboxes('modelsContainer', [], []);
+                return;
+            }
+            
+            // Update global selectedSeries
+            selectedSeries = currentSelectedSeries;
+            
+            // Build query parameters
+            let queryParams = [];
+            if (selectedDevices.length > 0) {
+                queryParams = queryParams.concat(selectedDevices.map(d => `devices=${encodeURIComponent(d)}`));
+            }
+            if (selectedBrands.length > 0) {
+                queryParams = queryParams.concat(selectedBrands.map(b => `brands=${encodeURIComponent(b)}`));
+            }
+            if (selectedSeries.length > 0) {
+                queryParams = queryParams.concat(selectedSeries.map(s => `series=${encodeURIComponent(s)}`));
+            }
+            
+            const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+            const data = await fetchData(`/models${queryString}`);
+            
+            if (data && data.models) {
+                // Create checkboxes with model names but use model_id as values
+                const modelItems = data.models.map(m => ({
+                    name: m.name,
+                    model_id: m.model_id
+                }));
+                // Get currently selected models before recreating checkboxes
+                const currentSelectedModels = getSelectedValues('modelsContainer');
+                createCheckboxes('modelsContainer', modelItems, currentSelectedModels);
+                // Show models section only if there are models to display
+                if (data.models.length > 0) {
+                    document.getElementById('modelsSection').classList.remove('hidden');
+                } else {
+                    document.getElementById('modelsSection').classList.add('hidden');
+                }
+            } else {
+                createCheckboxes('modelsContainer', [], []);
+                document.getElementById('modelsSection').classList.add('hidden');
+            }
+        }
+        
+        
+        // Initial load of devices and brands
+        async function initializeFilters() {
+            // Load devices
+            const devicesData = await fetchData('/devices');
+            if (devicesData && devicesData.devices) {
+                // Filter to only show required devices
+                const requiredDevices = ["Смартфон", "Планшет", "Смарт часы"];
+                const filteredDevices = devicesData.devices.filter(d => requiredDevices.includes(d));
+                createCheckboxes('devicesContainer', filteredDevices, selectedDevices);
+            }
+            
+            // Load brands
+            const brandsData = await fetchData('/brands');
+            if (brandsData && brandsData.brands) {
+                // Filter to only show required brands
+                const requiredBrands = ["Samsung", "Apple"];
+                const filteredBrands = brandsData.brands.filter(b => requiredBrands.includes(b));
+                createCheckboxes('brandsContainer', filteredBrands, selectedBrands);
+            }
+            
+            // Initially hide series and models sections
+            document.getElementById('seriesSection').classList.add('hidden');
+            document.getElementById('modelsSection').classList.add('hidden');
+        }
+        
+        // Initialize filters on page load
+        initializeFilters();
     </script>
 </body>
 </html>

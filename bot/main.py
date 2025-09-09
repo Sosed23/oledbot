@@ -28,6 +28,11 @@ def strip_html(text: str) -> str:
 # Middleware для пересылки входящих сообщений (от пользователя к боту)
 class ForwardIncomingMessageMiddleware(BaseMiddleware):
     async def __call__(self, handler, event: types.Message, data: dict):
+        if event.web_app_data:
+            # Пропускаем обработку для web_app_data сообщений
+            logger.info("Skipping middleware for web_app_data message")
+            return await handler(event, data)
+
         result = None
         try:
             if event.chat.type == "private":  # Только для личных чатов
@@ -89,22 +94,23 @@ class ForwardIncomingMessageMiddleware(BaseMiddleware):
 
         except Exception as e:
             logger.error(f"Ошибка при пересылке входящего сообщения: {e}")
-            result = await event.answer("Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте снова позже.")
+            # Не вызываем answer в middleware, чтобы handler мог обработать
+            # result = await event.answer("Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте снова позже.")
 
             # Пересылаем ответ об ошибке в группу Telegram
-            if result:
-                logger.debug(f"Пересылка сообщения об ошибке в Telegram-группу: user_id={user_id}, username={username}")
-                user_info = f"Исходящее сообщение для {user_id} (@{username})"
-                await bot.send_message(
-                    chat_id=target_chat_id,
-                    text=user_info
-                )
-                await bot.forward_message(
-                    chat_id=target_chat_id,
-                    from_chat_id=result.chat.id,
-                    message_id=result.message_id
-                )
-                logger.info(f"{user_info} переслано в {target_chat_id}")
+            # if result:
+            #     logger.debug(f"Пересылка сообщения об ошибке в Telegram-группу: user_id={user_id}, username={username}")
+            #     user_info = f"Исходящее сообщение для {user_id} (@{username})"
+            #     await bot.send_message(
+            #         chat_id=target_chat_id,
+            #         text=user_info
+            #     )
+            #     await bot.forward_message(
+            #         chat_id=target_chat_id,
+            #         from_chat_id=result.chat.id,
+            #         message_id=result.message_id
+            #     )
+            #     logger.info(f"{user_info} переслано в {target_chat_id}")
 
         # Передаём управление дальше (чтобы другие обработчики сработали)
         handler_result = await handler(event, data)

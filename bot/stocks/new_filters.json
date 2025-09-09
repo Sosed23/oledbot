@@ -1,0 +1,2177 @@
+{
+  "devices": [
+    "Смартфон",
+    "Планшет",
+    "Смарт часы"
+  ],
+  "brands": [
+    "Samsung",
+    "Apple"
+  ],
+  "series": [
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "name": "Galaxy S"
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "name": "Galaxy Note"
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "name": "Galaxy Z"
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "name": "Galaxy A"
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "name": "Galaxy M"
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "name": "Galaxy J"
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "name": "iPhone"
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "name": "iPhone SE"
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "name": "iPhone mini"
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "name": "iPhone Plus"
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "name": "iPhone Pro"
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "name": "iPhone Pro Max"
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "name": "Galaxy Tab S"
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "name": "Galaxy Tab A"
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "name": "Galaxy Tab FE"
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "name": "Galaxy Tab Active"
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "name": "iPad"
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "name": "iPad mini"
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "name": "iPad Air"
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "name": "iPad Pro"
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "name": "Galaxy Watch"
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "name": "Galaxy Fit"
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "name": "Apple Watch Series"
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "name": "Apple Watch SE"
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "name": "Apple Watch Ultra"
+    }
+  ],
+  "models": [
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S II",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S III",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S4",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S5",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S6",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S6 Edge",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S6 Edge+",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S7",
+      "model_id": 76
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S7 Edge",
+      "model_id": 77
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S8",
+      "model_id": 78
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S8+",
+      "model_id": 79
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S9",
+      "model_id": 80
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S9+",
+      "model_id": 81
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S10e",
+      "model_id": 84
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S10",
+      "model_id": 82
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S10+",
+      "model_id": 83
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S10 5G",
+      "model_id": 217
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S20",
+      "model_id": 87
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S20+",
+      "model_id": 88
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S20 Ultra",
+      "model_id": 89
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S20 FE",
+      "model_id": 86
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S21",
+      "model_id": 90
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S21+",
+      "model_id": 91
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S21 Ultra",
+      "model_id": 92
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S21 FE",
+      "model_id": 208
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S22",
+      "model_id": 201
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S22+",
+      "model_id": 202
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S22 Ultra",
+      "model_id": 203
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S22 FE",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S23",
+      "model_id": 237
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S23+",
+      "model_id": 238
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S23 Ultra",
+      "model_id": 229
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S23 FE",
+      "model_id": 265
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S24",
+      "model_id": 272
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S24+",
+      "model_id": 273
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S24 Ultra",
+      "model_id": 274
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S24 FE",
+      "model_id": 3784
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S25",
+      "model_id": 3787
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S25+",
+      "model_id": 3788
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S25 Ultra",
+      "model_id": 3789
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S25 Edge",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy S",
+      "name": "Galaxy S25 FE",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Note",
+      "name": "Galaxy Note",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Note",
+      "name": "Galaxy Note II",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Note",
+      "name": "Galaxy Note 3",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Note",
+      "name": "Galaxy Note 4",
+      "model_id": 93
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Note",
+      "name": "Galaxy Note 5",
+      "model_id": 94
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Note",
+      "name": "Galaxy Note 7",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Note",
+      "name": "Galaxy Note 8",
+      "model_id": 95
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Note",
+      "name": "Galaxy Note 9",
+      "model_id": 96
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Note",
+      "name": "Galaxy Note 10",
+      "model_id": 98
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Note",
+      "name": "Galaxy Note 10+",
+      "model_id": 99
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Note",
+      "name": "Galaxy Note 20",
+      "model_id": 100
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Note",
+      "name": "Galaxy Note 20 Ultra",
+      "model_id": 101
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Fold",
+      "model_id": 3798
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Z Flip",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Z Fold 2",
+      "model_id": 207
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Z Fold 3",
+      "model_id": 211
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Z Flip 3",
+      "model_id": 241
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Z Fold 4",
+      "model_id": 235
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Z Flip 4",
+      "model_id": 239
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Z Fold 5",
+      "model_id": 266
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Z Flip 5",
+      "model_id": 255
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Z Fold 6",
+      "model_id": 3779
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Z Flip 6",
+      "model_id": 275
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Z Fold 7",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy Z",
+      "name": "Galaxy Z Flip 7",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A10",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A20",
+      "model_id": 112
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A30",
+      "model_id": 113
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A40",
+      "model_id": 115
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A50",
+      "model_id": 116
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A70",
+      "model_id": 117
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A01",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A11",
+      "model_id": 216
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A21",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A31",
+      "model_id": 120
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A51",
+      "model_id": 122
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A71",
+      "model_id": 123
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A02",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A12",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A22",
+      "model_id": 124
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A32",
+      "model_id": 125
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A52",
+      "model_id": 126
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A72",
+      "model_id": 127
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A03",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A13",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A23",
+      "model_id": 230
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A33",
+      "model_id": 231
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A53",
+      "model_id": 232
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A73",
+      "model_id": 233
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A04",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A14",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A24",
+      "model_id": 250
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A34",
+      "model_id": 249
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A54",
+      "model_id": 240
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A05",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A15",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A25",
+      "model_id": 271
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A35",
+      "model_id": 3785
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy A",
+      "name": "Galaxy A55",
+      "model_id": 3786
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M10",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M20",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M30",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M01",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M11",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M21",
+      "model_id": 128
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M31",
+      "model_id": 130
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M51",
+      "model_id": 132
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M02",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M12",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M22",
+      "model_id": 133
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M32",
+      "model_id": 134
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M42",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M52",
+      "model_id": 135
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M13",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M23",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M33",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M53",
+      "model_id": 270
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M04",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M14",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M34",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M54",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M05",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M15",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M35",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy M",
+      "name": "Galaxy M55",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy J",
+      "name": "Galaxy J1",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy J",
+      "name": "Galaxy J2",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy J",
+      "name": "Galaxy J3",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy J",
+      "name": "Galaxy J4",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy J",
+      "name": "Galaxy J5",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy J",
+      "name": "Galaxy J6",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy J",
+      "name": "Galaxy J7",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Samsung",
+      "series": "Galaxy J",
+      "name": "Galaxy J8",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S 8.4",
+      "model_id": 149
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S 10.5",
+      "model_id": 150
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S2 8.0",
+      "model_id": 151
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S2 9.7",
+      "model_id": 152
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S3 9.7",
+      "model_id": 153
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S4 10.5",
+      "model_id": 154
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S5e",
+      "model_id": 155
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S6 10.5",
+      "model_id": 156
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S6 Lite",
+      "model_id": 157
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S7",
+      "model_id": 158
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S7+",
+      "model_id": 159
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S7 FE",
+      "model_id": 215
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S8",
+      "model_id": 257
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S8+",
+      "model_id": 236
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S8 Ultra",
+      "model_id": 258
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S9",
+      "model_id": 3794
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S9+",
+      "model_id": 269
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S9 Ultra",
+      "model_id": 3792
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S9 FE",
+      "model_id": 267
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S9 FE+",
+      "model_id": 268
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S10",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S10+",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab S",
+      "name": "Galaxy Tab S10 Ultra",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab A",
+      "name": "Galaxy Tab A 7.0",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab A",
+      "name": "Galaxy Tab A 8.0",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab A",
+      "name": "Galaxy Tab A 9.7",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab A",
+      "name": "Galaxy Tab A 10.1",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab A",
+      "name": "Galaxy Tab A7",
+      "model_id": 214
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab A",
+      "name": "Galaxy Tab A7 Lite",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab A",
+      "name": "Galaxy Tab A8",
+      "model_id": 204
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab A",
+      "name": "Galaxy Tab A9",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab A",
+      "name": "Galaxy Tab A9+",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab FE",
+      "name": "Galaxy Tab S7 FE",
+      "model_id": 215
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab FE",
+      "name": "Galaxy Tab S9 FE",
+      "model_id": 267
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab FE",
+      "name": "Galaxy Tab S9 FE+",
+      "model_id": 268
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab Active",
+      "name": "Galaxy Tab Active",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab Active",
+      "name": "Galaxy Tab Active2",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab Active",
+      "name": "Galaxy Tab Active3",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab Active",
+      "name": "Galaxy Tab Active4 Pro",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Samsung",
+      "series": "Galaxy Tab Active",
+      "name": "Galaxy Tab Active5",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad",
+      "name": "iPad 1st Gen",
+      "model_id": 28
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad",
+      "name": "iPad 2",
+      "model_id": 29
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad",
+      "name": "iPad 3rd Gen",
+      "model_id": 30
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad",
+      "name": "iPad 4th Gen",
+      "model_id": 31
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad",
+      "name": "iPad 5th Gen",
+      "model_id": 32
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad",
+      "name": "iPad 6th Gen",
+      "model_id": 33
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad",
+      "name": "iPad 7th Gen",
+      "model_id": 34
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad",
+      "name": "iPad 8th Gen",
+      "model_id": 35
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad",
+      "name": "iPad 9th Gen",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad",
+      "name": "iPad 10th Gen",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad mini",
+      "name": "iPad mini 1st Gen",
+      "model_id": 25
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad mini",
+      "name": "iPad mini 2",
+      "model_id": 36
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad mini",
+      "name": "iPad mini 3",
+      "model_id": 37
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad mini",
+      "name": "iPad mini 4",
+      "model_id": 27
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad mini",
+      "name": "iPad mini 5th Gen",
+      "model_id": 38
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad mini",
+      "name": "iPad mini 6th Gen",
+      "model_id": 182
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad mini",
+      "name": "iPad mini 7th Gen",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Air",
+      "name": "iPad Air 1st Gen",
+      "model_id": 39
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Air",
+      "name": "iPad Air 2",
+      "model_id": 26
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Air",
+      "name": "iPad Air 3rd Gen",
+      "model_id": 40
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Air",
+      "name": "iPad Air 4th Gen",
+      "model_id": 41
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Air",
+      "name": "iPad Air 5th Gen",
+      "model_id": 220
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Air",
+      "name": "iPad Air 6th Gen",
+      "model_id": null
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 12.9 1st Gen",
+      "model_id": 47
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 9.7",
+      "model_id": 42
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 12.9 2nd Gen",
+      "model_id": 48
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 10.5",
+      "model_id": 43
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 11 1st Gen",
+      "model_id": 44
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 12.9 3rd Gen",
+      "model_id": 49
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 11 2nd Gen",
+      "model_id": 45
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 12.9 4th Gen",
+      "model_id": 50
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 11 3rd Gen",
+      "model_id": 46
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 12.9 5th Gen",
+      "model_id": 51
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 11 4th Gen",
+      "model_id": 221
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 12.9 6th Gen",
+      "model_id": 224
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 11 M4",
+      "model_id": 282
+    },
+    {
+      "device": "Планшет",
+      "brand": "Apple",
+      "series": "iPad Pro",
+      "name": "iPad Pro 13 M4",
+      "model_id": 283
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch Active",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch Active2",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch3",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch4",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch4 Classic",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch5",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch5 Pro",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch6",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch6 Classic",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch7",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch Ultra",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Watch",
+      "name": "Galaxy Watch FE",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Fit",
+      "name": "Galaxy Fit",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Fit",
+      "name": "Galaxy Fit E",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Samsung",
+      "series": "Galaxy Fit",
+      "name": "Galaxy Fit2",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Series",
+      "name": "Apple Watch 1st Gen",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Series",
+      "name": "Apple Watch Series 1",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Series",
+      "name": "Apple Watch Series 2",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Series",
+      "name": "Apple Watch Series 3",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Series",
+      "name": "Apple Watch Series 4",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Series",
+      "name": "Apple Watch Series 5",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Series",
+      "name": "Apple Watch Series 6",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Series",
+      "name": "Apple Watch Series 7",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Series",
+      "name": "Apple Watch Series 8",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Series",
+      "name": "Apple Watch Series 9",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Series",
+      "name": "Apple Watch Series 10",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch SE",
+      "name": "Apple Watch SE 1st Gen",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch SE",
+      "name": "Apple Watch SE 2nd Gen",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Ultra",
+      "name": "Apple Watch Ultra",
+      "model_id": null
+    },
+    {
+      "device": "Смарт часы",
+      "brand": "Apple",
+      "series": "Apple Watch Ultra",
+      "name": "Apple Watch Ultra 2",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 3G",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 3GS",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 4",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 4S",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 5",
+      "model_id": 1
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 5c",
+      "model_id": 2
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 5s",
+      "model_id": 3
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 6",
+      "model_id": 5
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 6s",
+      "model_id": 23
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 7",
+      "model_id": 7
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 8",
+      "model_id": 9
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone X",
+      "model_id": 13
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone XR",
+      "model_id": 12
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone XS",
+      "model_id": 14
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 11",
+      "model_id": 16
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 12",
+      "model_id": 20
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 13",
+      "model_id": 178
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 14",
+      "model_id": 225
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 15",
+      "model_id": 251
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone",
+      "name": "iPhone 16",
+      "model_id": 276
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone SE",
+      "name": "iPhone SE",
+      "model_id": 4
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone SE",
+      "name": "iPhone SE 2nd Gen",
+      "model_id": 11
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone SE",
+      "name": "iPhone SE 3rd Gen",
+      "model_id": null
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone mini",
+      "name": "iPhone 12 mini",
+      "model_id": 19
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone mini",
+      "name": "iPhone 13 mini",
+      "model_id": 179
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Plus",
+      "name": "iPhone 6 Plus",
+      "model_id": 6
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Plus",
+      "name": "iPhone 6s Plus",
+      "model_id": 24
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Plus",
+      "name": "iPhone 7 Plus",
+      "model_id": 8
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Plus",
+      "name": "iPhone 8 Plus",
+      "model_id": 10
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Plus",
+      "name": "iPhone 14 Plus",
+      "model_id": 226
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Plus",
+      "name": "iPhone 15 Plus",
+      "model_id": 252
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Plus",
+      "name": "iPhone 16 Plus",
+      "model_id": 277
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro",
+      "name": "iPhone 11 Pro",
+      "model_id": 17
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro",
+      "name": "iPhone 12 Pro",
+      "model_id": 21
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro",
+      "name": "iPhone 13 Pro",
+      "model_id": 181
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro",
+      "name": "iPhone 14 Pro",
+      "model_id": 227
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro",
+      "name": "iPhone 15 Pro",
+      "model_id": 253
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro",
+      "name": "iPhone 16 Pro",
+      "model_id": 278
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro Max",
+      "name": "iPhone XS Max",
+      "model_id": 15
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro Max",
+      "name": "iPhone 11 Pro Max",
+      "model_id": 18
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro Max",
+      "name": "iPhone 12 Pro Max",
+      "model_id": 22
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro Max",
+      "name": "iPhone 13 Pro Max",
+      "model_id": 180
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro Max",
+      "name": "iPhone 14 Pro Max",
+      "model_id": 228
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro Max",
+      "name": "iPhone 15 Pro Max",
+      "model_id": 254
+    },
+    {
+      "device": "Смартфон",
+      "brand": "Apple",
+      "series": "iPhone Pro Max",
+      "name": "iPhone 16 Pro Max",
+      "model_id": 279
+    }
+  ],
+  "services": [
+    "Переклейка дисплея",
+    "Замена задней крышки",
+    "Продать битик",
+    "Купить дисплей (восстановленный)",
+    "Купить дисплей (запчасть)"
+  ]
+}

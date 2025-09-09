@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Query
 import json
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
@@ -7,16 +7,18 @@ import json
 from pydantic import BaseModel
 from loguru import logger
 from bs4 import BeautifulSoup  # Импортируем BeautifulSoup для удаления HTML-тегов
+from typing import List, Optional
 
 from bot.config import bot  # Импортируем уже созданный объект bot
 
 # Инициализация FastAPI
 app = FastAPI()
 
-# Path to the filters JSON file
+# Path to the filters JSON files
 FILTERS_PATH = Path(__file__).parent / "stocks" / "filters.json"
+NEW_FILTERS_PATH = Path(__file__).parent / "stocks" / "new_filters.json"
 
-# Load filters data
+# Load old filters data (for backward compatibility)
 def load_filters():
     try:
         with open(FILTERS_PATH, 'r', encoding='utf-8') as f:
@@ -26,7 +28,18 @@ def load_filters():
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="Invalid JSON in filters file")
 
+# Load new filters data
+def load_new_filters():
+    try:
+        with open(NEW_FILTERS_PATH, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="New filters file not found")
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="Invalid JSON in new filters file")
+
 filters_data = load_filters()
+new_filters_data = load_new_filters()
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="bot/static"), name="static")
@@ -36,6 +49,7 @@ async def get_webapp():
     with open(Path(__file__).parent / "static" / "index.html", "r", encoding="utf-8") as f:
         return f.read()
 
+# Old endpoints (for backward compatibility)
 @app.get("/api/devices")
 async def get_devices():
     return {"devices": list(filters_data["devices"].keys())}
@@ -69,6 +83,72 @@ async def get_models(device: str, brand: str, series: str):
         raise HTTPException(status_code=404, detail="Series not found")
     models = series_data[series]["models"]
     return {"models": models}
+
+# New endpoints (for web app with multiple selection)
+@app.get("/api/v2/devices")
+async def get_devices_v2():
+    """Return list of all available devices"""
+    return {"devices": new_filters_data["devices"]}
+
+@app.get("/api/v2/brands")
+async def get_brands_v2():
+    """Return list of all available brands"""
+    return {"brands": new_filters_data["brands"]}
+
+@app.get("/api/v2/series")
+async def get_series_v2(
+    devices: List[str] = Query(None, description="Filter series by devices"),
+    brands: List[str] = Query(None, description="Filter series by brands")
+):
+    """
+    Return list of series, optionally filtered by devices and brands.
+    Supports multiple selection for both devices and brands.
+    """
+    series_list = new_filters_data["series"]
+    
+    # Filter by devices if provided
+    if devices:
+        series_list = [s for s in series_list if s["device"] in devices]
+    
+    # Filter by brands if provided
+    if brands:
+        series_list = [s for s in series_list if s["brand"] in brands]
+    
+    # Return unique series names
+    unique_series = list({s["name"] for s in series_list})
+    return {"series": unique_series}
+
+@app.get("/api/v2/models")
+async def get_models_v2(
+    devices: List[str] = Query(None, description="Filter models by devices"),
+    brands: List[str] = Query(None, description="Filter models by brands"),
+    series: List[str] = Query(None, description="Filter models by series")
+):
+    """
+    Return list of models, optionally filtered by devices, brands and series.
+    Supports multiple selection for all parameters.
+    """
+    print(f"get_models_v2 called with devices={devices}, brands={brands}, series={series}")
+    models_list = new_filters_data["models"]
+    print(f"Initial models count: {len(models_list)}")
+    
+    # Filter by devices if provided
+    if devices:
+        models_list = [m for m in models_list if m["device"] in devices]
+        print(f"After device filter ({devices}): {len(models_list)} models")
+    
+    # Filter by brands if provided
+    if brands:
+        models_list = [m for m in models_list if m["brand"] in brands]
+        print(f"After brand filter ({brands}): {len(models_list)} models")
+    
+    # Filter by series if provided
+    if series:
+        models_list = [m for m in models_list if m["series"] in series]
+        print(f"After series filter ({series}): {len(models_list)} models")
+    
+    print(f"Returning {len(models_list)} models: {models_list}")
+    return {"models": models_list}
 
 # Модель для входящих данных от Planfix
 class PlanfixComment(BaseModel):
