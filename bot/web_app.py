@@ -1,10 +1,42 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
-from sqlalchemy import text
-from bot.database import async_session_maker
+from sqlalchemy import select, String, Integer, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from bot.database import Base, async_session_maker
 import uvicorn
 from typing import List, Optional
+
+class Device(Base):
+    __tablename__ = 'devices'
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(255), unique=True)
+
+class Brand(Base):
+    __tablename__ = 'brands'
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(255), unique=True)
+
+class Series(Base):
+    __tablename__ = 'series'
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    device_id: Mapped[int] = mapped_column(ForeignKey('devices.id'))
+    brand_id: Mapped[int] = mapped_column(ForeignKey('brands.id'))
+    name: Mapped[str] = mapped_column(String(255))
+    device: Mapped['Device'] = relationship()
+    brand: Mapped['Brand'] = relationship()
+
+class ModelNew(Base):
+    __tablename__ = 'models_new'
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    device_id: Mapped[int] = mapped_column(ForeignKey('devices.id'))
+    brand_id: Mapped[int] = mapped_column(ForeignKey('brands.id'))
+    series_id: Mapped[int] = mapped_column(ForeignKey('series.id'))
+    name: Mapped[str] = mapped_column(String(255))
+    model_id: Mapped[Optional[int]] = mapped_column(Integer)
+    device: Mapped['Device'] = relationship()
+    brand: Mapped['Brand'] = relationship()
+    series: Mapped['Series'] = relationship()
 
 app = FastAPI(title="Device Filter API", description="API for filtering devices, brands, series, models for spare parts")
 
@@ -21,16 +53,18 @@ async def get_webapp():
 async def get_devices():
     """Return list of all available devices"""
     async with async_session_maker() as session:
-        result = await session.execute(text("SELECT name FROM devices ORDER BY name"))
-        devices = [row[0] for row in result.fetchall()]
+        stmt = select(Device.name)
+        result = await session.execute(stmt)
+        devices = [row.name for row in result.scalars().all()]
         return {"devices": devices}
 
 @app.get("/api/brands")
 async def get_brands():
     """Return list of all available brands"""
     async with async_session_maker() as session:
-        result = await session.execute(text("SELECT name FROM brands ORDER BY name"))
-        brands = [row[0] for row in result.fetchall()]
+        stmt = select(Brand.name)
+        result = await session.execute(stmt)
+        brands = [row.name for row in result.scalars().all()]
         return {"brands": brands}
 
 @app.get("/api/series")
@@ -42,18 +76,15 @@ async def get_series(
     Return list of series, optionally filtered by devices and brands.
     Supports multiple selection for both devices and brands.
     """
-    sql = "SELECT DISTINCT s.name FROM series s JOIN devices d ON s.device_id = d.id JOIN brands b ON s.brand_id = b.id WHERE 1=1"
-    params = {}
+    stmt = select(Series.name)
     if devices:
-        sql += " AND d.name = ANY(:devices)"
-        params['devices'] = devices
+        stmt = stmt.join(Device).where(Device.name.in_(devices))
     if brands:
-        sql += " AND b.name = ANY(:brands)"
-        params['brands'] = brands
-    sql += " ORDER BY s.name"
+        stmt = stmt.join(Brand).where(Brand.name.in_(brands))
+    stmt = stmt.distinct().order_by(Series.name)
     async with async_session_maker() as session:
-        result = await session.execute(text(sql), params)
-        series = [row[0] for row in result.fetchall()]
+        result = await session.execute(stmt)
+        series = [row.name for row in result.scalars().all()]
         return {"series": series}
 
 @app.get("/api/models")
@@ -66,35 +97,30 @@ async def get_models(
     Return list of models, optionally filtered by devices, brands and series.
     Supports multiple selection for all parameters.
     """
-    sql = """
-    SELECT d.name as device, b.name as brand, s.name as series, mn.name, mn.model_id
-    FROM models_new mn
-    JOIN devices d ON mn.device_id = d.id
-    JOIN brands b ON mn.brand_id = b.id
-    JOIN series s ON mn.series_id = s.id
-    WHERE 1=1
-    """
-    params = {}
+    stmt = select(
+        Device.name.label('device'),
+        Brand.name.label('brand'),
+        Series.name.label('series'),
+        ModelNew.name,
+        ModelNew.model_id
+    ).select_from(ModelNew).join(Device).join(Brand).join(Series)
     if devices:
-        sql += " AND d.name = ANY(:devices)"
-        params['devices'] = devices
+        stmt = stmt.where(Device.name.in_(devices))
     if brands:
-        sql += " AND b.name = ANY(:brands)"
-        params['brands'] = brands
+        stmt = stmt.where(Brand.name.in_(brands))
     if series:
-        sql += " AND s.name = ANY(:series)"
-        params['series'] = series
-    sql += " ORDER BY mn.name"
+        stmt = stmt.where(Series.name.in_(series))
+    stmt = stmt.order_by(ModelNew.name)
     async with async_session_maker() as session:
-        result = await session.execute(text(sql), params)
+        result = await session.execute(stmt)
         models = []
         for row in result.fetchall():
             models.append({
-                "device": row[0],
-                "brand": row[1],
-                "series": row[2],
-                "name": row[3],
-                "model_id": row[4]
+                "device": row.device,
+                "brand": row.brand,
+                "series": row.series,
+                "name": row.name,
+                "model_id": row.model_id
             })
         return {"models": models}
 

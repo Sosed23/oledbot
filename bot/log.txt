@@ -25995,3 +25995,7 @@ Original description: Too Many Requests: retry after 29
 2025-09-09 at 15:10:31 | INFO | Бот успешно запущен.
 2025-09-09 at 15:11:51 | INFO | Skipping middleware for web_app_data message
 2025-09-09 at 19:08:46 | ERROR | Бот остановлен!
+2025-09-09 at 19:08:55 | INFO | Starting bot polling...
+2025-09-09 at 19:08:55 | INFO | Starting FastAPI server...
+2025-09-09 at 19:08:55 | INFO | Бот успешно запущен.
+2025-09-09 at 23:55:40 | ERROR | Бот остановлен!

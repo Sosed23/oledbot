@@ -8,6 +8,7 @@ from aiogram.filters import Command
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 import aiohttp
 import asyncio
+import os
 
 web_filter_router = Router()
 
@@ -17,7 +18,7 @@ class FilterState(StatesGroup):
     waiting_series = State()
     waiting_model = State()
 
-API_BASE = "http://localhost:800/api/v2"
+API_BASE = os.getenv("API_BASE")
 
 async def fetch_api(endpoint: str):
     async with aiohttp.ClientSession() as session:
