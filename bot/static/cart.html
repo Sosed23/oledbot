@@ -122,6 +122,11 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
+
+        const user = tg.initDataUnsafe.user;
+        if (user && user.id) {
+            localStorage.setItem('telegram_id', user.id.toString());
+        }
     </script>
 </body>
 </html>

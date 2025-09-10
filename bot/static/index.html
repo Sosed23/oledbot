@@ -146,6 +146,14 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
 
+        const telegramUser = tg.initDataUnsafe.user;
+        if (telegramUser && telegramUser.id) {
+            localStorage.setItem('telegram_id', telegramUser.id.toString());
+        }
+
+
+
+
         const API_BASE = '/api/v2'; // Relative to FastAPI /webapp
         
         // Store selected values
