@@ -10,12 +10,37 @@
         .filter-section { margin-bottom: 20px; }
         .filter-label { font-weight: bold; margin-bottom: 5px; }
         .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; }
-        .checkbox-item { display: flex; align-items: center; }
-        .checkbox-item input { margin-right: 5px; }
-        
-        .checkbox-group.vertical {
-            flex-direction: column;
-            gap: 15px;
+        .checkbox-group.vertical { flex-direction: column; gap: 15px; }
+
+        .toggle-btn {
+            border: 1px solid #ccc;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: normal;
+            margin: 2px;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.selected {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+            font-weight: bold;
+        }
+
+        .toggle-btn:hover {
+            background: #f8f9fa;
+            border-color: #007bff;
+        }
+
+        .toggle-btn.selected:hover {
+            background: #0056b3;
+            border-color: #0056b3;
         }
         button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; background-color: #007bff; color: white; cursor: pointer; }
         #result { margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 5px; }
@@ -92,11 +117,11 @@
             }
         }
         
-        // Get selected values from checkboxes
+        // Get selected values from toggle buttons
         function getSelectedValues(containerId) {
             const container = document.getElementById(containerId);
-            const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
-            return Array.from(checkboxes).map(cb => cb.value);
+            const selectedBtns = container.querySelectorAll('.toggle-btn.selected');
+            return Array.from(selectedBtns).map(btn => btn.dataset.value);
         }
         
         // Create checkboxes for items
@@ -108,24 +133,22 @@
                 const itemName = typeof item === 'string' ? item : item.name;
                 const itemId = typeof item === 'string' ? item : (item.model_id || item.name);
                 
-                const div = document.createElement('div');
-                div.className = 'checkbox-item';
+                const btn = document.createElement('button');
+                btn.className = 'toggle-btn';
+                if (selectedValues.includes(itemName)) {
+                    btn.classList.add('selected');
+                }
+                btn.textContent = itemName;
+                btn.dataset.value = itemName;
+                btn.dataset.id = itemId;
                 
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = `${containerId}_${itemId}`;
-                checkbox.value = itemName;
-                checkbox.checked = selectedValues.includes(itemName);
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    btn.classList.toggle('selected');
+                    handleFilterChange();
+                });
                 
-                const label = document.createElement('label');
-                label.htmlFor = `${containerId}_${itemId}`;
-                label.textContent = itemName;
-                
-                checkbox.addEventListener('change', handleFilterChange);
-                
-                div.appendChild(checkbox);
-                div.appendChild(label);
-                container.appendChild(div);
+                container.appendChild(btn);
             });
         }
         
