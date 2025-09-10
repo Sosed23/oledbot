@@ -57,9 +57,38 @@
             border: 1px solid #ccc;
             padding: 15px;
             margin: 10px 0;
-            border-radius: 5px;
+            border-radius: 10px;
             background: #f8f9fa;
             cursor: pointer;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            border-top: 1px solid #ccc;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 12px;
+        }
+        .nav-btn.active {
+            color: #007bff;
+        }
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 2px;
         }
     </style>
 </head>
@@ -338,5 +367,20 @@
         // Initialize filters on page load
         initializeFilters();
     </script>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-btn active">
+            <div class="nav-icon">📱</div>
+            <span>Каталог</span>
+        </a>
+        <a href="cart.html" class="nav-btn">
+            <div class="nav-icon">🛒</div>
+            <span>Корзина</span>
+        </a>
+        <a href="orders.html" class="nav-btn">
+            <div class="nav-icon">📋</div>
+            <span>Мои заказы</span>
+        </a>
+    </nav>
 </body>
 </html>
