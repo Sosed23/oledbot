@@ -94,7 +94,7 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
         if not cart_items:
             error_message = await message_obj.answer(
                 "Ваша корзина пуста!",
-                reply_markup=markup_kb.back_keyboard(telegram_id)
+                reply_markup=markup_kb.back_keyboard()
             )
             await state.clear()
             return [error_message]
@@ -236,7 +236,7 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
         logger.info(f"Отправка сообщения пользователю: {message_text}")
         order_message = await message_obj.answer(
             message_text,
-            reply_markup=markup_kb.back_keyboard(telegram_id)
+            reply_markup=markup_kb.back_keyboard()
         )
         messages.append(order_message)
         logger.info("Сообщение успешно отправлено пользователю")
@@ -325,7 +325,7 @@ async def create_order_and_sync_with_planfix(telegram_id: int, phone_number: str
         logger.error(f"Ошибка при создании заказа или интеграции с Планфиксом для telegram_id={telegram_id}: {e}")
         error_message = await message_obj.answer(
             "Произошла ошибка при создании заказа или синхронизации с Планфиксом. Пожалуйста, попробуйте снова.",
-            reply_markup=markup_kb.back_keyboard(telegram_id)
+            reply_markup=markup_kb.back_keyboard()
         )
         await state.clear()
         return [error_message]
@@ -350,7 +350,7 @@ async def request_phone_before_order(callback_query: types.CallbackQuery, state:
     if not cart_items:
         result = await callback_query.message.answer(
             "Ваша корзина пуста!",
-            reply_markup=markup_kb.back_keyboard(telegram_id)
+            reply_markup=markup_kb.back_keyboard()
         )
         return result
 
@@ -464,7 +464,7 @@ async def process_manual_phone_input(message: types.Message, state: FSMContext):
         logger.error(f"Ошибка при обработке номера телефона для telegram_id={telegram_id}: {e}")
         error_message = await message.answer(
             "Произошла ошибка при обработке номера телефона. Пожалуйста, попробуйте снова.",
-            reply_markup=markup_kb.back_keyboard(telegram_id)
+            reply_markup=markup_kb.back_keyboard()
         )
         await state.clear()
         return error_message
