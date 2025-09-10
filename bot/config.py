@@ -31,7 +31,8 @@ class Settings(BaseSettings):
     
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), "..", ".env")
+            os.path.abspath(__file__)), "..", ".env"),
+        extra="allow"
     )
 
 # Получаем параметры для загрузки переменных среды
