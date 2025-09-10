@@ -153,6 +153,7 @@
             if (telegramUser && telegramUser.id) {
                 localStorage.setItem('telegram_id', telegramUser.id.toString());
                 console.log('User ID saved:', telegramUser.id);
+                document.body.innerHTML += `<p>User ID: ${telegramUser.id}</p>`;
             } else {
                 console.error('User ID not available even after delay');
                 // Fallback: попробовать извлечь из initData, если доступно
@@ -166,8 +167,15 @@
                             const userId = parseInt(userIdMatch[1]);
                             localStorage.setItem('telegram_id', userId.toString());
                             console.log('User ID extracted from initData:', userId);
+                            document.body.innerHTML += `<p>User ID: ${userId}</p>`;
+                        } else {
+                            document.body.innerHTML += `<p>User ID not available</p>`;
                         }
+                    } else {
+                        document.body.innerHTML += `<p>User ID not available</p>`;
                     }
+                } else {
+                    document.body.innerHTML += `<p>User ID not available</p>`;
                 }
             }
         }, 100);
