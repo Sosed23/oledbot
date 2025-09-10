@@ -29,16 +29,15 @@ def strip_html(text: str) -> str:
 class ForwardIncomingMessageMiddleware(BaseMiddleware):
     async def __call__(self, handler, event: types.Message, data: dict):
         if event.web_app_data:
-            # Пропускаем обработку для web_app_data сообщений
-            logger.info("Skipping middleware for web_app_data message")
-            return await handler(event, data)
+            logger.debug(f"web_app_data received: {event.web_app_data.data}")
+            # Allow processing without skipping middleware logic
 
         result = None
         try:
-            if event.chat.type == "private":  # Только для личных чатов
+            if event.chat.type == "private" and event.text is not None:  # Только для личных чатов с текстом (skip web_app_data forwarding)
                 user_id = event.from_user.id
                 username = event.from_user.username if event.from_user.username else "None"
-                message_text = event.text if event.text else "Сообщение без текста"
+                message_text = event.text
 
                 # Пересылаем сообщение в группу Telegram
                 logger.debug(f"Пересылка входящего сообщения в Telegram-группу: user_id={user_id}, username={username}")

@@ -237,7 +237,7 @@ async def handle_web_app_data(message: types.Message):
     logger.info("handle_web_app_data called")
     logger.info(f"Received web_app_data raw: {message.web_app_data}")
     try:
-        data = json.loads(message.web_app_data)
+        data = json.loads(message.web_app_data.data)
         logger.info(f"Parsed data: {data}")
         action = data.get('action')
         logger.info(f"Action: {action}")
@@ -256,11 +256,12 @@ async def handle_web_app_data(message: types.Message):
             kb.button(text="Купить дисплей (восстановленный)", callback_data=f"cart_web_ready_products_{model_id}")
             kb.button(text="Купить дисплей (запчасть)", callback_data=f"cart_web_spare_parts_{model_id}")
             kb.adjust(2, 1, 2)
+            text = f"Выберете нужную опцию для модели: {model_name}"
             response = await message.answer(
-                f"Выберете нужную опцию для модели: {model_name}",
+                text,
                 reply_markup=kb.as_markup()
             )
-            logger.info("Sent message with buttons for select_model")
+            logger.info(f"Sent message to user {message.from_user.id}: text='{text}', keyboard with {len(kb.buttons)} buttons")
             return response
         elif action == 'open':
             logger.info("Processing 'open' action")
