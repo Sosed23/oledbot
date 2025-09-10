@@ -30,7 +30,8 @@ class ForwardIncomingMessageMiddleware(BaseMiddleware):
     async def __call__(self, handler, event: types.Message, data: dict):
         if event.web_app_data:
             logger.debug(f"web_app_data received: {event.web_app_data.data}")
-            # Allow processing without skipping middleware logic
+            # For web_app_data, directly call handler and return its result to allow dp processing
+            return await handler(event, data)
 
         result = None
         try:
