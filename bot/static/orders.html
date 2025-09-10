@@ -101,19 +101,19 @@
     <h2>Мои заказы</h2>
     <div id="orders-content">
         <!-- Контент заказов будет здесь -->
-        <p>У вас нет активных заказов.</p>
+        <p>Загрузка заказов...</p>
     </div>
 
     <nav class="bottom-nav">
-        <a href="/static/index.html" class="nav-btn">
+        <a href="/webapp" class="nav-btn">
             <div class="nav-icon">📱</div>
             <span>Каталог</span>
         </a>
-        <a href="/static/cart.html" class="nav-btn">
+        <a href="/cart" class="nav-btn">
             <div class="nav-icon">🛒</div>
             <span>Корзина</span>
         </a>
-        <a href="/static/orders.html" class="nav-btn active">
+        <a href="/orders" class="nav-btn active">
             <div class="nav-icon">📋</div>
             <span>Мои заказы</span>
         </a>
@@ -122,6 +122,51 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
+
+        const API_BASE = '/api/v2'; // Relative to FastAPI
+
+        async function fetchData(endpoint) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`);
+                if (!response.ok) throw new Error('Error fetching data');
+                return await response.json();
+            } catch (error) {
+                console.error(error);
+                return null;
+            }
+        }
+
+        async function loadOrders() {
+            const user = tg.initDataUnsafe.user;
+            if (!user || !user.id) {
+                document.getElementById('orders-content').innerHTML = '<p>Ошибка: не удалось получить ID пользователя.</p>';
+                return;
+            }
+
+            const telegram_id = user.id;
+            const data = await fetchData(`/orders/${telegram_id}`);
+            
+            if (data && data.orders && data.orders.length > 0) {
+                let ordersHtml = '<p>Ваши заказы:</p>';
+                data.orders.forEach(order => {
+                    let itemsHtml = order.items.length > 0 ? order.items.join('<br>') : 'Товары отсутствуют.';
+                    ordersHtml += `
+                        <div class="model-card">
+                            <p><strong>Заказ ID:</strong> ${order.id}</p>
+                            <p><strong>Статус:</strong> ${order.status}</p>
+                            <p><strong>Общая сумма:</strong> ${order.total_amount} руб.</p>
+                            <p><strong>Состав:</strong><br>${itemsHtml}</p>
+                        </div>
+                    `;
+                });
+                document.getElementById('orders-content').innerHTML = ordersHtml;
+            } else {
+                document.getElementById('orders-content').innerHTML = '<p>У вас нет активных заказов.</p>';
+            }
+        }
+
+        // Загружаем заказы при загрузке страницы
+        loadOrders();
     </script>
 </body>
 </html>
