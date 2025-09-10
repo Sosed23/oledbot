@@ -233,14 +233,11 @@ def setup_bot():
     dp.message.outer_middleware(ForwardOutgoingMessageMiddleware())
     dp.callback_query.outer_middleware(ForwardOutgoingMessageMiddleware())
 
-    @dp.message()
+    @dp.message(F.web_app_data)
     async def direct_web_app_handler(message: types.Message):
         logger.info(f"direct_web_app_handler called for message from user {message.from_user.id}")
-        if not message.web_app_data:
-            return
         try:
             logger.info("Direct dp handler triggered for web_app_data")
-            await message.answer("Test web_app_data received")
             logger.info(f"Received web_app_data raw: {message.web_app_data.data}")
             import json
             from aiogram.utils.keyboard import InlineKeyboardBuilder
@@ -288,53 +285,7 @@ def setup_bot():
             logger.error(f"Error in direct_web_app_handler: {e}")
             await message.answer("Error processing web_app_data")
 
-    @dp.message()
-    async def debug_all_messages(message: types.Message):
-        logger.info(f"debug_all_messages called for message from user {message.from_user.id}")
-        logger.debug(f"Global message received: user={message.from_user.id}, text={message.text}, web_app_data={message.web_app_data is not None}")
-        logger.info(f"Received web_app_data raw: {message.web_app_data.data}")
-        try:
-            import json
-            from aiogram.utils.keyboard import InlineKeyboardBuilder
-            data = json.loads(message.web_app_data.data)
-            logger.info(f"Parsed data: {data}")
-            action = data.get('action')
-            logger.info(f"Action: {action}")
-            if action == 'select_model':
-                logger.info("Processing 'select_model' action")
-                model_name = data.get('name', '')
-                model_id = data.get('model_id', '')
-                logger.info(f"Model name: {model_name}, model_id: {model_id}")
-                if model_id is None:
-                    logger.error("model_id is None in select_model action")
-                    await message.answer("Ошибка: ID модели не указан.")
-                    return
-                kb = InlineKeyboardBuilder()
-                kb.button(text="Переклейка дисплея", callback_data=f"cart_web_re-gluing_{model_id}")
-                kb.button(text="Замена задней крышки", callback_data=f"cart_web_back_cover_{model_id}")
-                kb.button(text="Продать битик", callback_data=f"cart_web_sell_broken_{model_id}")
-                kb.button(text="Купить дисплей (восстановленный)", callback_data=f"cart_web_ready_products_{model_id}")
-                kb.button(text="Купить дисплей (запчасть)", callback_data=f"cart_web_spare_parts_{model_id}")
-                kb.adjust(2, 1, 2)
-                text = f"Выберете нужную опцию для модели: {model_name}"
-                response = await message.answer(
-                    text,
-                    reply_markup=kb.as_markup()
-                )
-                logger.info(f"Sent message to user {message.from_user.id}: text='{text}', keyboard with {len(kb.buttons)} buttons")
-                return response
-            elif action == 'open':
-                logger.info("Processing 'open' action")
-                await message.answer("Вы успешно передали данные боту кнопкой «Фильтр моделей».")
-                return
-            else:
-                logger.warning(f"Unknown action in web_app_data: {action}")
-                await message.delete()
-                logger.info("Deleted message for unknown action")
-                return
-        except json.JSONDecodeError as e:
-            logger.error(f"JSON decode error in web_app_data: {e}")
-            await message.answer("Ошибка обработки данных из Web App.")
+    # Удаляем debug_all_messages, так как он дублирует логику
 
     dp.include_router(user_router)
     dp.include_router(product_router)
