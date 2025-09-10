@@ -232,10 +232,12 @@ async def cancel_filter(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.answer("Фильтрация отменена.")
     await callback.answer()
 
-@web_filter_router.message(F.web_app_data)
+@web_filter_router.message()
 async def handle_web_app_data(message: types.Message):
-    logger.info("handle_web_app_data called")
-    logger.info(f"Received web_app_data raw: {message.web_app_data}")
+    if not message.web_app_data:
+        return  # Skip if no web_app_data
+    logger.info("handle_web_app_data called with web_app_data")
+    logger.info(f"Received web_app_data raw: {message.web_app_data.data}")
     try:
         data = json.loads(message.web_app_data.data)
         logger.info(f"Parsed data: {data}")
