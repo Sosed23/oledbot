@@ -263,6 +263,10 @@ def setup_bot():
     async def debug_all_messages(message: types.Message):
         logger.debug(f"Global message received: user={message.from_user.id}, text={message.text}, web_app_data={message.web_app_data is not None}")
 
+    @dp.message(lambda m: m.web_app_data is not None)
+    async def test_web_app_handler(message: types.Message):
+        logger.info(f"Test web_app handler in main.py triggered with data: {message.web_app_data.data}")
+
     dp.include_router(user_router)
     dp.include_router(product_router)
     dp.include_router(cart_router)
@@ -271,6 +275,7 @@ def setup_bot():
     dp.include_router(aiagent_router)
     dp.include_router(group_router)
     dp.include_router(web_filter_router)
+    logger.info("web_filter_router included successfully")
 
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
