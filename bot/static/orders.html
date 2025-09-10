@@ -148,8 +148,27 @@
 
             console.log('Telegram WebApp:', tg);
             console.log('initDataUnsafe:', tg.initDataUnsafe);
-            const user = tg.initDataUnsafe.user;
-            console.log('User:', user);
+            let user = tg.initDataUnsafe.user;
+            console.log('User from initDataUnsafe:', user);
+
+            if (!user || !user.id) {
+                // Try to parse from initData
+                if (tg.initData) {
+                    try {
+                        const params = new URLSearchParams(tg.initData);
+                        const userStr = params.get('user');
+                        if (userStr) {
+                            const userObj = JSON.parse(decodeURIComponent(userStr));
+                            user = userObj;
+                            console.log('Parsed user from initData:', user);
+                        }
+                    } catch (e) {
+                        console.error('Error parsing initData:', e);
+                    }
+                }
+            }
+
+            console.log('Final user:', user);
             if (!user || !user.id) {
                 document.getElementById('orders-content').innerHTML = '<p>Ошибка: не удалось получить ID пользователя. User: ' + JSON.stringify(user) + '</p>';
                 return;
