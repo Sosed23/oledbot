@@ -235,16 +235,20 @@ async def cancel_filter(callback: types.CallbackQuery, state: FSMContext):
 @web_filter_router.message(F.web_app_data)
 async def handle_web_app_data(message: types.Message):
     logger.info("handle_web_app_data called")
+    logger.info(f"Received web_app_data raw: {message.web_app_data}")
     try:
         data = json.loads(message.web_app_data)
-        logger.info(f"Parsed web_app_data: {data}")
-        if data.get('action') == 'select_model':
+        logger.info(f"Parsed data: {data}")
+        action = data.get('action')
+        logger.info(f"Action: {action}")
+        if action == 'select_model':
+            logger.info("Processing 'select_model' action")
             model_name = data.get('name', '')
             model_id = data.get('model_id', '')
+            logger.info(f"Model name: {model_name}, model_id: {model_id}")
             if model_id is None:
                 logger.error("model_id is None in select_model action")
                 return await message.answer("Ошибка: ID модели не указан.")
-            logger.info(f"Processing select_model: name={model_name}, model_id={model_id}")
             kb = InlineKeyboardBuilder()
             kb.button(text="Переклейка дисплея", callback_data=f"cart_web_re-gluing_{model_id}")
             kb.button(text="Замена задней крышки", callback_data=f"cart_web_back_cover_{model_id}")
@@ -252,17 +256,20 @@ async def handle_web_app_data(message: types.Message):
             kb.button(text="Купить дисплей (восстановленный)", callback_data=f"cart_web_ready_products_{model_id}")
             kb.button(text="Купить дисплей (запчасть)", callback_data=f"cart_web_spare_parts_{model_id}")
             kb.adjust(2, 1, 2)
-            return await message.answer(
+            response = await message.answer(
                 f"Выберете нужную опцию для модели: {model_name}",
                 reply_markup=kb.as_markup()
             )
-        elif data.get('action') == 'open':
-            logger.info("Web app opened, showing filter menu")
+            logger.info("Sent message with buttons for select_model")
+            return response
+        elif action == 'open':
+            logger.info("Processing 'open' action")
             return await message.answer("Вы успешно передали данные боту кнопкой «Фильтр моделей».")
         else:
-            logger.info(f"Unknown action in web_app_data: {data.get('action', 'no action')}")
+            logger.warning(f"Unknown action in web_app_data: {action}")
             # Для других действий удаляем сообщение
             await message.delete()
+            logger.info("Deleted message for unknown action")
             return None
     except json.JSONDecodeError as e:
         logger.error(f"JSON decode error in web_app_data: {e}")
