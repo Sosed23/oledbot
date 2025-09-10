@@ -256,11 +256,12 @@ def setup_bot():
                     await message.answer("Ошибка: ID модели не указан.")
                     return
                 kb = InlineKeyboardBuilder()
-                kb.button(text="Переклейка дисплея", callback_data=f"cart_web_re-gluing_{model_id}")
-                kb.button(text="Замена задней крышки", callback_data=f"cart_web_back_cover_{model_id}")
-                kb.button(text="Продать битик", callback_data=f"cart_web_sell_broken_{model_id}")
-                kb.button(text="Купить дисплей (восстановленный)", callback_data=f"cart_web_ready_products_{model_id}")
-                kb.button(text="Купить дисплей (запчасть)", callback_data=f"cart_web_spare_parts_{model_id}")
+                model_name_safe = model_name.replace(' ', '_')
+                kb.button(text="Переклейка дисплея", callback_data=f"cart_web_re-gluing_{model_id}_{model_name_safe}")
+                kb.button(text="Замена задней крышки", callback_data=f"cart_web_back_cover_{model_id}_{model_name_safe}")
+                kb.button(text="Продать битик", callback_data=f"cart_web_sell_broken_{model_id}_{model_name_safe}")
+                kb.button(text="Купить дисплей (восстановленный)", callback_data=f"cart_web_ready_products_{model_id}_{model_name_safe}")
+                kb.button(text="Купить дисплей (запчасть)", callback_data=f"cart_web_spare_parts_{model_id}_{model_name_safe}")
                 kb.adjust(2, 1, 2)
                 markup = kb.as_markup()
                 text = f"Выберете нужную опцию для модели: {model_name}"
