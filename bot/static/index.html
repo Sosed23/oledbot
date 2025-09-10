@@ -149,6 +149,7 @@
         const telegramUser = tg.initDataUnsafe.user;
         if (telegramUser && telegramUser.id) {
             localStorage.setItem('telegram_id', telegramUser.id.toString());
+            document.body.innerHTML += `<p>User ID: ${telegramUser.id}</p>`;
         }
 
 
