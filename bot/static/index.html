@@ -146,10 +146,13 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
 
+        console.log('Index user from initDataUnsafe:', tg.initDataUnsafe.user);
         const telegramUser = tg.initDataUnsafe.user;
         if (telegramUser && telegramUser.id) {
             localStorage.setItem('telegram_id', telegramUser.id.toString());
             document.body.innerHTML += `<p>User ID: ${telegramUser.id}</p>`;
+        } else {
+            document.body.innerHTML += `<p>User ID not available</p>`;
         }
 
 
