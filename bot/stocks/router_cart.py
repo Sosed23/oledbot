@@ -142,8 +142,8 @@ async def handle_web_re_gluing(callback: CallbackQuery, state: FSMContext):
     try:
         # Извлекаем model_id и model_name из callback_data
         data = callback.data.split("_")
-        model_id = data[3] if len(data) > 3 else None
-        model_name = data[4].replace('_', ' ') if len(data) > 4 else "не указана"
+        model_id = data[4] if len(data) > 4 else None
+        model_name = "_".join(data[5:]).replace('_', ' ') if len(data) > 5 else "не указана"
 
         if not model_id:
             await callback.message.answer("Не удалось определить ID модели. Пожалуйста, выберите модель заново.")
