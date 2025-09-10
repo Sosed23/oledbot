@@ -261,16 +261,16 @@ def setup_bot():
     dp.callback_query.outer_middleware(ForwardOutgoingMessageMiddleware())
 
     @dp.message()
-    async def debug_all_messages(message: types.Message):
-        logger.info(f"debug_all_messages called for message from user {message.from_user.id}")
-        logger.debug(f"Global message received: user={message.from_user.id}, text={message.text}, web_app_data={message.web_app_data is not None}")
-
-    @dp.message()
     async def direct_web_app_handler(message: types.Message):
         logger.info(f"direct_web_app_handler called for message from user {message.from_user.id}")
         if not message.web_app_data:
             return
         logger.info("Direct dp handler triggered for web_app_data")
+
+    @dp.message()
+    async def debug_all_messages(message: types.Message):
+        logger.info(f"debug_all_messages called for message from user {message.from_user.id}")
+        logger.debug(f"Global message received: user={message.from_user.id}, text={message.text}, web_app_data={message.web_app_data is not None}")
         logger.info(f"Received web_app_data raw: {message.web_app_data.data}")
         try:
             import json
