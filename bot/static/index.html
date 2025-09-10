@@ -168,7 +168,9 @@
 
         async function fetchData(endpoint) {
             try {
-                const response = await fetch(`${API_BASE}${endpoint}`);
+                const userId = localStorage.getItem('telegram_id');
+                const url = userId ? `${API_BASE}${endpoint}?user_id=${userId}` : `${API_BASE}${endpoint}`;
+                const response = await fetch(url);
                 if (!response.ok) throw new Error('Error fetching data');
                 return await response.json();
             } catch (error) {
