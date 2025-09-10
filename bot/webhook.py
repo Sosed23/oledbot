@@ -1,45 +1,19 @@
 from fastapi import FastAPI, HTTPException, Request, Query
-import json
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
-from pathlib import Path
-import json
+from sqlalchemy import select, text
+from bot.database import async_session_maker
 from pydantic import BaseModel
 from loguru import logger
 from bs4 import BeautifulSoup  # Импортируем BeautifulSoup для удаления HTML-тегов
 from typing import List, Optional
+from pathlib import Path
 
 from bot.config import bot  # Импортируем уже созданный объект bot
 
 # Инициализация FastAPI
 app = FastAPI()
 
-# Path to the filters JSON files
-FILTERS_PATH = Path(__file__).parent / "stocks" / "filters.json"
-NEW_FILTERS_PATH = Path(__file__).parent / "stocks" / "new_filters.json"
-
-# Load old filters data (for backward compatibility)
-def load_filters():
-    try:
-        with open(FILTERS_PATH, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Filters file not found")
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=500, detail="Invalid JSON in filters file")
-
-# Load new filters data
-def load_new_filters():
-    try:
-        with open(NEW_FILTERS_PATH, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="New filters file not found")
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=500, detail="Invalid JSON in new filters file")
-
-filters_data = load_filters()
-new_filters_data = load_new_filters()
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="bot/static"), name="static")
@@ -52,48 +26,66 @@ async def get_webapp():
 # Old endpoints (for backward compatibility)
 @app.get("/api/devices")
 async def get_devices():
-    return {"devices": list(filters_data["devices"].keys())}
+    async with async_session_maker() as session:
+        result = await session.execute(text("SELECT name FROM devices ORDER BY name"))
+        devices = [row[0] for row in result.fetchall()]
+        return {"devices": devices}
 
 @app.get("/api/brands/{device}")
 async def get_brands(device: str):
-    if device not in filters_data["devices"]:
-        raise HTTPException(status_code=404, detail="Device not found")
-    brands = filters_data["devices"][device]["brands"]
-    return {"brands": list(brands.keys())}
+    async with async_session_maker() as session:
+        result = await session.execute(text("SELECT name FROM brands ORDER BY name"))
+        brands = [row[0] for row in result.fetchall()]
+        return {"brands": brands}
 
 @app.get("/api/series/{device}/{brand}")
 async def get_series(device: str, brand: str):
-    if device not in filters_data["devices"]:
-        raise HTTPException(status_code=404, detail="Device not found")
-    brands = filters_data["devices"][device]["brands"]
-    if brand not in brands:
-        raise HTTPException(status_code=404, detail="Brand not found")
-    series = brands[brand]["series"]
-    return {"series": list(series.keys())}
+    sql = "SELECT DISTINCT s.name FROM series s JOIN devices d ON s.device_id = d.id JOIN brands b ON s.brand_id = b.id WHERE d.name = :device AND b.name = :brand ORDER BY s.name"
+    async with async_session_maker() as session:
+        result = await session.execute(text(sql), {"device": device, "brand": brand})
+        series = [row[0] for row in result.fetchall()]
+        return {"series": series}
 
 @app.get("/api/models/{device}/{brand}/{series}")
 async def get_models(device: str, brand: str, series: str):
-    if device not in filters_data["devices"]:
-        raise HTTPException(status_code=404, detail="Device not found")
-    brands = filters_data["devices"][device]["brands"]
-    if brand not in brands:
-        raise HTTPException(status_code=404, detail="Brand not found")
-    series_data = brands[brand]["series"]
-    if series not in series_data:
-        raise HTTPException(status_code=404, detail="Series not found")
-    models = series_data[series]["models"]
-    return {"models": models}
+    sql = """
+    SELECT d.name as device, b.name as brand, s.name as series, mn.name, mn.model_id
+    FROM models_new mn
+    JOIN devices d ON mn.device_id = d.id
+    JOIN brands b ON mn.brand_id = b.id
+    JOIN series s ON mn.series_id = s.id
+    WHERE d.name = :device AND b.name = :brand AND s.name = :series
+    ORDER BY mn.name
+    """
+    async with async_session_maker() as session:
+        result = await session.execute(text(sql), {"device": device, "brand": brand, "series": series})
+        models = []
+        for row in result.fetchall():
+            models.append({
+                "device": row[0],
+                "brand": row[1],
+                "series": row[2],
+                "name": row[3],
+                "model_id": row[4]
+            })
+        return {"models": models}
 
 # New endpoints (for web app with multiple selection)
 @app.get("/api/v2/devices")
 async def get_devices_v2():
     """Return list of all available devices"""
-    return {"devices": new_filters_data["devices"]}
+    async with async_session_maker() as session:
+        result = await session.execute(text("SELECT name FROM devices ORDER BY name"))
+        devices = [row[0] for row in result.fetchall()]
+        return {"devices": devices}
 
 @app.get("/api/v2/brands")
 async def get_brands_v2():
     """Return list of all available brands"""
-    return {"brands": new_filters_data["brands"]}
+    async with async_session_maker() as session:
+        result = await session.execute(text("SELECT name FROM brands ORDER BY name"))
+        brands = [row[0] for row in result.fetchall()]
+        return {"brands": brands}
 
 @app.get("/api/v2/series")
 async def get_series_v2(
@@ -104,19 +96,19 @@ async def get_series_v2(
     Return list of series, optionally filtered by devices and brands.
     Supports multiple selection for both devices and brands.
     """
-    series_list = new_filters_data["series"]
-    
-    # Filter by devices if provided
+    sql = "SELECT DISTINCT s.name FROM series s JOIN devices d ON s.device_id = d.id JOIN brands b ON s.brand_id = b.id WHERE 1=1"
+    params = {}
     if devices:
-        series_list = [s for s in series_list if s["device"] in devices]
-    
-    # Filter by brands if provided
+        sql += " AND d.name = ANY(:devices)"
+        params['devices'] = devices
     if brands:
-        series_list = [s for s in series_list if s["brand"] in brands]
-    
-    # Return unique series names
-    unique_series = list({s["name"] for s in series_list})
-    return {"series": unique_series}
+        sql += " AND b.name = ANY(:brands)"
+        params['brands'] = brands
+    sql += " ORDER BY s.name"
+    async with async_session_maker() as session:
+        result = await session.execute(text(sql), params)
+        series = [row[0] for row in result.fetchall()]
+        return {"series": series}
 
 @app.get("/api/v2/models")
 async def get_models_v2(
@@ -128,27 +120,37 @@ async def get_models_v2(
     Return list of models, optionally filtered by devices, brands and series.
     Supports multiple selection for all parameters.
     """
-    print(f"get_models_v2 called with devices={devices}, brands={brands}, series={series}")
-    models_list = new_filters_data["models"]
-    print(f"Initial models count: {len(models_list)}")
-    
-    # Filter by devices if provided
+    sql = """
+    SELECT d.name as device, b.name as brand, s.name as series, mn.name, mn.model_id
+    FROM models_new mn
+    JOIN devices d ON mn.device_id = d.id
+    JOIN brands b ON mn.brand_id = b.id
+    JOIN series s ON mn.series_id = s.id
+    WHERE 1=1
+    """
+    params = {}
     if devices:
-        models_list = [m for m in models_list if m["device"] in devices]
-        print(f"After device filter ({devices}): {len(models_list)} models")
-    
-    # Filter by brands if provided
+        sql += " AND d.name = ANY(:devices)"
+        params['devices'] = devices
     if brands:
-        models_list = [m for m in models_list if m["brand"] in brands]
-        print(f"After brand filter ({brands}): {len(models_list)} models")
-    
-    # Filter by series if provided
+        sql += " AND b.name = ANY(:brands)"
+        params['brands'] = brands
     if series:
-        models_list = [m for m in models_list if m["series"] in series]
-        print(f"After series filter ({series}): {len(models_list)} models")
-    
-    print(f"Returning {len(models_list)} models: {models_list}")
-    return {"models": models_list}
+        sql += " AND s.name = ANY(:series)"
+        params['series'] = series
+    sql += " ORDER BY mn.name"
+    async with async_session_maker() as session:
+        result = await session.execute(text(sql), params)
+        models = []
+        for row in result.fetchall():
+            models.append({
+                "device": row[0],
+                "brand": row[1],
+                "series": row[2],
+                "name": row[3],
+                "model_id": row[4]
+            })
+        return {"models": models}
 
 # Модель для входящих данных от Planfix
 class PlanfixComment(BaseModel):
