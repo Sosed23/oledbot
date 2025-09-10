@@ -256,7 +256,7 @@ async def run_all():
 
 # Функция для регистрации роутеров и middleware
 def setup_bot():
-    # dp.message.middleware(ForwardIncomingMessageMiddleware())  # Temporarily disabled to test direct handler
+    dp.message.middleware(ForwardIncomingMessageMiddleware())
     dp.message.outer_middleware(ForwardOutgoingMessageMiddleware())
     dp.callback_query.outer_middleware(ForwardOutgoingMessageMiddleware())
 
