@@ -112,6 +112,7 @@ class ForwardIncomingMessageMiddleware(BaseMiddleware):
             #     logger.info(f"{user_info} переслано в {target_chat_id}")
 
         # Передаём управление дальше (чтобы другие обработчики сработали)
+        logger.debug("Calling handler from middleware")
         handler_result = await handler(event, data)
 
         # Если middleware вернул результат, используем его; иначе используем результат handler
@@ -257,6 +258,10 @@ def setup_bot():
     dp.message.middleware(ForwardIncomingMessageMiddleware())
     dp.message.outer_middleware(ForwardOutgoingMessageMiddleware())
     dp.callback_query.outer_middleware(ForwardOutgoingMessageMiddleware())
+
+    @dp.message()
+    async def debug_all_messages(message: types.Message):
+        logger.debug(f"Global message received: user={message.from_user.id}, text={message.text}, web_app_data={message.web_app_data is not None}")
 
     dp.include_router(user_router)
     dp.include_router(product_router)
