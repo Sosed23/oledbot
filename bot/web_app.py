@@ -138,6 +138,48 @@ async def get_models(
 async def test_endpoint():
     return {"message": "Test endpoint working", "status": "success"}
 
+@app.get("/api/orders")
+async def get_orders(telegram_id: int = Query(..., description="Telegram ID of the user")):
+    """
+    Return list of orders for a specific user by telegram_id.
+    """
+    try:
+        my_orders = await OrderDAO.find_all(telegram_id=telegram_id)
+        orders_data = []
+        for order in my_orders:
+            status_history = await OrderStatusHistoryDAO.find_all(order_id=order.id)
+            last_status = sorted(status_history, key=lambda x: x.timestamp, reverse=True)[0].status if status_history else "Неизвестно"
+            
+            order_items = order.items
+            grouped_items = {}
+            for item in order_items:
+                operation_id = int(item.operation) if isinstance(item.operation, (int, str)) and str(item.operation).isdigit() else item.operation
+                operation_name = OPERATION_NAMES.get(operation_id, f"Операция {operation_id}")
+                if operation_name not in grouped_items:
+                    grouped_items[operation_name] = []
+                grouped_items[operation_name].append({
+                    "product_name": item.product_name,
+                    "price": item.price
+                })
+
+            items_data = []
+            for operation, items in grouped_items.items():
+                for item in items:
+                    items_data.append(f"   🔹 {item['product_name']} 💰 Цена: {item['price']} руб.")
+            
+            order_info = {
+                "id": order.id,
+                "status": last_status,
+                "total_amount": order.total_amount,
+                "items": items_data
+            }
+            orders_data.append(order_info)
+        
+        return {"orders": orders_data}
+    except Exception as e:
+        logger.error(f"Error fetching orders for telegram_id={telegram_id}: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching orders")
+
 # Print registered routes for debugging
 @app.on_event("startup")
 async def print_routes():
