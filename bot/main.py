@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 import uvicorn
 from aiogram import types
 from aiogram.filters import Command
+from aiogram import F
 from aiogram.types import BotCommand, BotCommandScopeDefault
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from loguru import logger
