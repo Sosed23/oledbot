@@ -258,12 +258,13 @@ async def handle_web_app_data(message: types.Message):
             kb.button(text="Купить дисплей (восстановленный)", callback_data=f"cart_web_ready_products_{model_id}")
             kb.button(text="Купить дисплей (запчасть)", callback_data=f"cart_web_spare_parts_{model_id}")
             kb.adjust(2, 1, 2)
+            markup = kb.as_markup()
             text = f"Выберете нужную опцию для модели: {model_name}"
             response = await message.answer(
                 text,
-                reply_markup=kb.as_markup()
+                reply_markup=markup
             )
-            logger.info(f"Sent message to user {message.from_user.id}: text='{text}', keyboard with {len(kb.inline_keyboard)} buttons")
+            logger.info(f"Sent message to user {message.from_user.id}: text='{text}', keyboard with {len(markup.inline_keyboard)} buttons")
             return response
         elif action == 'open':
             logger.info("Processing 'open' action")
