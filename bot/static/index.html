@@ -146,39 +146,73 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
         
-        // Ждем полной инициализации для получения user ID
-        setTimeout(() => {
-            console.log('Index user from initDataUnsafe after delay:', tg.initDataUnsafe.user);
-            const telegramUser = tg.initDataUnsafe.user;
-            if (telegramUser && telegramUser.id) {
-                localStorage.setItem('telegram_id', telegramUser.id.toString());
-                console.log('User ID saved:', telegramUser.id);
-                document.body.innerHTML += `<p>User ID: ${telegramUser.id}</p>`;
-            } else {
-                console.error('User ID not available even after delay');
-                // Fallback: попробовать извлечь из initData, если доступно
-                const initData = tg.initData;
-                if (initData) {
-                    const userMatch = initData.match(/user=([^&]+)/);
-                    if (userMatch) {
-                        const userStr = decodeURIComponent(userMatch[1]);
-                        const userIdMatch = userStr.match(/"id":(\d+)/);
-                        if (userIdMatch) {
-                            const userId = parseInt(userIdMatch[1]);
-                            localStorage.setItem('telegram_id', userId.toString());
-                            console.log('User ID extracted from initData:', userId);
-                            document.body.innerHTML += `<p>User ID: ${userId}</p>`;
-                        } else {
-                            document.body.innerHTML += `<p>User ID not available</p>`;
-                        }
-                    } else {
-                        document.body.innerHTML += `<p>User ID not available</p>`;
-                    }
-                } else {
-                    document.body.innerHTML += `<p>User ID not available</p>`;
+        // Сначала извлекаем user_id из URL параметров
+        const urlParams = new URLSearchParams(window.location.search);
+        const userIdFromUrl = urlParams.get('user_id');
+        let userId = null;
+        
+        if (userIdFromUrl) {
+            userId = parseInt(userIdFromUrl);
+            localStorage.setItem('telegram_id', userId.toString());
+            console.log('User ID from URL params:', userId);
+            document.body.insertAdjacentHTML('afterbegin', `<p style="color: green; font-weight: bold;">User ID from URL: ${userId}</p>`);
+        } else {
+            // Логируем initData для отладки
+            console.log('tg.initData:', tg.initData);
+        
+            // Используем событие ready для полной инициализации
+            tg.onEvent('ready', () => {
+                console.log('WebApp ready event triggered');
+                console.log('User from initDataUnsafe:', tg.initDataUnsafe.user);
+                const telegramUser = tg.initDataUnsafe.user;
+                if (telegramUser && telegramUser.id) {
+                    userId = telegramUser.id;
+                    localStorage.setItem('telegram_id', userId.toString());
+                    console.log('User ID saved from ready event:', userId);
+                    document.body.insertAdjacentHTML('afterbegin', `<p style="color: green; font-weight: bold;">User ID: ${userId}</p>`);
+                    return; // Успешно, выходим
                 }
-            }
-        }, 100);
+            });
+        
+            // Fallback с увеличенной задержкой
+            setTimeout(() => {
+                if (!userId) {
+                    console.log('Fallback check after 500ms:', tg.initDataUnsafe.user);
+                    const telegramUser = tg.initDataUnsafe.user;
+                    if (telegramUser && telegramUser.id) {
+                        userId = telegramUser.id;
+                        localStorage.setItem('telegram_id', userId.toString());
+                        console.log('User ID saved from fallback:', userId);
+                        document.body.insertAdjacentHTML('afterbegin', `<p style="color: green; font-weight: bold;">User ID: ${userId}</p>`);
+                    } else {
+                        console.error('User ID not available in fallback');
+                        // Улучшенный fallback: парсинг initData
+                        const initData = tg.initData;
+                        console.log('initData for parsing:', initData);
+                        if (initData) {
+                            const userMatch = initData.match(/user=([^&]+)/);
+                            if (userMatch) {
+                                const userStr = decodeURIComponent(userMatch[1]);
+                                console.log('Parsed userStr:', userStr);
+                                const userIdMatch = userStr.match(/"id":(\d+)/);
+                                if (userIdMatch) {
+                                    userId = parseInt(userIdMatch[1]);
+                                    localStorage.setItem('telegram_id', userId.toString());
+                                    console.log('User ID extracted from initData:', userId);
+                                    document.body.insertAdjacentHTML('afterbegin', `<p style="color: green; font-weight: bold;">User ID: ${userId}</p>`);
+                                } else {
+                                    document.body.insertAdjacentHTML('afterbegin', `<p style="color: red;">User ID not available</p>`);
+                                }
+                            } else {
+                                document.body.insertAdjacentHTML('afterbegin', `<p style="color: red;">User ID not available</p>`);
+                            }
+                        } else {
+                            document.body.insertAdjacentHTML('afterbegin', `<p style="color: red;">User ID not available</p>`);
+                        }
+                    }
+                }
+            }, 500);
+        }
 
 
 
