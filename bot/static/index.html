@@ -145,15 +145,32 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
-
-        console.log('Index user from initDataUnsafe:', tg.initDataUnsafe.user);
-        const telegramUser = tg.initDataUnsafe.user;
-        if (telegramUser && telegramUser.id) {
-            localStorage.setItem('telegram_id', telegramUser.id.toString());
-            document.body.innerHTML += `<p>User ID: ${telegramUser.id}</p>`;
-        } else {
-            document.body.innerHTML += `<p>User ID not available</p>`;
-        }
+        
+        // Ждем полной инициализации для получения user ID
+        setTimeout(() => {
+            console.log('Index user from initDataUnsafe after delay:', tg.initDataUnsafe.user);
+            const telegramUser = tg.initDataUnsafe.user;
+            if (telegramUser && telegramUser.id) {
+                localStorage.setItem('telegram_id', telegramUser.id.toString());
+                console.log('User ID saved:', telegramUser.id);
+            } else {
+                console.error('User ID not available even after delay');
+                // Fallback: попробовать извлечь из initData, если доступно
+                const initData = tg.initData;
+                if (initData) {
+                    const userMatch = initData.match(/user=([^&]+)/);
+                    if (userMatch) {
+                        const userStr = decodeURIComponent(userMatch[1]);
+                        const userIdMatch = userStr.match(/"id":(\d+)/);
+                        if (userIdMatch) {
+                            const userId = parseInt(userIdMatch[1]);
+                            localStorage.setItem('telegram_id', userId.toString());
+                            console.log('User ID extracted from initData:', userId);
+                        }
+                    }
+                }
+            }
+        }, 100);
 
 
 
