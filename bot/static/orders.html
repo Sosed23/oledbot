@@ -137,6 +137,14 @@
         }
 
         async function loadOrders() {
+            if (typeof window.Telegram === 'undefined' || !window.Telegram.WebApp) {
+                document.getElementById('orders-content').innerHTML = '<p>Эта страница предназначена для использования в Telegram Mini App. Пожалуйста, откройте её через Telegram.</p>';
+                return;
+            }
+
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+
             const user = tg.initDataUnsafe.user;
             if (!user || !user.id) {
                 document.getElementById('orders-content').innerHTML = '<p>Ошибка: не удалось получить ID пользователя.</p>';
@@ -144,7 +152,7 @@
             }
 
             const telegram_id = user.id;
-            const data = await fetchData(`/orders?telegram_id=${telegram_id}`);
+            const data = await fetchData(`/api/v2/orders?telegram_id=${telegram_id}`);
             
             if (data && data.orders && data.orders.length > 0) {
                 let ordersHtml = '<p>Ваши заказы:</p>';
