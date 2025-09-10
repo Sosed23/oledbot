@@ -33,15 +33,25 @@ class ForwardIncomingMessageMiddleware(BaseMiddleware):
             # For web_app_data, directly call handler and return its result to allow dp processing
             return await handler(event, data)
 
-        result = None
         try:
             if event.chat.type == "private" and event.text is not None:  # Только для личных чатов с текстом (skip web_app_data forwarding)
                 user_id = event.from_user.id
                 username = event.from_user.username if event.from_user.username else "None"
                 message_text = event.text
 
+                # Список кнопок меню, для которых пропускаем Planfix
+                menu_buttons = [
+                    "✨ Поиск с ИИ",
+                    "🛒 Корзина",
+                    "🔍 Поиск модели",
+                    "🗂 Мои заказы",
+                    "Фильтр моделей"
+                ]
+
+                is_menu_button = message_text in menu_buttons
+
                 # Пересылаем сообщение в группу Telegram
-                logger.debug(f"Пересылка входящего сообщения в Telegram-группу: user_id={user_id}, username={username}")
+                logger.debug(f"Пересылка входящего сообщения в Telegram-группу: user_id={user_id}, username={username}, is_menu={is_menu_button}")
                 user_info = f"Входящее сообщение от {user_id} (@{username})"
                 await bot.send_message(
                     chat_id=target_chat_id,
@@ -54,9 +64,9 @@ class ForwardIncomingMessageMiddleware(BaseMiddleware):
                 )
                 logger.info(f"{user_info} переслано в {target_chat_id}")
 
-                # Пропускаем проверку chat_pf_id для команды /start
-                if message_text.startswith("/start"):
-                    logger.debug(f"Команда /start, пропускаем проверку chat_pf_id для пользователя {user_id}")
+                # Пропускаем проверку chat_pf_id для команды /start и кнопок меню
+                if message_text.startswith("/start") or is_menu_button:
+                    logger.debug(f"Команда /start или меню-кнопка, пропускаем проверку chat_pf_id для пользователя {user_id}")
                 else:
                     # Получаем данные пользователя через DAO
                     logger.debug(f"Получение данных пользователя: telegram_id={user_id}")
@@ -70,54 +80,17 @@ class ForwardIncomingMessageMiddleware(BaseMiddleware):
                         )
                         if not success:
                             logger.error(f"Не удалось добавить комментарий в Planfix для пользователя {user_id}")
-                            result = await event.answer("Ошибка: не удалось отправить сообщение в Planfix.")
-                        else:
-                            logger.info(f"Комментарий добавлен в Planfix для пользователя {user_id}")
+                            # Не блокируем обработку, логируем
                     else:
-                        logger.warning(f"У пользователя {user_id} нет chat_pf_id")
-                        result = await event.answer("Ошибка: у вас нет активного чата в Planfix. Попробуйте перезапустить бота с помощью /start.")
-
-                # Пересылаем ответ бота в группу Telegram (только если есть result)
-                if result:
-                    logger.debug(f"Пересылка исходящего сообщения в Telegram-группу: user_id={user_id}, username={username}")
-                    user_info = f"Исходящее сообщение для {user_id} (@{username})"
-                    await bot.send_message(
-                        chat_id=target_chat_id,
-                        text=user_info
-                    )
-                    await bot.forward_message(
-                        chat_id=target_chat_id,
-                        from_chat_id=result.chat.id,
-                        message_id=result.message_id
-                    )
-                    logger.info(f"{user_info} переслано в {target_chat_id}")
+                        logger.warning(f"У пользователя {user_id} нет chat_pf_id для пользовательского сообщения '{message_text}'")
 
         except Exception as e:
             logger.error(f"Ошибка при пересылке входящего сообщения: {e}")
-            # Не вызываем answer в middleware, чтобы handler мог обработать
-            # result = await event.answer("Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте снова позже.")
 
-            # Пересылаем ответ об ошибке в группу Telegram
-            # if result:
-            #     logger.debug(f"Пересылка сообщения об ошибке в Telegram-группу: user_id={user_id}, username={username}")
-            #     user_info = f"Исходящее сообщение для {user_id} (@{username})"
-            #     await bot.send_message(
-            #         chat_id=target_chat_id,
-            #         text=user_info
-            #     )
-            #     await bot.forward_message(
-            #         chat_id=target_chat_id,
-            #         from_chat_id=result.chat.id,
-            #         message_id=result.message_id
-            #     )
-            #     logger.info(f"{user_info} переслано в {target_chat_id}")
-
-        # Передаём управление дальше (чтобы другие обработчики сработали)
+        # Всегда передаём управление дальше
         logger.debug("Calling handler from middleware")
         handler_result = await handler(event, data)
-
-        # Если middleware вернул результат, используем его; иначе используем результат handler
-        return result if result else handler_result
+        return handler_result
 
 # Middleware для пересылки исходящих сообщений (от бота к пользователю) в Planfix и Telegram-группу
 class ForwardOutgoingMessageMiddleware(BaseMiddleware):
