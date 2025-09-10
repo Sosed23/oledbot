@@ -296,7 +296,7 @@ def setup_bot():
                     text,
                     reply_markup=kb.as_markup()
                 )
-                logger.info(f"Sent message to user {message.from_user.id}: text='{text}', keyboard with {len(kb.buttons)} buttons")
+                logger.info(f"Sent message to user {message.from_user.id}: text='{text}', keyboard with {len(kb.inline_keyboard)} buttons")
                 return response
             elif action == 'open':
                 logger.info("Processing 'open' action")
