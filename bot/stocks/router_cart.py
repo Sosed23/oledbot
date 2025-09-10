@@ -20,8 +20,6 @@ import asyncio
 
 from bot.stocks.handlers_back_cover import handle_back_cover_common
 from bot.stocks.handlers_production import handle_production_common
-from bot.stocks.handlers_crash_display import handle_crash_display_common
-from bot.stocks.handlers_spare_parts import handle_spare_parts_common
 
 cart_router = Router()
 
@@ -142,8 +140,8 @@ async def handle_web_re_gluing(callback: CallbackQuery, state: FSMContext):
     try:
         # Извлекаем model_id и model_name из callback_data
         data = callback.data.split("_")
-        model_id = data[4] if len(data) > 4 else None
-        model_name = "_".join(data[5:]).replace('_', ' ') if len(data) > 5 else "не указана"
+        model_id = data[3] if len(data) > 3 else None
+        model_name = data[4].replace('_', ' ') if len(data) > 4 else "не указана"
 
         if not model_id:
             await callback.message.answer("Не удалось определить ID модели. Пожалуйста, выберите модель заново.")
@@ -226,46 +224,6 @@ async def handle_web_re_gluing(callback: CallbackQuery, state: FSMContext):
         return result
 
 
-@cart_router.callback_query(F.data.startswith("cart_web_back_cover_"))
-async def handle_web_back_cover(callback: CallbackQuery, state: FSMContext):
-    logger.debug(f"Вызван handle_web_back_cover с callback_data: {callback.data}")
-    try:
-        # Извлекаем model_id и model_name из callback_data
-        data = callback.data.split("_")
-        logger.debug(f"Разделенные данные callback.data: {data}")
-        
-        if len(data) < 5:  # Ожидаем минимум 5 частей: "cart_web_back_cover_MODELID_MODELNAME"
-            logger.error(f"Неверный формат callback_data: {callback.data}")
-            await callback.message.answer("Ошибка: неверный формат данных. Пожалуйста, выберите модель заново.")
-            await callback.answer()
-            return
-
-        model_id = data[3]  # Индекс для model_id
-        model_name = "_".join(data[4:]).replace('_', ' ')  # Восстанавливаем model_name
-
-        # Проверяем, что model_id является числом
-        try:
-            model_id = int(model_id)
-        except ValueError:
-            logger.error(f"model_id не является числом: {model_id}")
-            await callback.message.answer("Ошибка: некорректный ID модели. Пожалуйста, выберите модель заново.")
-            await callback.answer()
-            return
-
-        logger.debug(f"Извлеченный model_id: {model_id}, model_name: {model_name}")
-
-        # Сохраняем model_id и model_name в состояние
-        await state.update_data(model_id=model_id, model_name=model_name)
-
-        # Вызываем обработку замены крышки
-        await handle_back_cover_common(callback, state)
-
-    except Exception as e:
-        logger.error(f"Ошибка в handle_web_back_cover: {e}")
-        await callback.message.answer("Произошла ошибка при обработке замены крышки.")
-        await callback.answer()
-
-
 ##### ОБРАБОТЧИК ДЛЯ ОТОБРАЖЕНИЯ ПОВТОРНО КНОПКИ -> УСЛУГИ: ЗАМЕНА ЗАДНЕЙ КРЫШКИ - 6
 
 @cart_router.callback_query(F.data.startswith("cart_search_back_cover_"))
@@ -314,32 +272,6 @@ async def handle_back_cover_cart(callback: CallbackQuery, state: FSMContext):
         await callback.answer()
 
 
-@cart_router.callback_query(F.data.startswith("cart_web_sell_broken_"))
-async def handle_web_sell_broken(callback: CallbackQuery, state: FSMContext):
-    logger.debug(f"Вызван handle_web_sell_broken с callback_data: {callback.data}")
-    try:
-        # Извлекаем model_id и model_name из callback_data
-        data = callback.data.split("_")
-        model_id = data[3] if len(data) > 3 else None
-        model_name = data[4].replace('_', ' ') if len(data) > 4 else "не указана"
-
-        if not model_id:
-            await callback.message.answer("Не удалось определить ID модели. Пожалуйста, выберите модель заново.")
-            await callback.answer()
-            return
-
-        # Сохраняем model_id и model_name в состоянии
-        await state.update_data(model_id=model_id, model_name=model_name)
-
-        # Вызываем обработку продажи битика
-        await handle_crash_display_common(callback, state)
-
-    except Exception as e:
-        logger.error(f"Ошибка в handle_web_sell_broken: {e}")
-        await callback.message.answer("Произошла ошибка при обработке продажи битика.")
-        await callback.answer()
-
-
 ##### ОБРАБОТЧИК ДЛЯ ОТОБРАЖЕНИЯ ПОВТОРНО КНОПКИ -> ТОВАРА: ДИСПЛЕЙ (ВОССТАНОВЛЕННЫЙ) - 4
 
 @cart_router.callback_query(F.data.startswith("cart_ready_products_"))
@@ -382,74 +314,6 @@ async def handle_ready_products_cart(callback: CallbackQuery, state: FSMContext)
         result = await callback.message.answer("Произошла ошибка при обработке готовой продукции.")
         await callback.answer()
         return result
-
-
-@cart_router.callback_query(F.data.startswith("cart_web_ready_products_"))
-async def handle_web_ready_products(callback: CallbackQuery, state: FSMContext):
-    logger.debug(f"Вызван handle_web_ready_products с callback_data: {callback.data}")
-    try:
-        # Извлекаем model_id и model_name из callback_data
-        data = callback.data.split("_")
-        logger.debug(f"Разделенные данные callback.data: {data}")
-        
-        if len(data) < 5:  # Ожидаем минимум 5 частей: "cart_web_ready_products_MODELID_MODELNAME"
-            logger.error(f"Неверный формат callback_data: {callback.data}")
-            result = await callback.message.answer("Ошибка: неверный формат данных. Пожалуйста, выберите модель заново.")
-            await callback.answer()
-            return result
-
-        model_id = data[3]  # Индекс для model_id
-        model_name = "_".join(data[4:]).replace('_', ' ')  # Восстанавливаем model_name
-
-        # Проверяем, что model_id является числом
-        try:
-            model_id = int(model_id)
-        except ValueError:
-            logger.error(f"model_id не является числом: {model_id}")
-            result = await callback.message.answer("Ошибка: некорректный ID модели. Пожалуйста, выберите модель заново.")
-            await callback.answer()
-            return result
-
-        logger.debug(f"Извлеченный model_id: {model_id}, model_name: {model_name}")
-
-        # Сохраняем model_id и model_name в состояние
-        await state.update_data(model_id=model_id, model_name=model_name)
-
-        # Вызываем обработку готовой продукции и возвращаем результат
-        result = await handle_production_common(callback, state, operation="4")
-        return result
-
-    except Exception as e:
-        logger.error(f"Ошибка в handle_web_ready_products: {e}")
-        result = await callback.message.answer("Произошла ошибка при обработке готовой продукции.")
-        await callback.answer()
-        return result
-
-
-@cart_router.callback_query(F.data.startswith("cart_web_spare_parts_"))
-async def handle_web_spare_parts(callback: CallbackQuery, state: FSMContext):
-    logger.debug(f"Вызван handle_web_spare_parts с callback_data: {callback.data}")
-    try:
-        # Извлекаем model_id и model_name из callback_data
-        data = callback.data.split("_")
-        model_id = data[3] if len(data) > 3 else None
-        model_name = data[4].replace('_', ' ') if len(data) > 4 else "не указана"
-
-        if not model_id:
-            await callback.message.answer("Не удалось определить ID модели. Пожалуйста, выберите модель заново.")
-            await callback.answer()
-            return
-
-        # Сохраняем model_id и model_name в состоянии
-        await state.update_data(model_id=model_id, model_name=model_name)
-
-        # Вызываем обработку запчастей
-        await handle_spare_parts_common(callback, state)
-
-    except Exception as e:
-        logger.error(f"Ошибка в handle_web_spare_parts: {e}")
-        await callback.message.answer("Произошла ошибка при обработке запчастей.")
-        await callback.answer()
 
 
 # ОБРАБОТЧИК НАЖАТИЯ КНОПКИ "В КОРЗИНУ"
