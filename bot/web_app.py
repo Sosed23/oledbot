@@ -48,6 +48,16 @@ async def get_webapp():
     with open("static/index.html", "r", encoding="utf-8") as f:
         return f.read()
 
+@app.get("/cart", response_class=HTMLResponse)
+async def get_cart():
+    with open("static/cart.html", "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.get("/orders", response_class=HTMLResponse)
+async def get_orders():
+    with open("static/orders.html", "r", encoding="utf-8") as f:
+        return f.read()
+
 
 @app.get("/api/devices")
 async def get_devices():
