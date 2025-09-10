@@ -48,7 +48,7 @@ log_file_path = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), "log.txt")
 logger.add(log_file_path, format=settings.FORMAT_LOG,
            level="INFO", rotation=settings.LOG_ROTATION)
-logger.add("stderr", format=settings.FORMAT_LOG, level="INFO")
+logger.add("stderr", format=settings.FORMAT_LOG, level="DEBUG")
 
 database_url = settings.DB_URL
 pf_token = settings.PLANFIX_TOKEN
