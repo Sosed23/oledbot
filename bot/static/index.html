@@ -105,7 +105,6 @@
     </style>
 </head>
 <body>
-    <div id="user-id-display"></div>
     <h2>Каталог моделей</h2>
     
     <div class="filter-section">
@@ -147,9 +146,8 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
 
-        const displayElement = document.getElementById('user-id-display');
         const urlParams = new URLSearchParams(window.location.search);
-        let userId = urlParams.get('user_id');
+        const userId = urlParams.get('user_id');
 
         if (userId) {
             localStorage.setItem('telegram_id', userId);
@@ -157,20 +155,14 @@
             console.log('User ID not found in URL, trying initDataUnsafe');
             const telegramUser = tg.initDataUnsafe.user;
             if (telegramUser && telegramUser.id) {
-                userId = telegramUser.id.toString();
-                localStorage.setItem('telegram_id', userId);
+                localStorage.setItem('telegram_id', telegramUser.id.toString());
             } else {
                 console.log('User ID not available');
             }
         }
 
-        if (userId) {
-            displayElement.textContent = `User ID: ${userId}`;
-            document.getElementById('cart-link').href = `/cart?user_id=${userId}`;
-            document.getElementById('orders-link').href = `/orders?user_id=${userId}`;
-        } else {
-            displayElement.textContent = 'User ID not found';
-        }
+
+
 
         const API_BASE = '/api'; // Relative to FastAPI /webapp
         
