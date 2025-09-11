@@ -98,6 +98,7 @@
     </style>
 </head>
 <body>
+    <div id="user-id-display"></div>
     <h2>Мои заказы</h2>
     <div id="orders-content">
         <!-- Контент заказов будет здесь -->
@@ -137,6 +138,7 @@
         }
 
         async function loadOrders() {
+            const displayElement = document.getElementById('user-id-display');
             const urlParams = new URLSearchParams(window.location.search);
             let userId = urlParams.get('user_id');
 
@@ -153,6 +155,12 @@
                  if (telegramUser && telegramUser.id) {
                      userId = telegramUser.id.toString();
                  }
+            }
+
+            if (userId) {
+                displayElement.textContent = `User ID: ${userId}`;
+            } else {
+                displayElement.textContent = 'User ID not found';
             }
 
             if (!userId) {

@@ -144,8 +144,8 @@ async def get_models(
 async def test_endpoint():
     return {"message": "Test endpoint working", "status": "success"}
 
-@app.get("/api/v2/orders")
-async def get_orders(telegram_id: int = Query(..., description="Telegram ID of the user")):
+@app.get("/api/orders")
+async def get_orders_v2(telegram_id: int = Query(..., description="Telegram ID of the user")):
     """
     Return list of orders for a specific user by telegram_id.
     """
