@@ -137,45 +137,34 @@
         }
 
         async function loadOrders() {
-            console.log('loadOrders called');
-            if (typeof window.Telegram === 'undefined' || !window.Telegram.WebApp) {
-                document.getElementById('orders-content').innerHTML = '<p>Эта страница предназначена для использования в Telegram Mini App. Пожалуйста, откройте её через Telegram.</p>';
+            const urlParams = new URLSearchParams(window.location.search);
+            let userId = urlParams.get('user_id');
+
+            if (!userId) {
+                console.log('User ID not found in URL, trying localStorage');
+                userId = localStorage.getItem('telegram_id');
+            }
+
+            if (!userId && window.Telegram && Telegram.WebApp) {
+                 console.log('User ID not found in localStorage, trying initDataUnsafe');
+                 const tg = window.Telegram.WebApp;
+                 tg.ready();
+                 const telegramUser = tg.initDataUnsafe.user;
+                 if (telegramUser && telegramUser.id) {
+                     userId = telegramUser.id.toString();
+                 }
+            }
+
+            if (!userId) {
+                console.log('User ID not available');
+                document.getElementById('orders-content').innerHTML = '<p>Ошибка: не удалось получить ID пользователя.</p>';
                 return;
             }
 
-            const tg = window.Telegram.WebApp;
-            tg.ready();
+            // Save to localStorage for future fallbacks
+            localStorage.setItem('telegram_id', userId);
 
-            console.log('Telegram WebApp:', tg);
-            console.log('initDataUnsafe:', tg.initDataUnsafe);
-            let user = tg.initDataUnsafe.user;
-            console.log('User from initDataUnsafe:', user);
-
-            if (!user || !user.id) {
-                // Try to parse from initData
-                if (tg.initData) {
-                    try {
-                        const params = new URLSearchParams(tg.initData);
-                        const userStr = params.get('user');
-                        if (userStr) {
-                            const userObj = JSON.parse(decodeURIComponent(userStr));
-                            user = userObj;
-                            console.log('Parsed user from initData:', user);
-                        }
-                    } catch (e) {
-                        console.error('Error parsing initData:', e);
-                    }
-                }
-            }
-
-            console.log('Final user:', user);
-            if (!user || !user.id) {
-                document.getElementById('orders-content').innerHTML = '<p>Ошибка: не удалось получить ID пользователя. User: ' + JSON.stringify(user) + '</p>';
-                return;
-            }
-
-            const telegram_id = user.id;
-            const data = await fetchData(`/api/v2/orders?telegram_id=${telegram_id}`);
+            const data = await fetchData(`/orders?telegram_id=${userId}`);
             
             if (data && data.orders && data.orders.length > 0) {
                 let ordersHtml = '<p>Ваши заказы:</p>';
