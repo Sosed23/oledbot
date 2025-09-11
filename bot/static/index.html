@@ -11,7 +11,7 @@
         .filter-label { font-weight: bold; margin-bottom: 5px; }
         .checkbox-group { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 5px; }
         .checkbox-group.vertical { flex-direction: row; flex-wrap: wrap; gap: 5px; }
-
+ 
         .toggle-btn {
             border: 1px solid #ccc;
             padding: 8px 16px;
@@ -27,24 +27,24 @@
             margin: 2.5px 0;
             box-sizing: border-box;
         }
-
+ 
         .checkbox-group.vertical .toggle-btn {
             width: calc(50% - 2.5px);
             margin: 2.5px 0;
         }
-
+ 
         .toggle-btn.selected {
             background: #007bff;
             color: white;
             border-color: #007bff;
             font-weight: bold;
         }
-
+ 
         .toggle-btn:hover {
             background: #f8f9fa;
             border-color: #007bff;
         }
-
+ 
         .toggle-btn.selected:hover {
             background: #0056b3;
             border-color: #0056b3;
@@ -52,7 +52,7 @@
         button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; background-color: #007bff; color: white; cursor: pointer; }
         #result { margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 5px; }
         .hidden { display: none; }
-
+ 
         .model-card {
             border: 1px solid #ccc;
             padding: 15px;
@@ -61,7 +61,7 @@
             background: #f8f9fa;
             cursor: pointer;
         }
-
+ 
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -130,7 +130,7 @@
     
     
     <div id="result"></div>
-
+ 
     <script>
         function selectModel(model_id, name) {
             const data = {
@@ -142,46 +142,46 @@
             tg.close();
         }
     </script>
-
+ 
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
-
+ 
         const displayElement = document.getElementById('user-id-display');
         const urlParams = new URLSearchParams(window.location.search);
         let userId = urlParams.get('user_id');
-
+ 
         if (userId) {
             localStorage.setItem('telegram_id', userId);
         } else {
-            console.log('User ID not found in URL, trying initDataUnsafe');
+            console.log('ID пользователя не найден в URL, пытаюсь initDataUnsafe');
             const telegramUser = tg.initDataUnsafe.user;
             if (telegramUser && telegramUser.id) {
                 userId = telegramUser.id.toString();
                 localStorage.setItem('telegram_id', userId);
             } else {
-                console.log('User ID not available');
+                console.log('ID пользователя недоступен');
             }
         }
-
+ 
         if (userId) {
-            displayElement.textContent = `User ID: ${userId}`;
+            displayElement.textContent = `ID пользователя: ${userId}`;
         } else {
-            displayElement.textContent = 'User ID not found';
+            displayElement.textContent = 'ID пользователя не найден';
         }
-
-        const API_BASE = '/api/v2'; // Relative to FastAPI /webapp
+ 
+        const API_BASE = '/api/v2'; // Относительно FastAPI /webapp
         
-        // Store selected values
+        // Хранение выбранных значений
         let selectedDevices = [];
         let selectedBrands = [];
         let selectedSeries = [];
         let selectedModels = [];
-
+ 
         async function fetchData(endpoint) {
             try {
                 const response = await fetch(`${API_BASE}${endpoint}`);
-                if (!response.ok) throw new Error('Error fetching data');
+                if (!response.ok) throw new Error('Ошибка загрузки данных');
                 return await response.json();
             } catch (error) {
                 console.error(error);
@@ -189,14 +189,14 @@
             }
         }
         
-        // Get selected values from toggle buttons
+        // Получить выбранные значения из кнопок переключения
         function getSelectedValues(containerId) {
             const container = document.getElementById(containerId);
             const selectedBtns = container.querySelectorAll('.toggle-btn.selected');
             return Array.from(selectedBtns).map(btn => btn.dataset.value);
         }
         
-        // Create checkboxes for items
+        // Создать переключатели для элементов
         function createCheckboxes(containerId, items, selectedValues) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -224,18 +224,18 @@
             });
         }
         
-        // Handle filter changes
+        // Обработка изменений фильтров
         async function handleFilterChange() {
-            // Update series based on selected devices and brands
+            // Обновить серии на основе выбранных устройств и брендов
             await updateSeries();
             
-            // Update models based on all selected filters
+            // Обновить модели на основе всех выбранных фильтров
             await updateModels();
             
-            // Update selected models and show cards if any selected
+            // Обновить выбранные модели и показать карточки, если выбраны
             selectedModels = getSelectedValues('modelsContainer');
             if (selectedModels.length > 0) {
-                // Build query parameters for models
+                // Построить параметры запроса для моделей
                 let queryParams = [];
                 if (selectedDevices.length > 0) {
                     queryParams = queryParams.concat(selectedDevices.map(d => `devices=${encodeURIComponent(d)}`));
@@ -278,24 +278,24 @@
             }
         }
         
-        // Update series filter
+        // Обновить фильтр серий
         async function updateSeries() {
-            // Get currently selected devices and brands
+            // Получить текущие выбранные устройства и бренды
             const currentSelectedDevices = getSelectedValues('devicesContainer');
             const currentSelectedBrands = getSelectedValues('brandsContainer');
             
             if (currentSelectedDevices.length === 0 && currentSelectedBrands.length === 0) {
-                // Hide series section if no devices or brands selected
+                // Скрыть секцию серий, если не выбраны устройства или бренды
                 document.getElementById('seriesSection').classList.add('hidden');
                 createCheckboxes('seriesContainer', [], []);
                 return;
             }
             
-            // Update global selected values
+            // Обновить глобальные выбранные значения
             selectedDevices = currentSelectedDevices;
             selectedBrands = currentSelectedBrands;
             
-            // Build query parameters
+            // Построить параметры запроса
             let queryParams = [];
             if (selectedDevices.length > 0) {
                 queryParams = queryParams.concat(selectedDevices.map(d => `devices=${encodeURIComponent(d)}`));
@@ -308,10 +308,10 @@
             const data = await fetchData(`/series${queryString}`);
             
             if (data && data.series) {
-                // Get currently selected series before recreating checkboxes
+                // Получить текущие выбранные серии перед пересозданием переключателей
                 const currentSelectedSeries = getSelectedValues('seriesContainer');
                 createCheckboxes('seriesContainer', data.series, currentSelectedSeries);
-                // Show series section only if there are series to display
+                // Показать секцию серий только если есть серии для отображения
                 if (data.series.length > 0) {
                     document.getElementById('seriesSection').classList.remove('hidden');
                 } else {
@@ -323,22 +323,22 @@
             }
         }
         
-        // Update models filter
+        // Обновить фильтр моделей
         async function updateModels() {
-            // Get currently selected series
+            // Получить текущие выбранные серии
             const currentSelectedSeries = getSelectedValues('seriesContainer');
             
             if (currentSelectedSeries.length === 0) {
-                // Hide models section if no series selected
+                // Скрыть секцию моделей, если не выбраны серии
                 document.getElementById('modelsSection').classList.add('hidden');
                 createCheckboxes('modelsContainer', [], []);
                 return;
             }
             
-            // Update global selectedSeries
+            // Обновить глобальный selectedSeries
             selectedSeries = currentSelectedSeries;
             
-            // Build query parameters
+            // Построить параметры запроса
             let queryParams = [];
             if (selectedDevices.length > 0) {
                 queryParams = queryParams.concat(selectedDevices.map(d => `devices=${encodeURIComponent(d)}`));
@@ -354,15 +354,15 @@
             const data = await fetchData(`/models${queryString}`);
             
             if (data && data.models) {
-                // Create checkboxes with model names but use model_id as values
+                // Создать переключатели с именами моделей, но использовать model_id как значения
                 const modelItems = data.models.map(m => ({
                     name: m.name,
                     model_id: m.model_id
                 }));
-                // Get currently selected models before recreating checkboxes
+                // Получить текущие выбранные модели перед пересозданием переключателей
                 const currentSelectedModels = getSelectedValues('modelsContainer');
                 createCheckboxes('modelsContainer', modelItems, currentSelectedModels);
-                // Show models section only if there are models to display
+                // Показать секцию моделей только если есть модели для отображения
                 if (data.models.length > 0) {
                     document.getElementById('modelsSection').classList.remove('hidden');
                 } else {
@@ -375,35 +375,35 @@
         }
         
         
-        // Initial load of devices and brands
+        // Начальная загрузка устройств и брендов
         async function initializeFilters() {
-            // Load devices
+            // Загрузить устройства
             const devicesData = await fetchData('/devices');
             if (devicesData && devicesData.devices) {
-                // Filter to only show required devices
+                // Фильтровать, чтобы показать только требуемые устройства
                 const requiredDevices = ["Смартфон", "Планшет", "Смарт часы"];
                 const filteredDevices = devicesData.devices.filter(d => requiredDevices.includes(d));
                 createCheckboxes('devicesContainer', filteredDevices, selectedDevices);
             }
             
-            // Load brands
+            // Загрузить бренды
             const brandsData = await fetchData('/brands');
             if (brandsData && brandsData.brands) {
-                // Filter to only show required brands
+                // Фильтровать, чтобы показать только требуемые бренды
                 const requiredBrands = ["Samsung", "Apple"];
                 const filteredBrands = brandsData.brands.filter(b => requiredBrands.includes(b));
                 createCheckboxes('brandsContainer', filteredBrands, selectedBrands);
             }
             
-            // Initially hide series and models sections
+            // Изначально скрыть секции серий и моделей
             document.getElementById('seriesSection').classList.add('hidden');
             document.getElementById('modelsSection').classList.add('hidden');
         }
         
-        // Initialize filters on page load
+        // Инициализировать фильтры при загрузке страницы
         initializeFilters();
     </script>
-
+ 
     <nav class="bottom-nav">
         <a href="/webapp" class="nav-btn active">
             <div class="nav-icon">📱</div>
