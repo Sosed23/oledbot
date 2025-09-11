@@ -99,21 +99,22 @@
 </head>
 <body>
     <h2>Корзина</h2>
+    <div id="user-id-display"></div>
     <div id="cart-content">
         <!-- Контент корзины будет здесь -->
         <p>Ваша корзина пуста.</p>
     </div>
 
     <nav class="bottom-nav">
-        <a href="/static/index.html" class="nav-btn">
+        <a href="/webapp" class="nav-btn">
             <div class="nav-icon">📱</div>
             <span>Каталог</span>
         </a>
-        <a href="/static/cart.html" class="nav-btn active">
+        <a href="/cart" class="nav-btn active">
             <div class="nav-icon">🛒</div>
             <span>Корзина</span>
         </a>
-        <a href="/static/orders.html" class="nav-btn">
+        <a href="/orders" class="nav-btn">
             <div class="nav-icon">📋</div>
             <span>Мои заказы</span>
         </a>
@@ -123,10 +124,33 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
 
-        const user = tg.initDataUnsafe.user;
-        if (user && user.id) {
-            localStorage.setItem('telegram_id', user.id.toString());
+        const displayElement = document.getElementById('user-id-display');
+        const urlParams = new URLSearchParams(window.location.search);
+        let userId = urlParams.get('user_id');
+
+        if (!userId) {
+            console.log('User ID not found in URL, trying localStorage');
+            userId = localStorage.getItem('telegram_id');
         }
+
+        if (!userId && tg.initDataUnsafe.user) {
+             console.log('User ID not found in localStorage, trying initDataUnsafe');
+             const telegramUser = tg.initDataUnsafe.user;
+             if (telegramUser && telegramUser.id) {
+                 userId = telegramUser.id.toString();
+             }
+        }
+
+        if (userId) {
+            displayElement.textContent = `User ID: ${userId}`;
+            localStorage.setItem('telegram_id', userId);
+        } else {
+            displayElement.textContent = 'User ID not found';
+        }
+
+        // TODO: Load cart data if endpoint exists
+        // const data = await fetchData('/v2/cart?telegram_id=${userId}');
+        // Update cart-content based on data
     </script>
 </body>
 </html>

@@ -172,7 +172,7 @@
             // Save to localStorage for future fallbacks
             localStorage.setItem('telegram_id', userId);
 
-            const data = await fetchData(`/orders?telegram_id=${userId}`);
+            const data = await fetchData(`/v2/orders?telegram_id=${userId}`);
             
             if (data && data.orders && data.orders.length > 0) {
                 let ordersHtml = '<p>Ваши заказы:</p>';

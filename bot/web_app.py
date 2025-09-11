@@ -43,7 +43,7 @@ class ModelNew(Base):
 app = FastAPI(title="Device Filter API", description="API for filtering devices, brands, series, models for spare parts")
 
 # Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="bot/static"), name="static")
 
 logger = logging.getLogger(__name__)
 
@@ -51,17 +51,17 @@ OPERATION_NAMES = {}
 
 @app.get("/webapp", response_class=HTMLResponse)
 async def get_webapp():
-    with open("static/index.html", "r", encoding="utf-8") as f:
+    with open("bot/static/index.html", "r", encoding="utf-8") as f:
         return f.read()
 
 @app.get("/cart", response_class=HTMLResponse)
 async def get_cart():
-    with open("static/cart.html", "r", encoding="utf-8") as f:
+    with open("bot/static/cart.html", "r", encoding="utf-8") as f:
         return f.read()
 
 @app.get("/orders", response_class=HTMLResponse)
 async def get_orders():
-    with open("static/orders.html", "r", encoding="utf-8") as f:
+    with open("bot/static/orders.html", "r", encoding="utf-8") as f:
         return f.read()
 
 
