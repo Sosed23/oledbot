@@ -250,7 +250,7 @@
                 }
                 
                 const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
-                const data = await fetchData(`/models${queryString}`);
+                const data = await fetchData(`/v2/models${queryString}`);
                 
                 if (data && data.models) {
                     const filteredModels = data.models.filter(m => selectedModels.includes(m.name));
@@ -307,7 +307,7 @@
             }
             
             const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
-            const data = await fetchData(`/series${queryString}`);
+            const data = await fetchData(`/v2/series${queryString}`);
             
             if (data && data.series) {
                 // Get currently selected series before recreating checkboxes
@@ -353,7 +353,7 @@
             }
             
             const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
-            const data = await fetchData(`/models${queryString}`);
+            const data = await fetchData(`/v2/models${queryString}`);
             
             if (data && data.models) {
                 // Create checkboxes with model names but use model_id as values
@@ -380,7 +380,7 @@
         // Initial load of devices and brands
         async function initializeFilters() {
             // Load devices
-            const devicesData = await fetchData('/devices');
+            const devicesData = await fetchData('/v2/devices');
             if (devicesData && devicesData.devices) {
                 // Filter to only show required devices
                 const requiredDevices = ["Смартфон", "Планшет", "Смарт часы"];
@@ -389,7 +389,7 @@
             }
             
             // Load brands
-            const brandsData = await fetchData('/brands');
+            const brandsData = await fetchData('/v2/brands');
             if (brandsData && brandsData.brands) {
                 // Filter to only show required brands
                 const requiredBrands = ["Samsung", "Apple"];
