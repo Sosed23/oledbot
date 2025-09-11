@@ -159,6 +159,12 @@
 
             if (userId) {
                 displayElement.textContent = `User ID: ${userId}`;
+
+                // Update navigation links to include user_id
+                document.querySelectorAll('.bottom-nav a').forEach(link => {
+                    let href = link.getAttribute('href');
+                    link.href = href + '?user_id=' + userId;
+                });
             } else {
                 displayElement.textContent = 'User ID not found';
             }

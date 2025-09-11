@@ -402,6 +402,14 @@
         
         // Инициализировать фильтры при загрузке страницы
         initializeFilters();
+
+        if (userId) {
+            // Update navigation links to include user_id
+            document.querySelectorAll('.bottom-nav a').forEach(link => {
+                let href = link.getAttribute('href');
+                link.href = href + '?user_id=' + userId;
+            });
+        }
     </script>
  
     <nav class="bottom-nav">
