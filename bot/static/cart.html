@@ -102,7 +102,6 @@
     <div id="user-id-display"></div>
     <div id="cart-content">
         <!-- Контент корзины будет здесь -->
-        <p>Ваша корзина пуста.</p>
     </div>
 
     <nav class="bottom-nav">
@@ -124,39 +123,78 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
 
-        const displayElement = document.getElementById('user-id-display');
-        const urlParams = new URLSearchParams(window.location.search);
-        let userId = urlParams.get('user_id');
+        const API_BASE = '/api/v2'; // Relative to FastAPI
 
-        if (!userId) {
-            console.log('User ID not found in URL, trying localStorage');
-            userId = localStorage.getItem('telegram_id');
+        async function fetchData(endpoint) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`);
+                if (!response.ok) throw new Error('Error fetching data');
+                return await response.json();
+            } catch (error) {
+                console.error(error);
+                return null;
+            }
         }
 
-        if (!userId && tg.initDataUnsafe.user) {
-             console.log('User ID not found in localStorage, trying initDataUnsafe');
-             const telegramUser = tg.initDataUnsafe.user;
-             if (telegramUser && telegramUser.id) {
-                 userId = telegramUser.id.toString();
-             }
+        async function loadCart() {
+            const displayElement = document.getElementById('user-id-display');
+            const urlParams = new URLSearchParams(window.location.search);
+            let userId = urlParams.get('user_id');
+
+            if (!userId) {
+                console.log('User ID not found in URL, trying localStorage');
+                userId = localStorage.getItem('telegram_id');
+            }
+
+            if (!userId && tg.initDataUnsafe.user) {
+                 console.log('User ID not found in localStorage, trying initDataUnsafe');
+                 const telegramUser = tg.initDataUnsafe.user;
+                 if (telegramUser && telegramUser.id) {
+                     userId = telegramUser.id.toString();
+                 }
+            }
+
+            if (userId) {
+                displayElement.textContent = `User ID: ${userId}`;
+                localStorage.setItem('telegram_id', userId);
+
+                // Update navigation links to include user_id
+                document.querySelectorAll('.bottom-nav a').forEach(link => {
+                    let href = link.getAttribute('href');
+                    link.href = href + '?user_id=' + userId;
+                });
+            } else {
+                displayElement.textContent = 'User ID not found';
+                document.getElementById('cart-content').innerHTML = '<p>Ошибка: не удалось получить ID пользователя.</p>';
+                return;
+            }
+
+            const data = await fetchData(`/cart?telegram_id=${userId}`);
+            
+            if (data && data.cart && data.cart.items && data.cart.items.length > 0) {
+                let cartHtml = '<p>Ваша корзина:</p>';
+                let total = 0;
+                data.cart.items.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+                    cartHtml += `
+                        <div class="model-card">
+                            <p><strong>Услуга:</strong> ${item.name}</p>
+                            <p><strong>Цена:</strong> ${item.price} руб.</p>
+                            <p><strong>Количество:</strong> ${item.quantity}</p>
+                            <p><strong>Итого за услугу:</strong> ${itemTotal} руб.</p>
+                        </div>
+                    `;
+                });
+                cartHtml += `<p><strong>Общая сумма:</strong> ${total} руб.</p>`;
+                document.getElementById('cart-content').innerHTML = cartHtml;
+            } else {
+                document.getElementById('cart-content').innerHTML = '<p>Ваша корзина пуста.</p>';
+            }
         }
 
-        if (userId) {
-            displayElement.textContent = `User ID: ${userId}`;
-            localStorage.setItem('telegram_id', userId);
-
-            // Update navigation links to include user_id
-            document.querySelectorAll('.bottom-nav a').forEach(link => {
-                let href = link.getAttribute('href');
-                link.href = href + '?user_id=' + userId;
-            });
-        } else {
-            displayElement.textContent = 'User ID not found';
-        }
-
-        // TODO: Load cart data if endpoint exists
-        // const data = await fetchData('/v2/cart?telegram_id=${userId}');
-        // Update cart-content based on data
+        // Загружаем корзину при загрузке страницы
+        loadCart();
     </script>
 </body>
 </html>
