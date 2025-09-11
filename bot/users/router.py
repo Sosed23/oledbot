@@ -20,7 +20,7 @@ async def cmd_start(message: Message, command: CommandObject):
                 # Если chat_pf_id есть, просто приветствуем пользователя
                 result = await message.answer(
                     f"👋 Привет, {message.from_user.full_name}! Выберите необходимое действие",
-                    reply_markup=markup_kb.back_keyboard(user_id)
+                    reply_markup=markup_kb.back_keyboard()
                 )
                 return result
             else:
@@ -36,7 +36,7 @@ async def cmd_start(message: Message, command: CommandObject):
                     logger.info(f"Чат в Planfix успешно создан для пользователя {user_id}: chat_pf_id={chat_pf_id}")
                     result = await message.answer(
                         f"👋 Привет, {message.from_user.full_name}! Чат в Planfix создан. Выберите необходимое действие.",
-                        reply_markup=markup_kb.back_keyboard(user_id)
+                        reply_markup=markup_kb.back_keyboard()
                     )
                     return result
                 else:
@@ -88,7 +88,7 @@ async def cmd_start(message: Message, command: CommandObject):
 
         result = await message.answer(
             f"👋 Привет, {message.from_user.full_name}! Вы успешно зарегистрированы. Выберите необходимое действие.",
-            reply_markup=markup_kb.back_keyboard(user_id)
+            reply_markup=markup_kb.back_keyboard()
         )
         return result
 
