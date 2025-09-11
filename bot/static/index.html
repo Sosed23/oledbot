@@ -146,13 +146,19 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
 
-        console.log('Index user from initDataUnsafe:', tg.initDataUnsafe.user);
-        const telegramUser = tg.initDataUnsafe.user;
-        if (telegramUser && telegramUser.id) {
-            localStorage.setItem('telegram_id', telegramUser.id.toString());
-            document.body.innerHTML += `<p>User ID: ${telegramUser.id}</p>`;
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user_id');
+
+        if (userId) {
+            localStorage.setItem('telegram_id', userId);
         } else {
-            document.body.innerHTML += `<p>User ID not available</p>`;
+            console.log('User ID not found in URL, trying initDataUnsafe');
+            const telegramUser = tg.initDataUnsafe.user;
+            if (telegramUser && telegramUser.id) {
+                localStorage.setItem('telegram_id', telegramUser.id.toString());
+            } else {
+                console.log('User ID not available');
+            }
         }
 
 

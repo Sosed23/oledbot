@@ -20,7 +20,7 @@ async def cmd_start(message: Message, command: CommandObject):
                 # Если chat_pf_id есть, просто приветствуем пользователя
                 result = await message.answer(
                     f"👋 Привет, {message.from_user.full_name}! Выберите необходимое действие",
-                    reply_markup=markup_kb.back_keyboard()
+                    reply_markup=markup_kb.back_keyboard(user_id=user_id)
                 )
                 return result
             else:
@@ -36,7 +36,7 @@ async def cmd_start(message: Message, command: CommandObject):
                     logger.info(f"Чат в Planfix успешно создан для пользователя {user_id}: chat_pf_id={chat_pf_id}")
                     result = await message.answer(
                         f"👋 Привет, {message.from_user.full_name}! Чат в Planfix создан. Выберите необходимое действие.",
-                        reply_markup=markup_kb.back_keyboard()
+                        reply_markup=markup_kb.back_keyboard(user_id=user_id)
                     )
                     return result
                 else:
@@ -88,12 +88,9 @@ async def cmd_start(message: Message, command: CommandObject):
 
         result = await message.answer(
             f"👋 Привет, {message.from_user.full_name}! Вы успешно зарегистрированы. Выберите необходимое действие.",
-            reply_markup=markup_kb.back_keyboard()
+            reply_markup=markup_kb.back_keyboard(user_id=user_id)
         )
         return result
-
     except Exception as e:
-        logger.error(
-            f"Ошибка при выполнении команды /start для пользователя {message.from_user.id}: {e}")
-        result = await message.answer("Произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте снова позже.")
-        return result
+        logger.error(f"Произошла ошибка в /start: {e}")
+        await message.answer("Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова позже.")
