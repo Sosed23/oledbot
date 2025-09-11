@@ -10,6 +10,7 @@ class Cart(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     telegram_id: Mapped[int] = mapped_column(
+        BigInteger,
         ForeignKey('users.telegram_id', ondelete='CASCADE'), nullable=False
     )
     product_id: Mapped[Optional[int]] = mapped_column(Integer)
