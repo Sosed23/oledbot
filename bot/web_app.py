@@ -7,7 +7,7 @@ from bot.database import Base, async_session_maker
 import uvicorn
 from typing import List, Optional
 import logging
-from bot.stocks.dao import OrderDAO, OrderStatusHistoryDAO
+from bot.stocks.dao import OrderDAO, OrderStatusHistoryDAO, CartDAO
 
 class Device(Base):
     __tablename__ = 'devices'
@@ -185,6 +185,37 @@ async def get_orders_v2(telegram_id: int = Query(..., description="Telegram ID o
     except Exception as e:
         logger.error(f"Error fetching orders for telegram_id={telegram_id}: {e}")
         raise HTTPException(status_code=500, detail="Error fetching orders")
+
+@app.get("/api/v2/cart")
+async def get_cart_v2(telegram_id: int = Query(..., description="Telegram ID of the user")):
+    """
+    Return list of cart items for a specific user by telegram_id.
+    """
+    try:
+        cart_items = await CartDAO.find_all(telegram_id=telegram_id)
+        items_data = []
+        total_amount = 0
+        for item in cart_items:
+            operation_name = f"Операция {item.operation}" if item.operation else "Неизвестная операция"
+            name = f"{item.product_name} - {operation_name}"
+            item_total = item.price * item.quantity
+            total_amount += item_total
+            items_data.append({
+                "name": name,
+                "price": item.price,
+                "quantity": item.quantity,
+                "total": item_total
+            })
+
+        return {
+            "cart": {
+                "items": items_data,
+                "total_amount": total_amount
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error fetching cart for telegram_id={telegram_id}: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching cart")
 
 # Print registered routes for debugging
 @app.on_event("startup")
