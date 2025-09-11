@@ -146,7 +146,7 @@ async def test_endpoint():
     return {"message": "Test endpoint working", "status": "success"}
 
 @app.get("/api/v2/cart")
-async def get_cart_v2(telegram_id: str = Query(..., description="Telegram ID of the user")):
+async def get_cart_v2(telegram_id: int = Query(..., description="Telegram ID of the user")):
     """
     Return list of cart items for a specific user by telegram_id.
     """

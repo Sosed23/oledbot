@@ -7,7 +7,7 @@ class User(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    telegram_id: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
+    telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
     username: Mapped[Optional[str]] = mapped_column(String)
     first_name: Mapped[Optional[str]] = mapped_column(String)
     last_name: Mapped[Optional[str]] = mapped_column(String)
