@@ -6,122 +6,106 @@
     <title>Фильтр моделей</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
+        body { font-family: Arial, sans-serif; max-width: 400px; margin: 0 auto; padding: 20px; padding-bottom: 80px; }
+        .filter-section { margin-bottom: 20px; }
+        .filter-label { font-weight: bold; margin-bottom: 5px; }
+        .checkbox-group { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 5px; }
+        .checkbox-group.vertical { flex-direction: row; flex-wrap: wrap; gap: 5px; }
 
-        h2 {
-            text-align: center;
-            color: #333;
-            margin: 20px 0;
-        }
-
-        .filters {
-            padding: 15px;
-            background-color: white;
-            border-radius: 8px;
-            margin: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .filter-section {
-            margin-bottom: 20px;
-        }
-
-        .filter-section h3 {
-            margin: 0 0 10px 0;
-            color: #444;
-        }
-
-        .filter-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .filter-btn {
+        .toggle-btn {
+            border: 1px solid #ccc;
             padding: 8px 16px;
-            border: 1px solid #ddd;
             border-radius: 20px;
-            background-color: white;
+            background: white;
+            color: #333;
             cursor: pointer;
-            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: normal;
+            display: inline-block;
+            transition: all 0.2s;
+            width: calc(50% - 2.5px);
+            margin: 2.5px 0;
+            box-sizing: border-box;
         }
 
-        .filter-btn:hover {
-            background-color: #f5f5f5;
+        .checkbox-group.vertical .toggle-btn {
+            width: calc(50% - 2.5px);
+            margin: 2.5px 0;
         }
 
-        .filter-btn.active {
-            background-color: #007bff;
+        .toggle-btn.selected {
+            background: #007bff;
             color: white;
+            border-color: #007bff;
+            font-weight: bold;
+        }
+
+        .toggle-btn:hover {
+            background: #f8f9fa;
+            border-color: #007bff;
+        }
+
+        .toggle-btn.selected:hover {
+            background: #0056b3;
             border-color: #0056b3;
         }
+        button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; background-color: #007bff; color: white; cursor: pointer; }
+        #result { margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 5px; }
+        .hidden { display: none; }
 
-        .result-container {
+        .model-card {
+            border: 1px solid #ccc;
             padding: 15px;
-            background-color: white;
-            border-radius: 8px;
-            margin: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
+            border-radius: 10px;
+            background: #f8f9fa;
+            cursor: pointer;
         }
 
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
-            right: 0;
-            background-color: white;
+            width: 100%;
+            background: white;
+            border-top: 1px solid #ccc;
             display: flex;
             justify-content: space-around;
-            padding: 10px;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            max-width: 400px;
+            margin: 0 auto;
         }
-
         .nav-btn {
-            text-decoration: none;
-            color: #666;
             display: flex;
             flex-direction: column;
             align-items: center;
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 8px;
+            width: 80px;
+            transition: background 0.2s;
         }
-
         .nav-btn.active {
-            color: #007bff;
+            background: #007bff;
+            color: white;
         }
-
+        .nav-btn:hover {
+            background: #e9ecef;
+        }
+        .nav-btn.active:hover {
+            background: #0056b3;
+        }
         .nav-icon {
-            font-size: 24px;
-            margin-bottom: 5px;
+            font-size: 20px;
+            margin-bottom: 4px;
         }
     </style>
 </head>
 <body>
-    <div id="user-id-display" style="padding: 10px; background-color: #f5f5f5; text-align: center;"></div>
-
-    <div class="filters">
-        <div class="filter-section">
-            <h3>Бренды</h3>
-            <div id="brandsContainer" class="filter-container"></div>
-        </div>
-
-        <div id="seriesSection" class="filter-section" style="display: none;">
-            <h3>Серии</h3>
-            <div id="seriesContainer" class="filter-container"></div>
-        </div>
-
-        <div id="modelsSection" class="filter-section" style="display: none;">
-            <h3>Модели</h3>
-            <div id="modelsContainer" class="filter-container"></div>
-        </div>
-    </div>
-
-    <div id="result" class="result-container">
-        <!-- Selected model details will be displayed here -->
-    </div>
+    <div id="user-id-display"></div>
     <h2>Каталог моделей</h2>
     
     <div class="filter-section">
@@ -144,6 +128,7 @@
         <div id="modelsContainer" class="checkbox-group vertical"></div>
     </div>
     
+    
     <div id="result"></div>
 
     <script>
@@ -162,35 +147,35 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('user_id');
-
-        // Display user ID
         const displayElement = document.getElementById('user-id-display');
+        const urlParams = new URLSearchParams(window.location.search);
+        let userId = urlParams.get('user_id');
+
         if (userId) {
-            displayElement.textContent = `User ID: ${userId}`;
             localStorage.setItem('telegram_id', userId);
         } else {
             console.log('User ID not found in URL, trying initDataUnsafe');
             const telegramUser = tg.initDataUnsafe.user;
             if (telegramUser && telegramUser.id) {
-                displayElement.textContent = `User ID: ${telegramUser.id}`;
-                localStorage.setItem('telegram_id', telegramUser.id.toString());
+                userId = telegramUser.id.toString();
+                localStorage.setItem('telegram_id', userId);
             } else {
-                displayElement.textContent = 'User ID not found';
                 console.log('User ID not available');
             }
         }
 
+        if (userId) {
+            displayElement.textContent = `User ID: ${userId}`;
+        } else {
+            displayElement.textContent = 'User ID not found';
+        }
 
-
-
-        // API_BASE is already declared later in the file, removing duplicate declaration
+        const API_BASE = '/api/v2'; // Relative to FastAPI /webapp
         
         // Store selected values
         let selectedDevices = [];
         let selectedBrands = [];
-let selectedSeriesArray = [];
+        let selectedSeries = [];
         let selectedModels = [];
 
         async function fetchData(endpoint) {
@@ -263,7 +248,7 @@ let selectedSeriesArray = [];
                 }
                 
                 const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
-                const data = await fetchData(`/v2/models${queryString}`);
+                const data = await fetchData(`/models${queryString}`);
                 
                 if (data && data.models) {
                     const filteredModels = data.models.filter(m => selectedModels.includes(m.name));
@@ -271,7 +256,8 @@ let selectedSeriesArray = [];
                     let cardsHtml = '';
                     filteredModels.forEach(model => {
                         cardsHtml += `
-                            <div class="model-card" onclick="selectModel(${model.model_id}, '${model.name.replace(/'/g, "\\'")}')">                                <p><strong>Устройство:</strong> ${model.device}</p>
+                            <div class="model-card" onclick="selectModel(${model.model_id}, '${model.name.replace(/'/g, "\\'")}')">
+                                <p><strong>Устройство:</strong> ${model.device}</p>
                                 <p><strong>Бренд:</strong> ${model.brand}</p>
                                 <p><strong>Серия:</strong> ${model.series}</p>
                                 <p><strong>Название:</strong> ${model.name}</p>
@@ -319,7 +305,7 @@ let selectedSeriesArray = [];
             }
             
             const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
-            const data = await fetchData(`/v2/series${queryString}`);
+            const data = await fetchData(`/series${queryString}`);
             
             if (data && data.series) {
                 // Get currently selected series before recreating checkboxes
@@ -365,7 +351,7 @@ let selectedSeriesArray = [];
             }
             
             const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
-            const data = await fetchData(`/v2/models${queryString}`);
+            const data = await fetchData(`/models${queryString}`);
             
             if (data && data.models) {
                 // Create checkboxes with model names but use model_id as values
@@ -388,10 +374,11 @@ let selectedSeriesArray = [];
             }
         }
         
+        
         // Initial load of devices and brands
         async function initializeFilters() {
             // Load devices
-            const devicesData = await fetchData('/v2/devices');
+            const devicesData = await fetchData('/devices');
             if (devicesData && devicesData.devices) {
                 // Filter to only show required devices
                 const requiredDevices = ["Смартфон", "Планшет", "Смарт часы"];
@@ -400,7 +387,7 @@ let selectedSeriesArray = [];
             }
             
             // Load brands
-            const brandsData = await fetchData('/v2/brands');
+            const brandsData = await fetchData('/brands');
             if (brandsData && brandsData.brands) {
                 // Filter to only show required brands
                 const requiredBrands = ["Samsung", "Apple"];
@@ -417,197 +404,19 @@ let selectedSeriesArray = [];
         initializeFilters();
     </script>
 
-    <script>
-        const API_BASE = '/api/v2';
-    
-        // Store selected values
-        let selectedBrand = '';
-        let selectedSeries = '';
-        let selectedModel = '';
-    
-        // Function to fetch data from API
-        async function fetchData(endpoint) {
-            try {
-                const response = await fetch(`${API_BASE}${endpoint}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return await response.json();
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                return null;
-            }
-        }
-    
-        // Function to filter series by brand
-        function filterSeriesByBrand(series, brand) {
-            return series.filter(s => s.brand === brand);
-        }
-    
-        // Function to filter models by series
-        function filterModelsBySeries(models, series) {
-            return models.filter(m => m.series === series);
-        }
-    
-        // Initialize filters
-        async function initializeFilters() {
-            const brands = await fetchData('/brands');
-            const series = await fetchData('/series');
-            const models = await fetchData('/models');
-    
-            if (brands && series && models) {
-                populateBrands(brands);
-                setupBrandChangeHandler(series, models);
-                setupSeriesChangeHandler(models);
-                setupModelChangeHandler();
-            }
-        }
-    
-        // Call initialize function when page loads
-        window.addEventListener('load', initializeFilters);
-    </script>
-
-    <script>
-        // Update navigation links with user_id
-        const storedUserId = localStorage.getItem('telegram_id');
-        if (storedUserId) {
-            const cartLink = document.getElementById('cart-link');
-            const ordersLink = document.getElementById('orders-link');
-            
-            cartLink.href = `/cart?user_id=${storedUserId}`;
-            ordersLink.href = `/orders?user_id=${storedUserId}`;
-        }
-    </script>
-
     <nav class="bottom-nav">
         <a href="/webapp" class="nav-btn active">
             <div class="nav-icon">📱</div>
             <span>Каталог</span>
         </a>
-        <a href="/cart" id="cart-link" class="nav-btn">
+        <a href="/static/cart.html" class="nav-btn">
             <div class="nav-icon">🛒</div>
             <span>Корзина</span>
         </a>
-        <a href="/orders" id="orders-link" class="nav-btn">
+        <a href="/static/orders.html" class="nav-btn">
             <div class="nav-icon">📋</div>
             <span>Мои заказы</span>
         </a>
     </nav>
 </body>
 </html>
-
-    <script>
-        // Function to populate brands dropdown
-        function populateBrands(brands) {
-            const brandsContainer = document.getElementById('brandsContainer');
-            brandsContainer.innerHTML = '';
-            
-            brands.forEach(brand => {
-                const button = document.createElement('button');
-                button.textContent = brand;
-                button.classList.add('filter-btn');
-                button.dataset.brand = brand;
-                brandsContainer.appendChild(button);
-            });
-        }
-
-        // Setup brand change handler
-        function setupBrandChangeHandler(allSeries, allModels) {
-            const brandsContainer = document.getElementById('brandsContainer');
-            const seriesSection = document.getElementById('seriesSection');
-            const modelsSection = document.getElementById('modelsSection');
-
-            brandsContainer.addEventListener('click', (event) => {
-                if (event.target.dataset.brand) {
-                    // Update selected brand
-                    selectedBrand = event.target.dataset.brand;
-
-                    // Update active state
-                    brandsContainer.querySelectorAll('.filter-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    event.target.classList.add('active');
-
-                    // Filter and display series
-                    const filteredSeries = filterSeriesByBrand(allSeries, selectedBrand);
-                    displaySeries(filteredSeries);
-
-                    // Reset series and model selection
-                    selectedSeries = '';
-                    selectedModel = '';
-                    modelsSection.style.display = 'none';
-                    seriesSection.style.display = 'block';
-                }
-            });
-        }
-
-        // Function to display series
-        function displaySeries(series) {
-            const seriesContainer = document.getElementById('seriesContainer');
-            seriesContainer.innerHTML = '';
-            
-            series.forEach(series => {
-                const button = document.createElement('button');
-                button.textContent = series.name;
-                button.classList.add('filter-btn');
-                button.dataset.series = series.name;
-                seriesContainer.appendChild(button);
-            });
-        }
-
-        // Setup series change handler
-        function setupSeriesChangeHandler(allModels) {
-            const seriesContainer = document.getElementById('seriesContainer');
-            const modelsSection = document.getElementById('modelsSection');
-
-            seriesContainer.addEventListener('click', (event) => {
-                if (event.target.dataset.series) {
-                    // Update selected series
-                    selectedSeries = event.target.dataset.series;
-
-                    // Update active state
-                    seriesContainer.querySelectorAll('.filter-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    event.target.classList.add('active');
-
-                    // Filter and display models
-                    const filteredModels = filterModelsBySeries(allModels, selectedSeries);
-                    displayModels(filteredModels);
-                    modelsSection.style.display = 'block';
-                }
-            });
-        }
-
-        // Function to display models
-        function displayModels(models) {
-            const modelsContainer = document.getElementById('modelsContainer');
-            modelsContainer.innerHTML = '';
-            
-            models.forEach(model => {
-                const button = document.createElement('button');
-                button.textContent = model.name;
-                button.classList.add('filter-btn');
-                button.dataset.model = model.name;
-                modelsContainer.appendChild(button);
-            });
-        }
-
-        // Setup model change handler
-        function setupModelChangeHandler() {
-            const modelsContainer = document.getElementById('modelsContainer');
-
-            modelsContainer.addEventListener('click', (event) => {
-                if (event.target.dataset.model) {
-                    // Update selected model
-                    selectedModel = event.target.dataset.model;
-
-                    // Update active state
-                    modelsContainer.querySelectorAll('.filter-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    event.target.classList.add('active');
-                }
-            });
-        }
-    </script>
